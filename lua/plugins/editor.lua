@@ -30,5 +30,17 @@ return
 				vim.api.nvim_set_keymap("n", "]b", ":BufferLineCycleNext<cr>", { noremap = true, silent = true })
 			})
 		end
+	},
+
+	-- easier file management --
+	{
+		"nvim-telescope/telescope.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
+		opts = {},
+		keys = {
+			{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files"   },
+			{ "<leader>fg", "<cmd>Telescope live_grep<cr>",  desc = "Live grep"    },
+			{ "<leader>fb", "<cmd>Telescope buffers<cr>",    desc = "Find buffers" }
+		}
 	}
 }
