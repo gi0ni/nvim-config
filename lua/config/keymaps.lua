@@ -14,52 +14,58 @@ vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = function() v
 vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = true })
 
 -- build --
--- vim.api.nvim_set_keymap("n", "<leader>r", ':wa | !ninja -C build & for ' .. vim.fn.fnameescape('%') .. 'a in ("bin\\*.exe") do (start ' .. vim.fn.fnameescape('%') .. 'a) <cr> | <cr>', { noremap = true, silent = true })
-vim.keymap.set("n", "<leader>r", function()
-	vim.cmd("wa")
+if vim.loop.os_uname().sysname == "Windows_NT" then
+	vim.keymap.set("n", "<leader>r", function()
+		vim.cmd("wa")
+		vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do call %a) >NUL || (echo. & echo. & pause)" ]])
+	end, { noremap = true, silent = true })
+else
+	vim.keymap.set("n", "<leader>r", function()
+		vim.cmd("wa")
 
-	vim.fn.system("find . -name *.c -o -name *.cpp | xargs grep -F 'int main(int argc, char** argv)'")
-	local flag = vim.v.shell_error
-	local args = ""
+		vim.fn.system("find . -name *.c -o -name *.cpp | xargs grep -F 'int main(int argc, char** argv)'")
+		local flag = vim.v.shell_error
+		local args = ""
 
-	local isdir = vim.fn.isdirectory("build")
+		local isdir = vim.fn.isdirectory("build")
 
-	if isdir == 0 and flag == 0 then
-		vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
-	end
-
-	local pause = [[
-		;
-		ret=$?
-		end=$(date +%s%3N)
-
-		duration_ms=$((end - start))
-		minutes=$((duration_ms / 60000))
-		seconds=$(( (duration_ms % 60000) / 1000 ))
-		millis=$((duration_ms % 1000))
-		formatted_time=$(printf "%02d:%02d.%03d" $minutes $seconds $millis)
-
-		echo -e "\n\n=========================================="
-		echo "Process returned code $ret (0x$(printf "%X" $ret))"
-		echo "Execution time: $formatted_time"
-		echo "=========================================="
-		echo -ne "Press any key to continue..."
-		read -n 1 
-	]]
-
-	if isdir ~= 0 then
-		vim.cmd("!ninja -C build")
-		vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-c", [[ ./bin/* ]] }, { detach = true })
-		vim.api.nvim_feedkeys("\r", "n", false)
-	else
-		local compiler = "g++"
-		if vim.api.nvim_buf_get_name(0):match("%.c$") then
-			compiler = "gcc"
+		if isdir == 0 and flag == 0 then
+			vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
 		end
 
-		vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ $(find . -name *.c -o -name *.cpp -o -name *.h -o -name *.hpp) -o program; start=$(date +%s%3N); ./program ]] .. args .. pause }, { detach = true })
-	end
-end, { noremap = true, silent = true })
+		local pause = [[
+			;
+			ret=$?
+			end=$(date +%s%3N)
+
+			duration_ms=$((end - start))
+			minutes=$((duration_ms / 60000))
+			seconds=$(( (duration_ms % 60000) / 1000 ))
+			millis=$((duration_ms % 1000))
+			formatted_time=$(printf "%02d:%02d.%03d" $minutes $seconds $millis)
+
+			echo -e "\n\n=========================================="
+			echo "Process returned code $ret (0x$(printf "%X" $ret))"
+			echo "Execution time: $formatted_time"
+			echo "=========================================="
+			echo -ne "Press any key to continue..."
+			read -n 1 
+		]]
+
+		if isdir ~= 0 then
+			vim.cmd("!ninja -C build")
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-c", [[ ./bin/* ]] }, { detach = true })
+			vim.api.nvim_feedkeys("\r", "n", false)
+		else
+			local compiler = "g++"
+			if vim.api.nvim_buf_get_name(0):match("%.c$") then
+				compiler = "gcc"
+			end
+
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ $(find . -name *.c -o -name *.cpp -o -name *.h -o -name *.hpp) -o program; start=$(date +%s%3N); ./program ]] .. args .. pause }, { detach = true })
+		end
+	end, { noremap = true, silent = true })
+end
 
 -- indent --
 vim.keymap.set('n', 'a', function()
@@ -86,8 +92,7 @@ vim.keymap.set("v", "d", "\"_d")
 vim.keymap.set("v", "c", "\"_c")
 
 -- stop clearing selections --
-vim.keymap.set("v", "y", function() vim.cmd("normal! y") vim.cmd("normal! gv") end)
-vim.keymap.set("v", "<space>y", '"+y') -- ^~~ breaks "+y so just remap to something else
+vim.keymap.set("v", "<space>y", '"+y')
 vim.keymap.set("v", ">", function() vim.cmd("normal! >") vim.cmd("normal! gv") end)
 vim.keymap.set("v", "<", function() vim.cmd("normal! <") vim.cmd("normal! gv") end)
 

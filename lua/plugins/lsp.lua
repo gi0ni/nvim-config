@@ -1,7 +1,11 @@
 return
 {
 	-- linter --
-	{ "williamboman/mason.nvim", opts = {} },
+	{
+		"williamboman/mason.nvim",
+		opts = {}
+	},
+
 	{
 		"neovim/nvim-lspconfig",
 		config = function()
@@ -9,10 +13,20 @@ return
 			local lspconfig = require("lspconfig")
 			lspconfig.lua_ls.setup({ settings = { Lua = { diagnostics = { globals = { "vim" } } } } })
 			lspconfig.clangd.setup({ cmd = { "clangd", "-header-insertion=never" } })
+
 			vim.lsp.set_log_level("off")
 		end
 	},
-	{ "williamboman/mason-lspconfig.nvim", opts = { ensure_installed = { "lua_ls", "clangd" } } },
+
+	{
+		"williamboman/mason-lspconfig.nvim",
+		opts = {
+			ensure_installed = {
+				"lua_ls",
+				"clangd",
+			}
+		}
+	},
 
 	-- suggestions --
 	{
@@ -40,6 +54,7 @@ return
 			cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done())
 		end
 	},
+
 	{ "hrsh7th/cmp-nvim-lsp", opts = {} },
 	{ "hrsh7th/cmp-nvim-lsp-signature-help" },
 	{ "gi0ni/cmp-path" },

@@ -27,7 +27,9 @@ return
 		config = function()
 			require("bufferline").setup({
 				vim.api.nvim_set_keymap("n", "[b", ":BufferLineCyclePrev<cr>", { noremap = true, silent = true }),
-				vim.api.nvim_set_keymap("n", "]b", ":BufferLineCycleNext<cr>", { noremap = true, silent = true })
+				vim.api.nvim_set_keymap("n", "]b", ":BufferLineCycleNext<cr>", { noremap = true, silent = true }),
+				vim.api.nvim_set_keymap("n", "[B", ":BufferLineMovePrev<cr>",  { noremap = true, silent = true }),
+				vim.api.nvim_set_keymap("n", "]B", ":BufferLineMoveNext<cr>",  { noremap = true, silent = true })
 			})
 		end
 	},
