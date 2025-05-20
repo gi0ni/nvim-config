@@ -3,6 +3,7 @@ return
 	-- linter --
 	{
 		"williamboman/mason.nvim",
+		veresion = "^1.0.0",
 		opts = {}
 	},
 
@@ -20,6 +21,7 @@ return
 
 	{
 		"williamboman/mason-lspconfig.nvim",
+		version = "^1.0.0",
 		opts = {
 			ensure_installed = {
 				"lua_ls",
@@ -35,7 +37,17 @@ return
 			local cmp = require("cmp")
 			cmp.setup({
 				sources = {
-					{ name = "cmp_gl" },
+					{
+						name = "cmp_gl",
+						entry_filter = function(entry, ctx)
+							local first_line = vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] or ""
+							if first_line:match("#include <glad/glad.h>") then
+								return true
+							else
+								return false
+							end
+						end,
+					},
 					{ name = "nvim_lsp" },
 					{ name = "nvim_lsp_signature_help" },
 					{ name = "path" },

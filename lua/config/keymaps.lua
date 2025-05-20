@@ -17,7 +17,7 @@ vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = tru
 if vim.loop.os_uname().sysname == "Windows_NT" then
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
-		vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do call %a) >NUL || (echo. & echo. & pause)" ]])
+		vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
 	end, { noremap = true, silent = true })
 else
 	vim.keymap.set("n", "<leader>r", function()
@@ -99,3 +99,7 @@ vim.keymap.set("v", "<", function() vim.cmd("normal! <") vim.cmd("normal! gv") e
 -- autoindent on paste --
 vim.keymap.set("n", "p", function() vim.cmd("normal! p") vim.cmd("normal! `[=`]") end)
 vim.keymap.set("n", "P", function() vim.cmd("normal! P") vim.cmd("normal! `[=`]") end)
+vim.keymap.set("n", "<leader>p", function() vim.cmd('normal! "+p') vim.cmd("normal! `[=`]") end)
+
+-- scoped token rename --
+vim.api.nvim_set_keymap('n', '<leader>gr', '<cmd>lua vim.lsp.buf.rename()<CR>', { noremap = true, silent = true })

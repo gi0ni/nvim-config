@@ -44,5 +44,24 @@ return
 			{ "<leader>fg", "<cmd>Telescope live_grep<cr>",  desc = "Live grep"    },
 			{ "<leader>fb", "<cmd>Telescope buffers<cr>",    desc = "Find buffers" }
 		}
+	},
+
+	-- toggle comments --
+	{
+		"numToStr/Comment.nvim",
+		config = function()
+			require("Comment").setup()
+		end,
+	},
+
+	-- f the mouse --
+	{
+		"folke/flash.nvim",
+		event = "VeryLazy",
+
+		opts = {},
+		keys = {
+			{ "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+		}
 	}
 }

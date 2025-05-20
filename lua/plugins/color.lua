@@ -5,7 +5,10 @@ return
 
 		config = function()
 			require("gruvbox").setup({
-				vim.cmd("colorscheme gruvbox")
+				vim.cmd("colorscheme gruvbox"),
+
+				vim.api.nvim_set_hl(0, "@function", { fg = "#fe8019", bold = true }),
+				vim.api.nvim_set_hl(0, "@method", { fg = "#fe8019", bold = true })
 			})
 		end
 	},
@@ -31,6 +34,8 @@ return
 					frag = "glsl"
 				}
 			})
+
+			vim.api.nvim_set_hl(0, "@core_token", { fg = "#8ec07c" })
 		end
 	}
 }
