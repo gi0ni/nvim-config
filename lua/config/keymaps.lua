@@ -20,15 +20,7 @@ else
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
 
-		vim.fn.system([[ find . -name '*.c' -o -name '*.cpp' | xargs grep -F 'int main(int argc, char** argv' ]])
-		local flag = vim.v.shell_error
-		local args = ""
-
 		local isdir = vim.fn.isdirectory("build")
-
-		if isdir == 0 and flag == 0 then
-			vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
-		end
 
 		local pause = [[
 			;
@@ -61,6 +53,14 @@ else
 
 			local src = vim.fn.expand("%")
 			local program = vim.fn.expand("%:t:r")
+
+			vim.fn.system([[ grep -F 'int main(int argc, char** argv' ]] .. src)
+			local flag = vim.v.shell_error
+			local args = ""
+
+			if flag == 0 then
+				vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
+			end
 
 			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[; start=$(date +%s%3N); ./]] .. program .. [[ ]] .. args .. pause }, { detach = true })
 		end
