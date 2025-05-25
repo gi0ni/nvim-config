@@ -1,6 +1,3 @@
--- quick escape --
-vim.api.nvim_set_keymap("i", "jk", "<esc>:noh<cr>", { noremap = true, silent = true });
-
 -- cursor blink --
 vim.opt.guicursor = { "i-ci:ver25-Cursor/lCursor-blinkwait1000-blinkon100-blinkoff100" }
 
@@ -62,7 +59,10 @@ else
 				compiler = "gcc"
 			end
 
-			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ $(find . -name *.c -o -name *.cpp -o -name *.h -o -name *.hpp) -o program; start=$(date +%s%3N); ./program ]] .. args .. pause }, { detach = true })
+			local src = vim.fn.expand("%")
+			local program = vim.fn.expand("%:t:r")
+
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[; start=$(date +%s%3N); ./]] .. program .. [[ ]] .. args .. pause }, { detach = true })
 		end
 	end, { noremap = true, silent = true })
 end
