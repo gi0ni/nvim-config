@@ -20,7 +20,7 @@ else
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
 
-		vim.fn.system("find . -name *.c -o -name *.cpp | xargs grep -F 'int main(int argc, char** argv)'")
+		vim.fn.system([[ find . -name '*.c' -o -name '*.cpp' | xargs grep -F 'int main(int argc, char** argv)' ]])
 		local flag = vim.v.shell_error
 		local args = ""
 
