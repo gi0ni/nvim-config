@@ -10,23 +10,6 @@ vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = function() v
 -- search --
 vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = true })
 
--- build only --
-if vim.loop.os_uname().sysname == "Windows_NT" then
-	-- TODO --
-else
-	vim.keymap.set("n", "<leader>c", function()
-		local compiler = "g++"
-		if vim.api.nvim_buf_get_name(0):match("%.c$") then
-			compiler = "gcc"
-		end
-
-		local src = vim.fn.expand("%")
-		local program = vim.fn.expand("%:t:r")
-
-		vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ ]] .. src .. [[ -o ]] .. program }, { detach = true })
-	end, { noremap = true, silent = true })
-end
-
 -- build and run --
 if vim.loop.os_uname().sysname == "Windows_NT" then
 	vim.keymap.set("n", "<leader>r", function()
