@@ -14,13 +14,44 @@ vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = tru
 if vim.loop.os_uname().sysname == "Windows_NT" then
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
-		vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+
+		local pause = [[
+			; $ret = $LASTEXITCODE; $end = [datetime]::Now; $duration = $end - $start; $minutes = [int]$duration.TotalMinutes; $seconds = $duration.Seconds; $millis = $duration.Milliseconds; $formatted_time = '{0:00}:{1:00}.{2:000}' -f $minutes, $seconds, $millis; Write-Host "`n`n`n=========================================="; $hexRet = '{0:X}' -f $ret; Write-Host ('Process returned code {0} (0x{1})' -f $ret, $hexRet); Write-Host "Execution time: $formatted_time"; Write-Host "=========================================="; Write-Host -NoNewline "Press any key to continue..."; [void][System.Console]::ReadKey($true)
+		]]
+
+		local isdir = vim.fn.isdirectory("build")
+
+		if isdir ~= 0 then
+			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+		else
+			local compiler = "g++"
+			if vim.api.nvim_buf_get_name(0):match("%.c$") then
+				compiler = "gcc"
+			end
+
+			local src = vim.fn.expand("%")
+			local program = vim.fn.expand("%:t:r")
+
+			vim.fn.system('rg -F "int main(int argc, char** argv" ' .. src)
+			local flag = vim.v.shell_error
+			local args = ""
+
+			if flag == 0 then
+				vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
+			end
+
+			vim.fn.jobstart({
+				"cmd.exe", "/c", "start", "cmd.exe", "/c",
+				[[ pwsh -NoProfile -Command ]] ..
+				compiler .. [[ ]] .. src .. [[ -o ]] .. program ..
+				[[; $success = $?; $start = [datetime]::Now; if($success) { ./]] .. program .. [[ ]] .. args .. [[ }; ]]
+				.. pause
+			}, { detach = true })
+		end
 	end, { noremap = true, silent = true })
 else
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
-
-		local isdir = vim.fn.isdirectory("build")
 
 		local pause = [[
 			;
@@ -40,6 +71,8 @@ else
 			echo -ne "Press any key to continue..."
 			read -n 1 
 		]]
+
+		local isdir = vim.fn.isdirectory("build")
 
 		if isdir ~= 0 then
 			vim.cmd("!ninja -C build")
