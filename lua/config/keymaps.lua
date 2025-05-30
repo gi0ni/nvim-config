@@ -42,7 +42,7 @@ if vim.loop.os_uname().sysname == "Windows_NT" then
 		local isdir = vim.fn.isdirectory("build")
 
 		if isdir ~= 0 then
-			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && (echo. && (for %a in (bin\*.exe) do @call %a)) || (echo. & echo. & pause)" ]])
+			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
 		else
 			local compiler = "g++"
 			if vim.api.nvim_buf_get_name(0):match("%.c$") then
@@ -60,7 +60,7 @@ if vim.loop.os_uname().sysname == "Windows_NT" then
 				vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
 			end
 
-			vim.fn.jobstart([[ start "" /wait cmd /c "]] .. compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[ && (echo. && @call ]] .. program .. [[ ]] .. args .. [[) & (echo. & echo. & pause)" ]])
+			vim.fn.jobstart([[ start "" /wait cmd /c "]] .. compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[ && @call ]] .. program .. [[ ]] .. args .. [[ & (echo. & echo. & pause)" ]])
 		end
 	end, { noremap = true, silent = true })
 else
