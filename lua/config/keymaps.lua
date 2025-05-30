@@ -10,19 +10,39 @@ vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = function() v
 -- search --
 vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = true })
 
+-- generate a default cmakelist --
+
+vim.api.nvim_create_user_command("CmakeList", function()
+	local file = io.open("CMakeLists.txt", "w")
+	if file == nil then return end
+	file:write([[
+cmake_minimum_required(VERSION 3.20)
+
+project(program)
+
+set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+file(GLOB SRCS "src/*.c" "src/*.cpp")
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin")
+add_executable(${PROJECT_NAME} ${SRCS})
+	]])
+	file:close()
+	print("Created default CMakeLists.txt.")
+end, {})
+
 -- build and run --
 if vim.loop.os_uname().sysname == "Windows_NT" then
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
 
-		local pause = [[
-			; $ret = $LASTEXITCODE; $end = [datetime]::Now; $duration = $end - $start; $minutes = [int]$duration.TotalMinutes; $seconds = $duration.Seconds; $millis = $duration.Milliseconds; $formatted_time = '{0:00}:{1:00}.{2:000}' -f $minutes, $seconds, $millis; Write-Host "`n`n`n=========================================="; $hexRet = '{0:X}' -f $ret; Write-Host ('Process returned code {0} (0x{1})' -f $ret, $hexRet); Write-Host "Execution time: $formatted_time"; Write-Host "=========================================="; Write-Host -NoNewline "Press any key to continue..."; [void][System.Console]::ReadKey($true)
-		]]
-
 		local isdir = vim.fn.isdirectory("build")
 
 		if isdir ~= 0 then
-			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && echo. && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && (echo. && (for %a in (bin\*.exe) do @call %a)) || (echo. & echo. & pause)" ]])
 		else
 			local compiler = "g++"
 			if vim.api.nvim_buf_get_name(0):match("%.c$") then
@@ -34,19 +54,13 @@ if vim.loop.os_uname().sysname == "Windows_NT" then
 
 			vim.fn.system('rg -F "int main(int argc, char** argv" ' .. src)
 			local flag = vim.v.shell_error
-			local args = ""
+			local args = "none"
 
 			if flag == 0 then
 				vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
 			end
 
-			vim.fn.jobstart({
-				"cmd.exe", "/c", "start", "cmd.exe", "/c",
-				[[ pwsh -NoProfile -Command ]] ..
-				compiler .. [[ ]] .. src .. [[ -o ]] .. program ..
-				[[; $success = $?; $start = [datetime]::Now; if($success) { ./]] .. program .. [[ ]] .. args .. [[ }; ]]
-				.. pause
-			}, { detach = true })
+			vim.fn.jobstart([[ start "" /wait cmd /c "]] .. compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[ && (echo. && @call ]] .. program .. [[ ]] .. args .. [[) & (echo. & echo. & pause)" ]])
 		end
 	end, { noremap = true, silent = true })
 else
