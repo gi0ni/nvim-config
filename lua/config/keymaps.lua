@@ -88,7 +88,13 @@ else
 
 		local isdir = vim.fn.isdirectory("build")
 
-		if isdir ~= 0 then
+		if vim.api.nvim_buf_get_name(0):match("%.sh$") then
+			local args = ""
+			vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
+			vim.cmd("!chmod u+x %")
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", [[ start=$(date +%s%3N); ./]] .. vim.fn.expand("%") .. " " .. args .. pause })
+			vim.api.nvim_feedkeys("\r", "n", false)
+		elseif isdir ~= 0 then
 			vim.cmd("!ninja -C build")
 			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-c", [[ ./bin/* ]] }, { detach = true })
 			vim.api.nvim_feedkeys("\r", "n", false)
