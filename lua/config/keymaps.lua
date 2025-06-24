@@ -144,15 +144,97 @@ vim.keymap.set("n", "c", "\"_c")
 vim.keymap.set("v", "d", "\"_d")
 vim.keymap.set("v", "c", "\"_c")
 
+-- select all --
+vim.keymap.set('n', '<space>a', 'ggVG')
+
 -- stop clearing selections --
 vim.keymap.set("v", "<space>y", '"+y')
 vim.keymap.set("v", ">", function() vim.cmd("normal! >") vim.cmd("normal! gv") end)
 vim.keymap.set("v", "<", function() vim.cmd("normal! <") vim.cmd("normal! gv") end)
 
 -- autoindent on paste --
-vim.keymap.set("n", "p", function() vim.cmd("normal! p") vim.cmd("normal! `[=`]") end)
-vim.keymap.set("n", "P", function() vim.cmd("normal! P") vim.cmd("normal! `[=`]") end)
-vim.keymap.set("n", "<leader>p", function() vim.cmd('normal! "+p') vim.cmd("normal! `[=`]") end)
+vim.keymap.set({'n', 'v'}, "p", function() vim.cmd("normal! p") vim.cmd("normal! `[=`]") end)
+vim.keymap.set({'n', 'v'}, "P", function() vim.cmd("normal! P") vim.cmd("normal! `[=`]") end)
+vim.keymap.set({'n', 'v'}, "<leader>p", function() vim.cmd('normal! "+p') vim.cmd("normal! `[=`]") end)
 
 -- scoped token rename --
 vim.api.nvim_set_keymap('n', '<leader>gr', '<cmd>lua vim.lsp.buf.rename()<CR>', { noremap = true, silent = true })
+
+vim.api.nvim_create_user_command("Rename", function(opts)
+	local old_name = vim.fn.expand('%')
+	local new_name = vim.fn.fnamemodify(old_name, ":h") .. '/' .. opts.args
+
+	if vim.fn.filereadable(new_name) == 1 then
+		print('File ' .. new_name .. ' already exists')
+		return
+	end
+
+	local ok, err = os.rename(old_name, new_name)
+	if not ok then
+		print('Rename failed: ' .. err)
+		return
+	end
+
+	vim.api.nvim_buf_set_name(vim.api.nvim_get_current_buf(), new_name)
+	vim.cmd('w!')
+end, { nargs = 1, complete = 'file'})
+
+-- better splits --
+vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j', { silent = true })
+vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', { silent = true })
+vim.keymap.set('n', '<leader>c', ':close<CR>', { silent = true })
+vim.keymap.set('t', '<esc>', '<C-\\><C-n>', { silent = true }) -- close terminal; vim.keymap.set defaults to noremap = true
+
+-- navigate splits --
+vim.keymap.set('n', '<leader>h', '<C-w>h', { silent = true })
+vim.keymap.set('n', '<leader>j', '<C-w>j', { silent = true })
+vim.keymap.set('n', '<leader>k', '<C-w>k', { silent = true })
+vim.keymap.set('n', '<leader>l', '<C-w>l', { silent = true })
+vim.keymap.set('n', '<leader>w', '<C-w>r', { silent = true })
+
+-- move splits --
+vim.keymap.set('n', '<leader>H', ':wincmd H<CR>', { silent = true })
+vim.keymap.set('n', '<leader>J', ':wincmd J<CR>', { silent = true })
+vim.keymap.set('n', '<leader>K', ':wincmd K<CR>', { silent = true })
+vim.keymap.set('n', '<leader>L', ':wincmd L<CR>', { silent = true })
+
+-- resize splits --
+vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Up>', ':resize +2<CR>', { silent = true })
+vim.keymap.set('n', '<C-Down>', ':resize -2<CR>', { silent = true })
+
+-- toggle bufferline --
+local bufferline_visible = true
+vim.keymap.set('n', '<leader>bh', function()
+	bufferline_visible = not bufferline_visible
+	if bufferline_visible then
+		vim.o.showtabline = 2
+	else
+		vim.o.showtabline = 0
+	end
+end, {})
+
+-- reload config without restarting nvim --
+vim.api.nvim_create_user_command('Reload', function()
+	local function source_luafiles(path)
+		local scan = vim.loop.fs_scandir(path)
+		if not scan then return end
+
+		while true do
+			local name, t = vim.loop.fs_scandir_next(scan)
+			if not name then break end
+
+			local full_path = path .. '/' .. name
+			if t == 'file' and name:match('%.lua$') and name ~= "lazy.lua" then -- ignore lazy.lua for that one you need to restart neovim
+				vim.cmd('luafile ' .. full_path)
+			elseif t == 'directory' then
+				source_luafiles(full_path)
+			end
+		end
+	end
+
+	local config_path = vim.fn.stdpath('config')
+	source_luafiles(config_path)
+	vim.notify('succesfully sourced all ~/.config/nvim lua files')
+end, {})
