@@ -10,31 +10,7 @@ vim.api.nvim_create_autocmd("FileType", { pattern = "*", callback = function() v
 -- search --
 vim.api.nvim_set_keymap("n", "<esc>", ":noh<cr>", { noremap = true, silent = true })
 
--- generate a default cmakelist --
-
-vim.api.nvim_create_user_command("CmakeList", function()
-	local file = io.open("CMakeLists.txt", "w")
-	if file == nil then return end
-	file:write([[
-cmake_minimum_required(VERSION 3.20)
-
-project(program)
-
-set(CMAKE_C_STANDARD 17)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
-file(GLOB SRCS "src/*.c" "src/*.cpp")
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "../bin")
-add_executable(${PROJECT_NAME} ${SRCS})
-	]])
-	file:close()
-	print("Created default CMakeLists.txt.")
-end, {})
-
--- build and run --
+--========== Build on Windows ==========--
 if vim.loop.os_uname().sysname == "Windows_NT" then
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
@@ -63,13 +39,19 @@ if vim.loop.os_uname().sysname == "Windows_NT" then
 			vim.fn.jobstart([[ start "" /wait cmd /c "]] .. compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[ && @call ]] .. program .. [[ ]] .. args .. [[ & (echo. & echo. & pause)" ]])
 		end
 	end, { noremap = true, silent = true })
+
+--========== Build on Linux ==========--
 else
 	vim.keymap.set("n", "<leader>r", function()
 		vim.cmd("wa")
 
-		local pause = [[
-			;
-			ret=$?
+		--=== template for all ===--
+		local pause_a = [[
+			start=$(date +%s%3N);
+		]]
+		-- compile and run commands go here --
+		local pause_b = [[
+			;ret=$?
 			end=$(date +%s%3N)
 
 			duration_ms=$((end - start))
@@ -86,36 +68,43 @@ else
 			read -n 1 
 		]]
 
-		local isdir = vim.fn.isdirectory("build")
+		--========== cmake ==========--
+		if vim.fn.isdirectory("build") ~= 0 then
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", pause_a .. [[ ninja -C build && (echo; ./bin/*) ]] .. pause_b },
+		                    { detach = true })
 
-		if vim.api.nvim_buf_get_name(0):match("%.sh$") then
+		--========== script ==========--
+		elseif vim.api.nvim_buf_get_name(0):match("%.sh$") then
 			local args = ""
-			vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
-			vim.cmd("!chmod u+x %")
-			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", [[ start=$(date +%s%3N); ./]] .. vim.fn.expand("%") .. " " .. args .. pause })
-			vim.api.nvim_feedkeys("\r", "n", false)
-		elseif isdir ~= 0 then
-			vim.cmd("!ninja -C build")
-			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-c", [[ ./bin/* ]] }, { detach = true })
-			vim.api.nvim_feedkeys("\r", "n", false)
-		else
-			local compiler = "g++"
-			if vim.api.nvim_buf_get_name(0):match("%.c$") then
-				compiler = "gcc"
+			local buff = vim.fn.expand("%")
+			vim.ui.input({ prompt = "Enter Args: " }, function(input) if input then args = input end end)
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", pause_a.."chmod u+x "..buff.."; sh "..buff..args..pause_b },
+			                { detach = true })
+
+		--========== single file c/c++ ==========--
+		elseif vim.api.nvim_buf_get_name(0):match("%.c$") or vim.api.nvim_buf_get_name(0):match("%.cpp$") then
+			local compiler = "gcc"
+			if vim.api.nvim_buf_get_name(0):match("%.cpp$") then
+				compiler = "g++"
 			end
 
 			local src = vim.fn.expand("%")
-			local program = vim.fn.expand("%:t:r")
+			local bin = vim.fn.expand("%:t:r")
 
 			vim.fn.system([[ grep -F 'int main(int argc, char** argv' ]] .. src)
 			local flag = vim.v.shell_error
 			local args = ""
 
 			if flag == 0 then
-				vim.ui.input({prompt = "Enter Args: "}, function(input) if input then args = input end end)
+				vim.ui.input({ prompt = "Enter Args: " }, function(input) if input then args = input end end)
 			end
 
-			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler .. [[ ]] .. src .. [[ -o ]] .. program .. [[; start=$(date +%s%3N); ./]] .. program .. [[ ]] .. args .. pause }, { detach = true })
+			vim.fn.jobstart({ "gnome-terminal", "--", "bash", "-ic", compiler.." "..src.." -o "..bin..";"..pause_a.."./"..bin.." "..args..pause_b },
+			                { detach = true })
+
+		--========== unknown ==========--
+		else
+			vim.notify("failed to run '"..vim.fn.expand("%").."'. unknown file type")
 		end
 	end, { noremap = true, silent = true })
 end
@@ -205,7 +194,7 @@ vim.keymap.set('n', '<C-Up>', ':resize +2<CR>', { silent = true })
 vim.keymap.set('n', '<C-Down>', ':resize -2<CR>', { silent = true })
 
 -- toggle bufferline --
-local bufferline_visible = true
+local bufferline_visible = false
 vim.keymap.set('n', '<leader>bh', function()
 	bufferline_visible = not bufferline_visible
 	if bufferline_visible then
@@ -238,3 +227,32 @@ vim.api.nvim_create_user_command('Reload', function()
 	source_luafiles(config_path)
 	vim.notify('succesfully sourced all ~/.config/nvim lua files')
 end, {})
+
+--===== Find and Replace =====--
+vim.keymap.set('n', '<leader>gg', function()
+	local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
+	vim.api.nvim_feedkeys(':%s//g'..left..left, 'n', false)
+end)
+
+vim.keymap.set('v', '<leader>gg', function()
+	local mode = vim.fn.mode()
+
+	if mode == 'v' then
+		local _, ls, cs = unpack(vim.fn.getpos("'<"))
+		local _,  _, ce = unpack(vim.fn.getpos("'>"))
+
+		if cs > ce then
+			cs, ce = ce, cs
+		end
+
+		vim.notify(ls.." "..cs.." "..ce)
+
+		local selection = string.sub(vim.api.nvim_buf_get_lines(0, ls - 1, ls, false)[0], cs, ce)
+		local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
+		vim.api.nvim_feedkeys(':s/'..selection..'/g'..left..left, 'n', false)
+
+	elseif mode == 'V' then
+		local left = vim.api.nvim_replace_termcodes('<Left>', true, false, true)
+		vim.api.nvim_feedkeys(':s//g'..left..left, 'n', false)
+	end
+end)
