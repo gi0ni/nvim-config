@@ -2,77 +2,113 @@ return
 {
 	-- autopairs --
 	{
-		"windwp/nvim-autopairs",
+		'windwp/nvim-autopairs',
 		opts = {}
 	},
 
 	-- indent lines --
 	{
-		"lukas-reineke/indent-blankline.nvim",
-		main = "ibl",
+		'lukas-reineke/indent-blankline.nvim',
+		main = 'ibl',
+
 		opts = {
-			indent = { char = '|' },
+			indent = {
+				char = '|'
+			},
+
 			scope = {
 				show_start = false,
-				show_end = false,
+				show_end = false
 			}
 		}
 	},
 
 	-- smart semicolon --
 	{
-		"gi0ni/smart-semicolon.nvim",
+		'gi0ni/smart-semicolon.nvim',
 		opts = {}
 	},
 
-	-- tabs --
+	-- tabline --
 	{
-		"akinsho/bufferline.nvim",
-		dependencies = { "nvim-tree/nvim-web-devicons", "ellisonleao/gruvbox.nvim" },
+		'akinsho/bufferline.nvim',
+		dependencies = { 'nvim-tree/nvim-web-devicons', 'ellisonleao/gruvbox.nvim' },
 
 		config = function()
-			require("bufferline").setup({
-				vim.api.nvim_set_keymap("n", "[b", ":BufferLineCyclePrev<cr>", { noremap = true, silent = true }),
-				vim.api.nvim_set_keymap("n", "]b", ":BufferLineCycleNext<cr>", { noremap = true, silent = true }),
-				vim.api.nvim_set_keymap("n", "[B", ":BufferLineMovePrev<cr>",  { noremap = true, silent = true }),
-				vim.api.nvim_set_keymap("n", "]B", ":BufferLineMoveNext<cr>",  { noremap = true, silent = true })
+			require('bufferline').setup({
+				vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { silent = true }),
+				vim.keymap.set('n', ']b', ':BufferLineCycleNext<CR>', { silent = true }),
+				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  { silent = true }),
+				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  { silent = true }),
+
+				options = {
+					offsets = {
+						{
+							filetype = 'NvimTree',
+							text = '',
+							padding = 0,
+							highlight = 'Directory'
+						}
+					}
+				}
 			})
 		end
 	},
 
-	-- easier file management --
+	-- file search --
 	{
-		"nvim-telescope/telescope.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		'nvim-telescope/telescope.nvim',
+		dependencies = { 'nvim-lua/plenary.nvim' },
+
 		opts = {},
 		keys = {
-			{ "<leader>ff", "<cmd>Telescope find_files<cr>", desc = "Find files"   },
-			{ "<leader>fg", "<cmd>Telescope live_grep<cr>",  desc = "Live grep"    },
-			{ "<leader>fb", "<cmd>Telescope buffers<cr>",    desc = "Find buffers" }
+			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
+			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
+			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
 		}
 	},
 
 	-- toggle comments --
 	{
-		"numToStr/Comment.nvim",
+		'numToStr/Comment.nvim',
 		config = function()
-			require("Comment").setup()
-		end,
+			require('Comment').setup()
+		end
 	},
 
-	-- f the mouse --
+	-- search current window --
 	{
-		"folke/flash.nvim",
-		event = "VeryLazy",
+		'folke/flash.nvim',
+		event = 'VeryLazy',
 
 		opts = {},
 		keys = {
-			{ "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
 		}
 	},
 
+	-- statusline --
 	{
-		"nvim-lualine/lualine.nvim",
+		'nvim-lualine/lualine.nvim',
+		opts = {},
+
+		config = function()
+			require('lualine').setup {
+				options = {
+					disabled_filetypes = {
+						statusline = {
+							'NvimTree'
+						}
+					}
+				}
+			}
+		end
+	},
+
+	-- netrw upgrade --
+	{
+		'nvim-tree/nvim-tree.lua',
+		dependencies = { 'nvim-tree/nvim-web-devicons' },
 		opts = {}
 	}
 }

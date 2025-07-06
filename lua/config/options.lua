@@ -2,4 +2,6 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.nu = true
 vim.opt.lazyredraw = true
-vim.opt.showtabline = 0
+
+-- cursor blink --
+vim.opt.guicursor = 'i-ci:ver25-Cursor/lCursor-blinkwait1000-blinkon100-blinkoff100'
