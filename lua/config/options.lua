@@ -3,5 +3,10 @@ vim.opt.shiftwidth = 4
 vim.opt.nu = true
 vim.opt.lazyredraw = true
 
--- cursor blink --
+-- show lsp diagnostics in buffer --
+vim.diagnostic.config({
+	virtual_text = true
+})
+
+-- cursor blink in insert mode --
 vim.opt.guicursor = 'i-ci:ver25-Cursor/lCursor-blinkwait1000-blinkon100-blinkoff100'

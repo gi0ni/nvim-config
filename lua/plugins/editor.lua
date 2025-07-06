@@ -47,7 +47,7 @@ return
 							filetype = 'NvimTree',
 							text = '',
 							padding = 0,
-							highlight = 'Directory'
+							highlight = 'NvimTreeNormal'
 						}
 					}
 				}

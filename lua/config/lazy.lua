@@ -1,4 +1,4 @@
--- check if lazy is installed, if not then install it --
+-- if lazy is not installed then install it --
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 
 if not vim.loop.fs_stat(lazypath) then
@@ -20,6 +20,11 @@ vim.g.maplocalleader = ' '
 
 -- setup lazy --
 require('lazy').setup({
-	spec = { import = 'plugins' },
-	rocks = { enabled = false }
+	spec = {
+		import = 'plugins'
+	},
+
+	rocks = {
+		enabled = false
+	}
 })

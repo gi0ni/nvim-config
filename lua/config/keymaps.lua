@@ -28,7 +28,7 @@ vim.keymap.set('n', 'x', '"_x')
 vim.keymap.set({'n', 'v'}, 'd', '"_d')
 vim.keymap.set({'n', 'v'}, 'c', '"_c')
 
--- select all shortcut --
+-- select all text in buffer --
 vim.keymap.set('n', '<space>a', 'ggVG')
 
 -- stop clearing selection when indenting --
