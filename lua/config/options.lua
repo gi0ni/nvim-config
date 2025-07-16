@@ -2,6 +2,7 @@ vim.opt.tabstop = 4
 vim.opt.shiftwidth = 4
 vim.opt.nu = true
 vim.opt.lazyredraw = true
+vim.opt.fillchars:append({ eob = ' ' })
 
 -- show lsp diagnostics in buffer --
 vim.diagnostic.config({
