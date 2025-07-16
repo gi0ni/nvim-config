@@ -6,6 +6,7 @@ return
 		opts = {}
 	},
 
+	-- some web stuff --
 	{
 		'windwp/nvim-ts-autotag',
 		dependencies = { 'nvim-treesitter/nvim-treesitter' },
@@ -33,6 +34,23 @@ return
 				'typescript'
 			})
 		end
+	},
+
+	-- lazygit integration --
+	{
+		'kdheepak/lazygit.nvim',
+		dependencies = { 'nvim-lua/plenary.nvim' },
+		lazy = true,
+		cmd = {
+			'LazyGit',
+			'LazyGitConfig',
+			'LazyGitCurrentFile',
+			'LazyGitFilter',
+			'LazyGitFilterCurrentFile',
+		},
+		keys = {
+			{ '<leader>gg', '<cmd>LazyGit<CR>' }
+		}
 	},
 
 	-- indent lines --
