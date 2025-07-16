@@ -3,7 +3,7 @@ vim.opt.shiftwidth = 4
 vim.opt.nu = true
 vim.opt.lazyredraw = true
 
--- show lsp diagnostics in buffer --
+-- show lsp diagnostics in bufer --
 vim.diagnostic.config({
 	virtual_text = true
 })
