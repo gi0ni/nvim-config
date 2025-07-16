@@ -6,6 +6,35 @@ return
 		opts = {}
 	},
 
+	{
+		'windwp/nvim-ts-autotag',
+		dependencies = { 'nvim-treesitter/nvim-treesitter' },
+		opts = {},
+	},
+
+	{
+		'nvim-treesitter/nvim-treesitter',
+		opts = {},
+		config = function()
+			require('nvim-treesitter.configs').setup {
+				ensure_installed = { 'html' }
+			}
+		end,
+	},
+
+	{
+		'norcalli/nvim-colorizer.lua',
+		opts = {},
+		config = function()
+			require('colorizer').setup({
+				'html',
+				'css',
+				'javascript',
+				'typescript'
+			})
+		end
+	},
+
 	-- indent lines --
 	{
 		'lukas-reineke/indent-blankline.nvim',

@@ -36,9 +36,16 @@ else
 			read -n 1 
 		]]
 
+		local term_arg_a = 'konsole'
+		local term_arg_b = '-e'
+		if vim.fn.executable('konsole') == 0 then
+			term_arg_a = "gnome-terminal"
+			term_arg_b = '--'
+		end
+
 		--========== cmake ==========--
 		if vim.fn.isdirectory('build') ~= 0 then
-			vim.fn.jobstart({ 'gnome-terminal', '--', 'bash', '-ic', pause_a .. [[ ninja -C build && (echo; ./bin/*) ]] .. pause_b },
+			vim.fn.jobstart({ term_arg_a, term_arg_b, 'bash', '-ic', pause_a .. [[ ninja -C build && (echo; ./bin/*) ]] .. pause_b },
 			                { detach = true })
 
 		--========== script ==========--
@@ -46,7 +53,7 @@ else
 			local args = ''
 			local buff = vim.fn.expand('%')
 			vim.ui.input({ prompt = 'Enter Args: ' }, function(input) if input then args = input end end)
-			vim.fn.jobstart({ 'gnome-terminal', '--', 'bash', '-ic', pause_a..'chmod u+x '..buff..'; sh '..buff..args..pause_b },
+			vim.fn.jobstart({ term_arg_a, term_arg_b, 'bash', '-ic', pause_a..'chmod u+x '..buff..'; sh '..buff..args..pause_b },
 			                { detach = true })
 
 		--========== single file c/c++ ==========--
@@ -67,7 +74,7 @@ else
 				vim.ui.input({ prompt = 'Enter Args: ' }, function(input) if input then args = input end end)
 			end
 
-			vim.fn.jobstart({ 'gnome-terminal', '--', 'bash', '-ic', compiler..' '..src..' -o '..bin..';'..pause_a..'./'..bin..' '..args..pause_b },
+			vim.fn.jobstart({ term_arg_a, term_arg_b, 'bash', '-ic', compiler..' '..src..' -o '..bin..';'..pause_a..'./'..bin..' '..args..pause_b },
 			                { detach = true })
 
 		--========== unknown ==========--
