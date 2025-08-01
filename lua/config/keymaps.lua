@@ -40,7 +40,7 @@ vim.keymap.set('n', '<leader><leader>', function()
 	local col = vim.fn.col('.')
 	local chr = line:sub(col + 1, col + 1)
 
-	if chr ~= '(' then
+	if not string.find('(),', chr, 1, true) then
 		vim.cmd('normal! e')
 	end
 
