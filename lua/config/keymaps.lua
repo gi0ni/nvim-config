@@ -32,7 +32,12 @@ vim.keymap.set({'n', 'v'}, 'P', function() vim.cmd('normal! P') vim.cmd('normal!
 vim.keymap.set({'n', 'v'}, '<leader>p', function() vim.cmd('normal! "+p') vim.cmd('normal! `[=`]') end)
 
 -- scoped token rename
-vim.keymap.set('n', '<leader>gr', ':lua vim.lsp.buf.rename()<CR>', { silent = true })
+vim.keymap.set('n', '<leader>gr', function()
+	vim.lsp.buf.rename()
+	vim.defer_fn(function()
+		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-u>', true, false, true), 'm', false)
+	end, 50)
+end, { silent = true })
 
 -- lsp hover using cmp
 vim.keymap.set('n', '<leader><leader>', function()
