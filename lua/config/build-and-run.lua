@@ -4,7 +4,7 @@ if vim.loop.os_uname().sysname == 'Windows_NT' then
 		vim.cmd('wa')
 
 		if vim.fn.isdirectory('build') ~= 0 then
-			vim.fn.jobstart([[ start "" /wait cmd /c "ninja -C build && (for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+			vim.fn.jobstart([[ start cmd.exe /c "ninja -C build && (echo. & for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
 		else
 			vim.notify('no build directory found')
 		end

@@ -6,21 +6,11 @@ return
 		opts = {}
 	},
 
-	-- some web stuff --
+	-- html autotag --
 	{
 		'windwp/nvim-ts-autotag',
 		dependencies = { 'nvim-treesitter/nvim-treesitter' },
-		opts = {},
-	},
-
-	{
-		'nvim-treesitter/nvim-treesitter',
-		opts = {},
-		config = function()
-			require('nvim-treesitter.configs').setup {
-				ensure_installed = { 'html' }
-			}
-		end,
+		opts = {}
 	},
 
 	{

@@ -22,7 +22,8 @@ return
 			lspconfig.clangd.setup({
 				cmd = {
 					'clangd',
-					'-header-insertion=never'
+					'-header-insertion=never',
+					'--function-arg-placeholders=0'
 				}
 			})
 
@@ -59,16 +60,24 @@ return
 
 			cmp.setup({
 				sources = {
+					{
+						name = 'cmp_gl', -- do NOT remove this. glad headers don't come with documentation!
+						entry_filter = function(_, _)
+							local lines = vim.api.nvim_buf_get_lines(0, 0, 5, false)
+
+							for i = 1, 5 do
+								local current_line = lines[i] or ''
+								if current_line:match('#include <glad/glad.h>') then
+									return true
+								end
+							end
+
+							return false
+						end
+					},
 					{ name = 'nvim_lsp' },
 					{ name = 'nvim_lsp_signature_help' },
-					{ name = 'path' },
-					{
-						name = 'cmp_gl',
-						entry_filter = function(_, _)
-							local first_line = vim.api.nvim_buf_get_lines(0, 0, 1, false)[1] or ''
-							return first_line:match('#include <glad/glad.h>')
-						end
-					}
+					{ name = 'path' }
 				},
 
 				mapping = cmp.mapping.preset.insert({
