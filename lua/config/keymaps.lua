@@ -34,8 +34,27 @@ vim.keymap.set({'n', 'v'}, '<leader>p', function() vim.cmd('normal! "+p') vim.cm
 -- scoped token rename
 vim.keymap.set('n', '<leader>gr', ':lua vim.lsp.buf.rename()<CR>', { silent = true })
 
--- lsp hover
-vim.keymap.set('n', '<leader><leader>', ':lua vim.lsp.buf.hover()<CR>', { silent = true})
+-- lsp hover using cmp
+vim.keymap.set('n', '<leader><leader>', function()
+	local line = vim.fn.getline('.')
+	local col = vim.fn.col('.')
+	local chr = line:sub(col + 1, col + 1)
+
+	if chr ~= '(' then
+		vim.cmd('normal! e')
+	end
+
+	vim.cmd('startinsert')
+	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Right>', true, false, true), 'm', false)
+
+	local cmp = require('cmp')
+	vim.schedule(function()
+		cmp.complete()
+		vim.schedule(function()
+			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Down>', true, false, true), 'm', false)
+		end)
+	end)
+end, { silent = true})
 
 -- split actions
 vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  { silent = true })
