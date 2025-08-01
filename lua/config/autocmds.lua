@@ -1,4 +1,4 @@
--- disable automatic comment insertion on new lines --
+-- disable comment insertion
 vim.api.nvim_create_autocmd('FileType', { pattern = '*', callback = function() vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' }) end })
 
 -- remember cursor position

@@ -1,72 +1,6 @@
 return
 {
-	-- autopairs --
-	{
-		'windwp/nvim-autopairs',
-		opts = {}
-	},
-
-	-- html autotag --
-	{
-		'windwp/nvim-ts-autotag',
-		dependencies = { 'nvim-treesitter/nvim-treesitter' },
-		opts = {}
-	},
-
-	{
-		'norcalli/nvim-colorizer.lua',
-		opts = {},
-		config = function()
-			require('colorizer').setup({
-				'html',
-				'css',
-				'javascript',
-				'typescript'
-			})
-		end
-	},
-
-	-- lazygit integration --
-	{
-		'kdheepak/lazygit.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
-		lazy = true,
-		cmd = {
-			'LazyGit',
-			'LazyGitConfig',
-			'LazyGitCurrentFile',
-			'LazyGitFilter',
-			'LazyGitFilterCurrentFile',
-		},
-		keys = {
-			{ '<leader>gg', '<cmd>LazyGit<CR>' }
-		}
-	},
-
-	-- indent lines --
-	{
-		'lukas-reineke/indent-blankline.nvim',
-		main = 'ibl',
-
-		opts = {
-			indent = {
-				char = '|'
-			},
-
-			scope = {
-				show_start = false,
-				show_end = false
-			}
-		}
-	},
-
-	-- smart semicolon --
-	{
-		'gi0ni/smart-semicolon.nvim',
-		opts = {}
-	},
-
-	-- tabline --
+	-- basic editor utilities
 	{
 		'akinsho/bufferline.nvim',
 		dependencies = { 'nvim-tree/nvim-web-devicons', 'ellisonleao/gruvbox.nvim' },
@@ -92,39 +26,28 @@ return
 		end
 	},
 
-	-- file search --
 	{
-		'nvim-telescope/telescope.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		'nvim-tree/nvim-tree.lua',
+		dependencies = { 'nvim-tree/nvim-web-devicons' },
+		opts = {}
+	},
 
-		opts = {},
-		keys = {
-			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
-			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
-			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
+	{
+		'lukas-reineke/indent-blankline.nvim',
+		main = 'ibl',
+
+		opts = {
+			indent = {
+				char = '|'
+			},
+
+			scope = {
+				show_start = false,
+				show_end   = false
+			}
 		}
 	},
 
-	-- toggle comments --
-	{
-		'numToStr/Comment.nvim',
-		config = function()
-			require('Comment').setup()
-		end
-	},
-
-	-- search current window --
-	{
-		'folke/flash.nvim',
-		event = 'VeryLazy',
-
-		opts = {},
-		keys = {
-			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
-		}
-	},
-
-	-- statusline --
 	{
 		'nvim-lualine/lualine.nvim',
 		opts = {},
@@ -142,10 +65,72 @@ return
 		end
 	},
 
-	-- netrw upgrade --
+
+	-- VERY useful
 	{
-		'nvim-tree/nvim-tree.lua',
-		dependencies = { 'nvim-tree/nvim-web-devicons' },
+		'nvim-telescope/telescope.nvim',
+		dependencies = { 'nvim-lua/plenary.nvim' },
+
+		opts = {},
+		keys = {
+			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
+			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
+			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
+		}
+	},
+
+	{
+		'kdheepak/lazygit.nvim',
+		dependencies = { 'nvim-lua/plenary.nvim' },
+		lazy = true,
+
+		cmd = {
+			'LazyGit',
+			'LazyGitConfig',
+			'LazyGitCurrentFile',
+			'LazyGitFilter',
+			'LazyGitFilterCurrentFile',
+		},
+
+		keys = {
+			{ '<leader>gg', '<cmd>LazyGit<CR>' }
+		}
+	},
+
+
+	-- missing functionality
+	{
+		'windwp/nvim-autopairs',
 		opts = {}
-	}
+	},
+
+	{
+		'windwp/nvim-ts-autotag',
+		dependencies = { 'nvim-treesitter/nvim-treesitter' },
+		opts = {}
+	},
+
+	{
+		'numToStr/Comment.nvim',
+		config = function()
+			require('Comment').setup()
+		end
+	},
+
+
+	-- niche
+	{
+		'gi0ni/smart-semicolon.nvim',
+		opts = {}
+	},
+
+	{
+		'folke/flash.nvim',
+		event = 'VeryLazy',
+
+		opts = {},
+		keys = {
+			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
+		}
+	},
 }

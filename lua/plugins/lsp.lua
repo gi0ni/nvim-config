@@ -1,6 +1,6 @@
 return
 {
-	-- linting files for errors --
+	-- linter
 	{
 		'neovim/nvim-lspconfig',
 
@@ -51,7 +51,8 @@ return
 		opts = {}
 	},
 
-	-- show autocomplete suggestions --
+
+	-- autocomplete suggestions
 	{
 		'hrsh7th/nvim-cmp',
 
@@ -61,7 +62,7 @@ return
 			cmp.setup({
 				sources = {
 					{
-						name = 'cmp_gl', -- do NOT remove this. glad headers don't come with documentation!
+						name = 'cmp_gl', -- glad headers don't come with docs for some reason
 						entry_filter = function(_, _)
 							local lines = vim.api.nvim_buf_get_lines(0, 0, 5, false)
 

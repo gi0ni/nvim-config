@@ -9,7 +9,7 @@ return
 				vim.cmd('colorscheme gruvbox'),
 
 				vim.api.nvim_set_hl(0, '@function', { fg = '#fe8019' }),
-				vim.api.nvim_set_hl(0, '@method', { fg = '#fe8019' })
+				vim.api.nvim_set_hl(0, '@method',   { fg = '#fe8019' })
 			})
 		end
 	},
@@ -18,8 +18,10 @@ return
 		'nvim-treesitter/nvim-treesitter',
 		opts = {
 			highlight = {
-				enable = true
+				enable = true,
+				disable = 'lua', 'html'
 			},
+
 			ensure_installed = {
 				'html', 'glsl'
 			}
@@ -35,9 +37,9 @@ return
 				}
 			})
 
-			vim.api.nvim_set_hl(0, '@core_token', { fg = '#8ec07c' })
-			vim.api.nvim_set_hl(0, '@constant.glsl', { fg = '#8ec07c' })
+			vim.api.nvim_set_hl(0, '@core_token',         { fg = '#8ec07c' })
+			vim.api.nvim_set_hl(0, '@constant.glsl',      { fg = '#8ec07c' })
 			vim.api.nvim_set_hl(0, '@function.call.glsl', { fg = '#fe8019' })
 		end
-	},
+	}
 }
