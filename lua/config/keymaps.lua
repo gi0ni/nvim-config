@@ -6,10 +6,9 @@ vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
 -- clear search results
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { silent = true })
 
--- indent blank lines
-vim.keymap.set('n', 'a',      'a<C-f>',      { silent = true })
-vim.keymap.set('i', '<Up>',   '<Up><C-f>',   { silent = true })
-vim.keymap.set('i', '<Down>', '<Down><C-f>', { silent = true })
+-- shift selection up and down
+vim.keymap.set('v', 'j', "xkP'[V']=gv")
+vim.keymap.set('v', 'k', "xjP'[V']=gv")
 
 -- stop overwriting yank register
 vim.keymap.set( 'n',       'x', '"_x')
@@ -33,11 +32,23 @@ vim.keymap.set({'n', 'v'}, '<leader>p', function() vim.cmd('normal! "+p') vim.cm
 
 -- scoped token rename
 vim.keymap.set('n', '<leader>gr', function()
+	local cmdId
+	cmdId = vim.api.nvim_create_autocmd({ 'CmdlineEnter' }, {
+		callback = function()
+			local key = vim.api.nvim_replace_termcodes('<C-f>', true, false, true)
+			vim.api.nvim_feedkeys(key, 'c', false)
+			vim.api.nvim_feedkeys('0', 'n', false)
+			cmdId = nil
+			return true
+		end
+	})
 	vim.lsp.buf.rename()
 	vim.defer_fn(function()
-		vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<C-u>', true, false, true), 'm', false)
-	end, 50)
-end, { silent = true })
+		if cmdId then
+			vim.api.nvim_del_autocmd(cmdId)
+		end
+	end, 500)
+end)
 
 -- lsp hover using cmp
 vim.keymap.set('n', '<leader><leader>', function()
@@ -65,6 +76,14 @@ end, { silent = true})
 vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  { silent = true })
 vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', { silent = true })
 vim.keymap.set('n', '<leader>c', ':close<CR>',        { silent = true })
+
+-- open terminal split
+vim.keymap.set('n', '<leader>t', function()
+	vim.cmd('split')
+	vim.cmd('wincmd j')
+	vim.cmd('term')
+	vim.cmd('normal! a')
+end, { silent = true })
 
 -- exit terminal mode
 vim.keymap.set('t', '<esc>', '<C-\\><C-n>', { silent = true })

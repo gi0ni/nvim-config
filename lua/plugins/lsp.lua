@@ -38,7 +38,10 @@ return
 		opts = {
 			ensure_installed = {
 				'lua_ls',
+				'pylsp',
+
 				'clangd',
+
 				'html',
 				'cssls',
 				'ts_ls'

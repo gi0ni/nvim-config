@@ -1,13 +1,16 @@
 --========== Build on Windows ==========--
 if vim.loop.os_uname().sysname == 'Windows_NT' then
-	vim.keymap.set('n', '<leader>r', function()
-		vim.cmd('wa')
+		vim.keymap.set('n', '<leader>r', function()
+			vim.cmd('wa')
 
-		if vim.fn.isdirectory('build') ~= 0 then
-			vim.fn.jobstart([[ start cmd.exe /c "ninja -C build && (echo. & for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
-		else
-			vim.notify('no build directory found')
-		end
+			--========== cmake ==========--
+			if vim.api.nvim_buf_get_name(0):match('%.py$') then
+				vim.fn.jobstart([[ start cmd.exe /c "python ]]..vim.fn.expand('%')..[[ & (echo. & echo. & pause)" ]])
+			elseif vim.fn.isdirectory('build') then
+				vim.fn.jobstart([[ start cmd.exe /c "ninja -C build && (echo. & for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+			else
+				vim.notify("failed to run '"..vim.fn.expand('%').."'. unknown file type")
+			end
 	end, { silent = true })
 
 --========== Build on Linux ==========--
