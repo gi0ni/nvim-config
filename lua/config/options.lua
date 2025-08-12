@@ -1,5 +1,6 @@
 vim.opt.nu = true
 vim.diagnostic.config({ virtual_text = true })
+vim.opt.signcolumn = "no"
 
 vim.opt.tabstop    = 4
 vim.opt.shiftwidth = 4

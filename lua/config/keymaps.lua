@@ -7,8 +7,11 @@ vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { silent = true })
 
 -- shift selection up and down
-vim.keymap.set('v', 'j', "xkP'[V']=gv")
-vim.keymap.set('v', 'k', "xjP'[V']=gv")
+vim.keymap.set('v', 'j', ":move '>+1<CR>gv=gv", { silent = true })
+vim.keymap.set('v', 'k', ":move '<-2<CR>gv=gv", { silent = true })
+
+-- show all diagnostics
+vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', { silent = true })
 
 -- stop overwriting yank register
 vim.keymap.set( 'n',       'x', '"_x')
@@ -29,6 +32,21 @@ vim.keymap.set('v', '<space>y', '"+y')
 vim.keymap.set({'n', 'v'}, 'p', function() vim.cmd('normal! p') vim.cmd('normal! `[=`]') end)
 vim.keymap.set({'n', 'v'}, 'P', function() vim.cmd('normal! P') vim.cmd('normal! `[=`]') end)
 vim.keymap.set({'n', 'v'}, '<leader>p', function() vim.cmd('normal! "+p') vim.cmd('normal! `[=`]') end)
+
+-- experimental
+vim.keymap.set('n', '<C-f>', '<Up>zz');
+vim.keymap.set('n', '<C-b>', '<Down>zz');
+
+vim.keymap.set('n', ';', ':')
+vim.keymap.set('c', ';', '<CR>')
+
+-- lsp keymaps
+vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition)
+vim.keymap.set('n', '<leader>gD', vim.lsp.buf.declaration)
+vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation)
+vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references)
+vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
+vim.keymap.set('n', '<leader>k',  vim.lsp.buf.hover)
 
 -- scoped token rename
 vim.keymap.set('n', '<leader>gr', function()
@@ -81,19 +99,19 @@ vim.keymap.set('n', '<leader>c', ':close<CR>',        { silent = true })
 vim.keymap.set('n', '<leader>t', function()
 	vim.cmd('split')
 	vim.cmd('wincmd j')
-	vim.cmd('term')
+	vim.cmd('term pwsh')
 	vim.cmd('normal! a')
 end, { silent = true })
 
 -- exit terminal mode
-vim.keymap.set('t', '<esc>', '<C-\\><C-n>', { silent = true })
+vim.keymap.set('t', '<esc>', '<C-\\><C-n>')
 
 -- split navigation
-vim.keymap.set('n', '<leader>h', '<C-w>h', { silent = true })
-vim.keymap.set('n', '<leader>j', '<C-w>j', { silent = true })
-vim.keymap.set('n', '<leader>k', '<C-w>k', { silent = true })
-vim.keymap.set('n', '<leader>l', '<C-w>l', { silent = true })
-vim.keymap.set('n', '<leader>w', '<C-w>r', { silent = true })
+vim.keymap.set('n', '<leader>h', '<C-w>h')
+vim.keymap.set('n', '<leader>j', '<C-w>j')
+vim.keymap.set('n', '<leader>k', '<C-w>k')
+vim.keymap.set('n', '<leader>l', '<C-w>l')
+vim.keymap.set('n', '<leader>w', '<C-w>r')
 
 -- split organization
 vim.keymap.set('n', '<leader>H', ':wincmd H<CR>', { silent = true })

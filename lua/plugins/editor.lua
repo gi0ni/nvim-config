@@ -74,8 +74,8 @@ return
 		opts = {},
 		keys = {
 			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
-			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
-			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
+			{ '<leader>fg', '<cmd>Telescope live_grep<CR>'  },
+			{ '<leader>fb', '<cmd>Telescope buffers<CR>'    }
 		}
 	},
 
@@ -120,6 +120,15 @@ return
 
 	-- niche
 	{
+		'max397574/better-escape.nvim',
+		config = function()
+			require('better_escape').setup {
+				timeout = 150
+			}
+		end
+	},
+
+	{
 		'gi0ni/smart-semicolon.nvim',
 		opts = {}
 	},
@@ -128,7 +137,13 @@ return
 		'folke/flash.nvim',
 		event = 'VeryLazy',
 
-		opts = {},
+		opts = {
+			modes = {
+				char = {
+					enabled = false
+				}
+			}
+		},
 		keys = {
 			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
 		}
