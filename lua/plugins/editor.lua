@@ -12,7 +12,19 @@ return
 				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  { silent = true }),
 				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  { silent = true }),
 
+				vim.keymap.set('n', '<leader>1', ':lua require("bufferline").go_to( 1, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>2', ':lua require("bufferline").go_to( 2, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>3', ':lua require("bufferline").go_to( 3, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>4', ':lua require("bufferline").go_to( 4, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>5', ':lua require("bufferline").go_to( 5, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>6', ':lua require("bufferline").go_to( 6, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>7', ':lua require("bufferline").go_to( 7, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>8', ':lua require("bufferline").go_to( 8, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>9', ':lua require("bufferline").go_to( 9, true)<CR>', { silent = true }),
+				vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', { silent = true }),
+
 				options = {
+					numbers = 'none',
 					offsets = {
 						{
 							filetype = 'NvimTree',
@@ -29,11 +41,18 @@ return
 	{
 		'nvim-tree/nvim-tree.lua',
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
-		opts = {
-			renderer = {
-				root_folder_label = ':~'
-			}
-		}
+
+		config = function()
+			require('nvim-tree').setup({
+				update_focused_file = {
+					update_cwd = false
+				},
+
+				renderer = {
+					root_folder_label = ':~'
+				}
+			})
+		end
 	},
 
 	{
@@ -97,7 +116,7 @@ return
 		},
 
 		keys = {
-			{ '<leader>gg', '<cmd>LazyGit<CR>' }
+			{ '<leader>gh', '<cmd>LazyGit<CR>' }
 		}
 	},
 

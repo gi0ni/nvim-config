@@ -7,8 +7,8 @@ vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
 vim.keymap.set('n', '<Esc>', ':noh<CR>', { silent = true })
 
 -- shift selection up and down
-vim.keymap.set('v', 'j', ":move '>+1<CR>gv=gv", { silent = true })
-vim.keymap.set('v', 'k', ":move '<-2<CR>gv=gv", { silent = true })
+vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv", { silent = true })
+vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", { silent = true })
 
 -- show all diagnostics
 vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', { silent = true })
@@ -69,7 +69,7 @@ vim.keymap.set('n', '<leader>gr', function()
 end)
 
 -- lsp hover using cmp
-vim.keymap.set('n', '<leader><leader>', function()
+vim.keymap.set('n', '<leader>K', function()
 	local line = vim.fn.getline('.')
 	local col = vim.fn.col('.')
 	local chr = line:sub(col + 1, col + 1)
