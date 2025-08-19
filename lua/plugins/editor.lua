@@ -110,7 +110,7 @@ return
 		},
 
 		keys = {
-			{ '<leader>gh', '<cmd>LazyGit<CR>' }
+			{ '<leader>gg', '<cmd>LazyGit<CR>' }
 		}
 	},
 

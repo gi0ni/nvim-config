@@ -4,10 +4,10 @@ require('config.build-and-run')
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
 
 -- clear search results
-vim.keymap.set('n', '<CR>', ':noh<CR>', { silent = true })
+vim.keymap.set('n', '<Esc>', ':noh<CR>', { silent = true })
 
 -- exit terminal mode
-vim.keymap.set('t', '<esc>', '<C-\\><C-n>')
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
 
 -- scroll
 vim.keymap.set('n', '<C-f>', '<Up>zz');
