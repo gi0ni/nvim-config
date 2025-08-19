@@ -25,7 +25,7 @@ return
 				}
 			})
 
-			for i = 1, 10 do
+			for i = 1, 9 do
 				vim.keymap.set('n', '<leader>' .. i, ':lua require("bufferline").go_to( ' .. i .. ', true)<CR>', { silent = true })
 			end
 			vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', { silent = true })
