@@ -8,7 +8,7 @@ vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function(
 vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
-		if vim.bo.filetype == '' or vim.bo.filetype == 'text' then -- do not insert ^F in empty, terminal or text buffers
+		if vim.bo.filetype == '' or vim.bo.filetype == 'text' or vim.bo.filetype == 'NvimTree' then -- these filetypes have issues
 			return
 		end
 
