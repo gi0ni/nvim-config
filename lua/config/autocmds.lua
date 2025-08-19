@@ -2,9 +2,14 @@
 vim.api.nvim_create_autocmd('FileType', { pattern = '*', callback = function() vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' }) end })
 
 -- indent blank lines
-vim.api.nvim_create_autocmd('LspAttach', {
+vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
+		-- <C-f> does not work in empty and terminal buffers. it just inserts ^F. don't do that
+		if vim.bo.filetype == '' then
+			return
+		end
+
 		vim.keymap.set('n', 'a', function()
 			return vim.fn.getline('.'):match('^%s*$') and 'a<C-f>' or 'a'
 		end, { expr = true, silent = true, buffer = args.buf })
