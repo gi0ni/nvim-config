@@ -1,12 +1,14 @@
 -- disable comment insertion
 vim.api.nvim_create_autocmd('FileType', { pattern = '*', callback = function() vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' }) end })
 
+-- remember cursor position
+vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function() vim.cmd('normal! `"zz') end })
+
 -- indent blank lines
 vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
-		-- <C-f> does not work in empty and terminal buffers. it just inserts ^F. don't do that
-		if vim.bo.filetype == '' then
+		if vim.bo.filetype == '' then -- do not insert ^F in empty or terminal buffers
 			return
 		end
 
@@ -23,6 +25,3 @@ vim.api.nvim_create_autocmd('BufEnter', {
 		end, { expr = true, silent = true, buffer = args.buf })
 	end
 })
-
--- remember cursor position
-vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function() vim.cmd('normal! `"zz') end })

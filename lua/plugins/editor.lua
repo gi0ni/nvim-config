@@ -12,17 +12,6 @@ return
 				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  { silent = true }),
 				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  { silent = true }),
 
-				vim.keymap.set('n', '<leader>1', ':lua require("bufferline").go_to( 1, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>2', ':lua require("bufferline").go_to( 2, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>3', ':lua require("bufferline").go_to( 3, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>4', ':lua require("bufferline").go_to( 4, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>5', ':lua require("bufferline").go_to( 5, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>6', ':lua require("bufferline").go_to( 6, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>7', ':lua require("bufferline").go_to( 7, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>8', ':lua require("bufferline").go_to( 8, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>9', ':lua require("bufferline").go_to( 9, true)<CR>', { silent = true }),
-				vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', { silent = true }),
-
 				options = {
 					numbers = 'none',
 					offsets = {
@@ -35,6 +24,11 @@ return
 					}
 				}
 			})
+
+			for i = 1, 10 do
+				vim.keymap.set('n', '<leader>' .. i, ':lua require("bufferline").go_to( ' .. i .. ', true)<CR>', { silent = true })
+			end
+			vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', { silent = true })
 		end
 	},
 
@@ -89,7 +83,7 @@ return
 	},
 
 
-	-- VERY useful
+	-- convinience
 	{
 		'nvim-telescope/telescope.nvim',
 		dependencies = { 'nvim-lua/plenary.nvim' },
@@ -120,11 +114,13 @@ return
 		}
 	},
 
-
-	-- missing functionality
 	{
 		'windwp/nvim-autopairs',
 		opts = {}
+	},
+
+	{
+		'tpope/vim-surround'
 	},
 
 	{
@@ -152,7 +148,7 @@ return
 	},
 
 	{
-		'gi0ni/smart-semicolon.nvim',
+		'iagotito/smart-semicolon.nvim',
 		opts = {}
 	},
 
@@ -167,6 +163,7 @@ return
 				}
 			}
 		},
+
 		keys = {
 			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
 		}

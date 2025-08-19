@@ -13,9 +13,6 @@ return
 			})
 
 			vim.cmd('colorscheme gruvbox')
-
-			-- vim.api.nvim_set_hl(0, '@function', { fg = '#fe8019' })
-			-- vim.api.nvim_set_hl(0, '@method',   { fg = '#fe8019' })
 		end
 	},
 

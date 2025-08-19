@@ -55,7 +55,7 @@ return
 	},
 
 
-	-- autocomplete suggestions
+	-- complete suggestions
 	{
 		'hrsh7th/nvim-cmp',
 
