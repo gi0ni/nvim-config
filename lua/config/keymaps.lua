@@ -1,10 +1,11 @@
 require('config.build-and-run')
+local opt = { silent = true }
 
 -- toggle file explorer
-vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', { silent = true })
+vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', opt)
 
 -- clear search results
-vim.keymap.set('n', '<Esc>', ':noh<CR>', { silent = true })
+vim.keymap.set('n', '<Esc>', ':noh<CR>', opt)
 
 -- exit terminal mode
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
@@ -16,8 +17,8 @@ vim.keymap.set('n', '<C-b>', '<Down>zz');
 -- shift in any direction
 vim.keymap.set('v', '>', function() vim.cmd('normal! >') vim.cmd('normal! gv') end)
 vim.keymap.set('v', '<', function() vim.cmd('normal! <') vim.cmd('normal! gv') end)
-vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv", { silent = true })
-vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", { silent = true })
+vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv", opt)
+vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", opt)
 
 -- yank and put
 vim.keymap.set( 'n',       'x', '"_x')
@@ -39,7 +40,7 @@ vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
 vim.keymap.set('n', '<leader>K',  vim.lsp.buf.hover)
 
 -- search diagnostics
-vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', { silent = true })
+vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', opt)
 
 -- scoped token rename
 vim.keymap.set('n', '<leader>gr', function()
@@ -85,15 +86,15 @@ end, { silent = true})
 
 
 --======================================== splits ========================================--
-vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  { silent = true })
-vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', { silent = true })
-vim.keymap.set('n', '<leader>c', ':close<CR>',        { silent = true })
+vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  opt)
+vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', opt)
+vim.keymap.set('n', '<leader>c', ':close<CR>',        opt)
 
 -- quick terminal split
 vim.keymap.set('n', '<leader>t', function()
 	vim.cmd('split | wincmd j | resize 7 | term pwsh')
 	vim.cmd('normal! a')
-end, { silent = true })
+end, opt)
 
 -- focus 
 vim.keymap.set('n', '<leader>h', '<C-w>h')
@@ -103,13 +104,13 @@ vim.keymap.set('n', '<leader>l', '<C-w>l')
 vim.keymap.set('n', '<leader>w', '<C-w>r')
 
 -- move
-vim.keymap.set('n', '<leader>H', ':wincmd H<CR>', { silent = true })
-vim.keymap.set('n', '<leader>J', ':wincmd J<CR>', { silent = true })
-vim.keymap.set('n', '<leader>K', ':wincmd K<CR>', { silent = true })
-vim.keymap.set('n', '<leader>L', ':wincmd L<CR>', { silent = true })
+vim.keymap.set('n', '<leader>H', ':wincmd H<CR>', opt)
+vim.keymap.set('n', '<leader>J', ':wincmd J<CR>', opt)
+vim.keymap.set('n', '<leader>K', ':wincmd K<CR>', opt)
+vim.keymap.set('n', '<leader>L', ':wincmd L<CR>', opt)
 
 -- resize
-vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', { silent = true })
-vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', { silent = true })
-vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          { silent = true })
-vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          { silent = true })
+vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', opt)
+vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', opt)
+vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          opt)
+vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          opt)
