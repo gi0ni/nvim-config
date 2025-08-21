@@ -62,6 +62,7 @@ return
 				vim.cmd('wincmd L')
 
 				vim.api.nvim_feedkeys('S', 'c', false)
+				vim.cmd([[ silent !pwsh -Command "& /scripts/minimize_window.ps1" ]])
 			end
 
 			dap.listeners.before.event_terminated.dapui_config = function()
@@ -81,7 +82,6 @@ return
 			-- highlight lines with breakpoints. no pesky signcolumn needed
 			vim.api.nvim_set_hl(0, 'DapBreakpointLine', { bg = '#fb4934', fg = '#ebdbb2' })
 			vim.fn.sign_define('DapBreakpoint', {
-				text = 'B',
 				linehl = 'DapBreakpointLine',
 				numhl  = 'DapBreakpointLine'
 			})
