@@ -38,6 +38,7 @@ vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation)
 vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references)
 vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
 vim.keymap.set('n', '<leader>K',  vim.lsp.buf.hover)
+vim.keymap.set('n', '<leader>o',  ':lua vim.diagnostic.open_float()<CR>', opt)
 
 -- search diagnostics
 vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', opt)
