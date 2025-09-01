@@ -46,6 +46,7 @@ return
 	{
 		'mason-org/mason-lspconfig.nvim',
 		dependencies = { 'mason-org/mason.nvim', 'neovim/nvim-lspconfig' },
+		priority = 100,
 
 		opts = {
 			ensure_installed = {
