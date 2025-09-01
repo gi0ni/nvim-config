@@ -29,3 +29,13 @@ vim.api.nvim_create_autocmd('BufEnter', {
 		end, { expr = true, silent = true, buffer = args.buf })
 	end
 })
+
+-- autosave for rust
+vim.api.nvim_create_autocmd({ "InsertLeave", "TextChanged" }, {
+	pattern = '*.rs',
+	callback = function()
+		if #vim.api.nvim_buf_get_name(0) ~= 0 and vim.bo.buflisted then
+			vim.cmd('silent w')
+		end
+	end
+})

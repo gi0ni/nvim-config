@@ -1,8 +1,12 @@
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
+	-- rust
+	if vim.fn.filereadable('Cargo.toml') then
+		vim.fn.jobstart([[ start cmd.exe /c "cargo build && (echo. & for %a in (target\debug\*.exe) do @call %a) & (echo. & echo. & echo Process exited with code %ERRORLEVEL%. & pause)" ]])
+
 	-- python
-	if vim.api.nvim_buf_get_name(0):match('%.py$') then
+	elseif vim.api.nvim_buf_get_name(0):match('%.py$') then
 		vim.fn.jobstart([[ start cmd.exe /c "python ]] .. vim.fn.expand('%') .. [[ & (echo. & echo. & pause)" ]])
 
 	-- cmake
