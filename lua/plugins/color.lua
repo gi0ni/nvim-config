@@ -1,19 +1,15 @@
 return
 {
 	{
-		'ellisonleao/gruvbox.nvim',
+		"neanias/everforest-nvim",
 		priority = 1000,
 
 		config = function()
-			require('gruvbox').setup({
-				overrides = {
-					['@function'] = { fg = '#fe8019' },
-					['@method'  ] = { fg = '#fe8019' }
-				}
+			require("everforest").setup({
+				background = 'hard',
 			})
-
-			vim.cmd('colorscheme gruvbox')
-		end
+			vim.cmd('colorscheme everforest')
+		end,
 	},
 
 	{
@@ -39,9 +35,8 @@ return
 				}
 			})
 
-			vim.api.nvim_set_hl(0, '@core_token',         { fg = '#8ec07c' })
-			vim.api.nvim_set_hl(0, '@constant.glsl',      { fg = '#8ec07c' })
-			vim.api.nvim_set_hl(0, '@function.call.glsl', { fg = '#fe8019' })
+			vim.api.nvim_set_hl(0, '@core_token',         { link = '@keyword.directive.glsl' })
+			vim.api.nvim_set_hl(0, '@function.call.glsl', { link = '@function.glsl' })
 		end
 	}
 }
