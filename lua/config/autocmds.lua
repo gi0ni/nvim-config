@@ -8,8 +8,12 @@ vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function(
 vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
-		if vim.bo.filetype == '' or vim.bo.filetype == 'text' or vim.bo.filetype == 'NvimTree' or vim.bo.filetype == 'asm' then -- these filetypes have issues
-			return
+		local blacklist = { '', 'text', 'NvimTree', 'asm', 's' }
+
+		for _, item in pairs(blacklist) do
+			if vim.bo.filetype == item then
+				return
+			end
 		end
 
 		vim.keymap.set('n', 'a', function()
