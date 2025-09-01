@@ -27,6 +27,18 @@ return
 				}
 			})
 
+			lspconfig.rust_analyzer.setup({
+				settings = {
+					['rust-analyzer'] = {
+						completion = {
+							callable = {
+								snippets = "add_parentheses" -- no placeholder args
+							}
+						}
+					}
+				}
+			})
+
 			vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end
 	},
