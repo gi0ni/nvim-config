@@ -3,7 +3,7 @@ return
 	-- basic editor utilities
 	{
 		'akinsho/bufferline.nvim',
-		dependencies = { 'nvim-tree/nvim-web-devicons', 'ellisonleao/gruvbox.nvim' },
+		dependencies = { 'nvim-tree/nvim-web-devicons' },
 
 		config = function()
 			require('bufferline').setup({
