@@ -41,6 +41,7 @@ return
 				'pylsp',
 
 				'clangd',
+				'rust_analyzer',
 
 				'html',
 				'cssls',
