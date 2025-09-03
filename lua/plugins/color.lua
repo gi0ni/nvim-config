@@ -10,6 +10,7 @@ return
 			})
 			vim.cmd('colorscheme everforest')
 			vim.api.nvim_set_hl(0, "ErrorMsg", { bold = true, fg = '#e67e80' })
+			vim.api.nvim_set_hl(0, 'cDefine',  { link = 'Include' })
 		end,
 	},
 
