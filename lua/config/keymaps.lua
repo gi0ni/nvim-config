@@ -11,8 +11,8 @@ vim.keymap.set('n', '<Esc>', ':noh<CR>', opt)
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
 
 -- scroll
-vim.keymap.set('n', '<C-f>', '<Up>zz');
-vim.keymap.set('n', '<C-b>', '<Down>zz');
+vim.keymap.set({ 'n', 'v' }, '<C-f>', '<Up>zz');
+vim.keymap.set({ 'n', 'v' }, '<C-b>', '<Down>zz');
 
 -- shift in any direction
 vim.keymap.set('v', '>', '>gv')
