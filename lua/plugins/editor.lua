@@ -80,6 +80,15 @@ return
 							'NvimTree'
 						}
 					}
+				},
+
+				sections = {
+					lualine_a = {
+						{
+							'mode',
+							padding = { left = 3, right = 3 }
+						}
+					}
 				}
 			}
 		end
