@@ -89,7 +89,7 @@ vim.keymap.set('n', '<leader>c', ':close<CR>',        opt)
 
 -- quick terminal split
 vim.keymap.set('n', '<leader>t', function()
-	vim.cmd('split | wincmd j | resize 7 | term pwsh')
+	vim.cmd('split | wincmd j | resize 7 | term pwsh -nologo')
 	vim.cmd('normal! a')
 end, opt)
 
