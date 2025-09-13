@@ -1,26 +1,82 @@
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
-	--  NOTE: If you want to print error codes as well in the future do yourself a favor and use powershell
-
-	-- rust
-	if vim.fn.filereadable('Cargo.toml') == 1 then
-		vim.fn.jobstart([[ start cmd.exe /c "cargo build && (echo. & for %a in (target\debug\*.exe) do @call %a) & (echo. & echo. & pause)" ]])
-
-	-- python
-	elseif vim.api.nvim_buf_get_name(0):match('%.py$') then
-		vim.fn.jobstart([[ start cmd.exe /c "python ]] .. vim.fn.expand('%') .. [[ & (echo. & echo. & pause)" ]])
-
-	-- js
-	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
-		vim.fn.jobstart([[ start cmd.exe /c "node ]] .. vim.fn.expand('%') .. [[ & (echo. & echo. & pause)" ]])
+	local file = vim.fn.expand('%')
 
 	-- cmake
-	elseif vim.fn.isdirectory('build') ~= 0 then
-		vim.fn.jobstart([[ start cmd.exe /c "ninja -C build && (echo. & for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
+    if vim.fn.isdirectory('build') ~= 0 then
+		Launch("ninja -C build", "bin")
+
+	-- rust
+	elseif vim.fn.filereadable('Cargo.toml') == 1 then
+		Launch("cargo build", "target/debug")
+
+	-- python
+	elseif vim.bo.filetype == "python" then
+		Launch("python", file)
+
+	-- javascript
+	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
+		Launch("node", file)
 
 	-- unknown
 	else
-		vim.notify("failed to run '" .. vim.fn.expand('%') .. "'. unknown file type")
+		vim.notify("failed to run '" .. file .. "'. unknown file type")
 	end
-end, { silent = true })
+end)
+
+-- this is terrible :D
+function Launch(build, run)
+	local compiler = (build ~= "python" and build ~= "node")
+
+	if compiler then
+		-- add compile command
+		build = string.format([[
+			%s
+			Write-Host ''
+		]], build)
+
+		-- deduct executable path
+		local cwd     = vim.fn.getcwd()
+		local program = vim.fn.fnamemodify(cwd, ":t")
+
+		run = string.format([[
+			& %s/%s.exe
+		]], run, program)
+	else
+		run = build .. " " .. run
+		build = "cmd /c exit 0"
+	end
+
+	local command = string.format([[
+		<# build #>
+		%s
+
+		<# run #>
+		$timer = [System.Diagnostics.Stopwatch]::new()
+
+		if($LastExitCode -eq 0) {
+			$timer.Start()
+			%s
+		}
+
+		<# error code #>
+		Write-Host ''
+		Write-Host ''
+		Write-Host ''
+		Write-Host -NoNewLine ('Process returned code {0} (0x{1})' -f $LASTEXITCODE, ($LASTEXITCODE).ToString('X').PadLeft(8, '0'))
+
+		<# time #>
+		$timer.Stop()
+		$minutes      = $timer.Elapsed.Minutes
+		$seconds      = $timer.Elapsed.Seconds
+		$milliseconds = $timer.Elapsed.Milliseconds
+		Write-Host (' in {0:d2}:{1:d2}.{2:d3} seconds' -f $minutes, $seconds, $milliseconds)
+
+		<# pause #>
+		Write-Host -NoNewLine 'Press any key to continue...'
+		$null = $Host.UI.RawUI.ReadKey('NoEcho, IncludeKeyDown')
+	]], build, run):gsub("[\n\t]+", "\\;")
+
+	vim.fn.jobstart([[ wt -p "PowerShell" --startingDirectory "." pwsh -c "]] .. command .. [["]])
+end
