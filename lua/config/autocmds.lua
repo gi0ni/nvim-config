@@ -8,7 +8,7 @@ vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function(
 vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
-		local blacklist = { '', 'text', 'NvimTree', 'asm', 's' }
+		local blacklist = { '', 'text', 'NvimTree', 'asm', 's', 'ps1' }
 
 		for _, item in pairs(blacklist) do
 			if vim.bo.filetype == item then
