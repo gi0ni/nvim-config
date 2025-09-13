@@ -9,6 +9,10 @@ vim.keymap.set('n', '<leader>r', function()
 	elseif vim.api.nvim_buf_get_name(0):match('%.py$') then
 		vim.fn.jobstart([[ start cmd.exe /c "python ]] .. vim.fn.expand('%') .. [[ & (echo. & echo. & pause)" ]])
 
+	-- js
+	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
+		vim.fn.jobstart([[ start cmd.exe /c "node ]] .. vim.fn.expand('%') .. [[ & (echo. & echo. & pause)" ]])
+
 	-- cmake
 	elseif vim.fn.isdirectory('build') ~= 0 then
 		vim.fn.jobstart([[ start cmd.exe /c "ninja -C build && (echo. & for %a in (bin\*.exe) do @call %a) || (echo. & echo. & pause)" ]])
