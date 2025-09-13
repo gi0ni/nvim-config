@@ -1,6 +1,8 @@
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
+	--  NOTE: If you want to print error codes as well in the future do yourself a favor and use powershell
+
 	-- rust
 	if vim.fn.filereadable('Cargo.toml') == 1 then
 		vim.fn.jobstart([[ start cmd.exe /c "cargo build && (echo. & for %a in (target\debug\*.exe) do @call %a) & (echo. & echo. & pause)" ]])
