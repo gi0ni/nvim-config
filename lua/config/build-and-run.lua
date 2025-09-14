@@ -71,7 +71,7 @@ function Launch(build, run)
 		$minutes      = $timer.Elapsed.Minutes
 		$seconds      = $timer.Elapsed.Seconds
 		$milliseconds = $timer.Elapsed.Milliseconds
-		Write-Host (' in {0:d2}:{1:d2}.{2:d3} seconds' -f $minutes, $seconds, $milliseconds)
+		Write-Host (' in {0:d2}:{1:d2}.{2:d3} seconds.' -f $minutes, $seconds, $milliseconds)
 
 		<# pause #>
 		Write-Host -NoNewLine 'Press any key to continue...'
