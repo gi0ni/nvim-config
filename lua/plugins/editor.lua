@@ -44,6 +44,10 @@ return
 
 				renderer = {
 					root_folder_label = ':~'
+				},
+
+				view = {
+					preserve_window_proportions = true
 				}
 			})
 		end
