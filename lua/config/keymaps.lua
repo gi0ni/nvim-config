@@ -107,7 +107,7 @@ vim.keymap.set('n', '<leader>K', ':wincmd K<CR>', opt)
 vim.keymap.set('n', '<leader>L', ':wincmd L<CR>', opt)
 
 -- resize
-vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', opt)
-vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', opt)
-vim.keymap.set('n', '<C-Up>',    ':resize +2<CR>',          opt)
-vim.keymap.set('n', '<C-Down>',  ':resize -2<CR>',          opt)
+vim.keymap.set('n', '<C-Left>',  ':vertical resize -2<CR>', opt)
+vim.keymap.set('n', '<C-Right>', ':vertical resize +2<CR>', opt)
+vim.keymap.set('n', '<C-Up>',    ':resize -2<CR>',          opt)
+vim.keymap.set('n', '<C-Down>',  ':resize +2<CR>',          opt)
