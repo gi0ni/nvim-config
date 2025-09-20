@@ -27,7 +27,10 @@ return
 				}
 			})
 
+			local home = os.getenv('USERPROFILE')
+
 			lspconfig.rust_analyzer.setup({
+				cmd = { home .. '/appdata/local/nvim-data/mason/bin/rust-analyzer.cmd' },
 				settings = {
 					['rust-analyzer'] = {
 						completion = {
