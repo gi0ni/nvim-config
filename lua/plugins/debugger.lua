@@ -16,7 +16,7 @@ return
 
 			{ '1', function() return require('dap').session() ~= nil and ':DapStepOver<CR>'  or '1' end, expr = true, silent = true },
 			{ '2', function() return require('dap').session() ~= nil and ':DapStepInto<CR>'  or '2' end, expr = true, silent = true },
-			{ '4', function() return require('dap').session() ~= nil and ':DapStepOut<CR>'   or '3' end, expr = true, silent = true },
+			{ '3', function() return require('dap').session() ~= nil and ':DapStepOut<CR>'   or '3' end, expr = true, silent = true },
 			{ '4', function() return require('dap').session() ~= nil and ':DapContinue<CR>'  or '4' end, expr = true, silent = true },
 			{ '`', function() return require('dap').session() ~= nil and ':DapTerminate<CR>' or '`' end, expr = true, silent = true },
 		},
