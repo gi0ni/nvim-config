@@ -33,7 +33,7 @@ vim.keymap.set('n', '<leader>gD', vim.lsp.buf.declaration)
 vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation)
 vim.keymap.set('n', '<leader>gr', vim.lsp.buf.references)
 vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
-vim.keymap.set('n', '<leader>m',  vim.lsp.buf.hover)
+vim.keymap.set('n', '<leader>i',  vim.lsp.buf.hover)
 vim.keymap.set('n', '<leader>o',  ':lua vim.diagnostic.open_float()<CR>', opt)
 
 -- search diagnostics

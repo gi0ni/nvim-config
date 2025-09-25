@@ -1,3 +1,5 @@
+vim.keymap.set('n', '<leader>m', ':!cmake -B build -G Ninja<CR>')
+
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
