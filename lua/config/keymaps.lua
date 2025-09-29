@@ -89,7 +89,12 @@ vim.keymap.set('n', '<leader>c', ':close<CR>',        opt)
 
 -- quick terminal split
 vim.keymap.set('n', '<leader>t', function()
-	vim.cmd('split | wincmd j | resize 7 | term pwsh -nologo')
+	if vim.loop.os_uname().sysname == 'Windows_NT' then
+		vim.cmd('split | wincmd j | resize 7 | term pwsh -nologo')
+	else
+		vim.cmd('split | wincmd j | resize 7 | term')
+	end
+
 	vim.cmd('normal! a')
 end, opt)
 
