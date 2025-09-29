@@ -130,7 +130,7 @@ function LaunchLinux(build, run)
 		millis=$((duration_ms % 1000));
 		formatted_time=$(printf "%02d:%02d.%03d" $minutes $seconds $millis);
 
-		echo -ne "\n\n";
+		echo -ne "\n\n\n";
 		echo -ne "Process returned code $ret (0x$(printf "%08X" $ret))";
 		echo " in $formatted_time seconds.";
 		echo -ne "Press any key to continue...";
