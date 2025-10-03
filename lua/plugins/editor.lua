@@ -48,6 +48,10 @@ return
 
 				view = {
 					preserve_window_proportions = true
+				},
+
+				filters = {
+					dotfiles = true
 				}
 			})
 		end
