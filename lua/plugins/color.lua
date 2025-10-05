@@ -12,6 +12,7 @@ return
 			vim.api.nvim_set_hl(0, 'ErrorMsg', { bold = true, fg = '#e67e80' })
 			vim.api.nvim_set_hl(0, 'cDefine',  { link = 'Include' })
 			vim.api.nvim_set_hl(0, 'String',   { link = 'Aqua' })
+			vim.api.nvim_set_hl(0, 'cSpecial', { link = 'Green' })
 		end,
 	},
 
