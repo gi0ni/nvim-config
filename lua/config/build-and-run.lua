@@ -36,7 +36,19 @@ vim.keymap.set('n', '<leader>r', function()
 	-- single file c for toy programs
 	elseif vim.bo.filetype == 'c' then
 		local program = vim.fn.fnamemodify(file, ':r')
-		Launch("gcc -g " .. file .. " -o " .. program, "./" .. program)
+
+		if IsWin32 then
+			vim.cmd('silent! !rg -F "int main(int argc, char** argv)" ' .. file)
+		else
+			vim.cmd('silent! !grep -F "int main(int argc, char** argv)" ' .. file)
+		end
+
+		local args = ''
+		if vim.v.shell_error == 0 then
+			args = vim.fn.input('Enter Args: ')
+		end
+
+		Launch("gcc -g " .. file .. " -o " .. program, "./" .. program, args)
 
 	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
@@ -60,19 +72,20 @@ vim.keymap.set('n', '<leader>r', function()
 	end
 end)
 
-function Launch(build, run)
+function Launch(build, run, args)
 	if IsWin32 then
-		LaunchWindows(build, run)
+		LaunchWindows(build, run, args)
 	else
-		LaunchLinux(build, run)
+		LaunchLinux(build, run, args)
 	end
 end
 
 -- this is terrible :D
-function LaunchWindows(build, run)
+function LaunchWindows(build, run, args)
 	local compiler = (build ~= "python" and build ~= "node")
 
 	if run:match('%./') ~= nil then
+		run = run .. ' ' .. args
 	elseif compiler then
 		-- add compile command
 		build = string.format([[
@@ -125,7 +138,7 @@ function LaunchWindows(build, run)
 	vim.fn.jobstart([[ wt -p "PowerShell" --startingDirectory "." pwsh -c "]] .. command .. [["]])
 end
 
-function LaunchLinux(build, run)
+function LaunchLinux(build, run, args)
 
 	local compiler = (build ~= "python3" and build ~= "node")
 	local command_b = [[]]
@@ -142,7 +155,7 @@ function LaunchLinux(build, run)
 
 			command_b = string.format([[ %s && (echo; %s);]], build, run);
 		else
-			command_b = string.format([[ %s && %s ]], build, run)
+			command_b = string.format([[ %s && %s %s ]], build, run, args)
 		end
 	else
 		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
