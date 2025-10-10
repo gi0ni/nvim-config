@@ -18,7 +18,7 @@ return
 
 		config = function()
 			local dap = require('dap')
-			dap.set_log_level('trace')
+			dap.set_log_level('error')
 
 			-- ========== c/cpp ========== --
 			dap.adapters.cppdbg = {
@@ -46,6 +46,7 @@ return
 			dap.configurations.c = dap.configurations.cpp
 			-- =========================== --
 
+			-- ========== rust =========== --
 			dap.adapters.lldb = {
 				type = 'server',
 				port = '${port}',
@@ -66,11 +67,10 @@ return
 					program = '${workspaceFolder}/target/debug/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
 
 					stopOnEntry = false,
-					terminal = 'console',
-
-					preRunCommands = { "breakpoint name configure --disable cpp_throw" }
+					terminal = 'console'
 				}
 			}
+			-- =========================== --
 
 
 			-- open and close dap-view automatically
