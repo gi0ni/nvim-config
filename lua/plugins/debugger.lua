@@ -1,3 +1,9 @@
+-- FIX:
+-- 1. windows/lldb: prints harmless warning about 'feature ignored'. prob because of exceptions
+-- 2. linux/lldb: does not launch a terminal window at all
+-- 3. linux/cppdbg: gdb prints harmless(?) warnings too. 'gdb failed to set controlling terminal'
+
+
 return
 {
 	{
@@ -19,6 +25,15 @@ return
 		config = function()
 			local dap = require('dap')
 			dap.set_log_level('error')
+
+			if IsWin32 == false then
+				dap.defaults.fallback.external_terminal = {
+					command = '/usr/bin/gnome-terminal',
+					args = { '--' }
+				}
+
+				dap.defaults.fallback.force_external_terminal = true
+			end
 
 			-- ========== c/cpp ========== --
 			dap.adapters.cppdbg = {
