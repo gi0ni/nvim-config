@@ -46,6 +46,12 @@ vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
 vim.keymap.set('n', '<leader>i',  vim.lsp.buf.hover)
 vim.keymap.set('n', '<leader>o',  ':lua vim.diagnostic.open_float()<CR>', opt)
 
+local hints_enabled = false
+vim.keymap.set('n', '<leader>gh', function()
+	vim.lsp.inlay_hint.enable(not hints_enabled, {0})
+	hints_enabled = not hints_enabled;
+end, opt)
+
 -- search diagnostics
 vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', opt)
 
