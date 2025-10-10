@@ -24,11 +24,15 @@ vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", opt)
 vim.keymap.set({'n', 'v'}, 'd', '"_d')
 vim.keymap.set({'n', 'v'}, 'c', '"_c')
 vim.keymap.set('n', 'x', '"_x')
+vim.keymap.set('v', 'x', '"0x')
 
-vim.keymap.set('v', 'y', 'ygv')
+vim.keymap.set('n', '<space>y', '"+yy')
 vim.keymap.set('v', '<space>y', '"+y')
 
-vim.keymap.set({'n', 'v'}, 'p', '"_p`[=`]')
+-- TODO: if on empty line do NOT paste below
+
+vim.keymap.set('n', 'p', 'p`[=`]')
+vim.keymap.set('v', 'p', '"0p`[=`]')
 vim.keymap.set({'n', 'v'}, 'P', 'P`[=`]')
 vim.keymap.set({'n', 'v'}, '<leader>p', '"+p`[=`]')
 
