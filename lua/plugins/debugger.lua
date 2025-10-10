@@ -5,12 +5,7 @@ return
 		lazy = true,
 
 		keys = {
-			{
-				'<leader>d', function()
-					return require('dap').session() == nil and ':DapNew<CR>' or ':DapTerminate<CR>'
-				end, expr = true, silent = true
-			},
-
+			{ '<leader>d', ':DapNew<CR>', silent = true },
 			{ '<leader>b', ':lua require("dap").toggle_breakpoint()<CR>', silent = true },
 			{ '<leader>q', ':DapClearBreakpoints<CR>', silent = true },
 
@@ -23,38 +18,67 @@ return
 
 		config = function()
 			local dap = require('dap')
-			dap.set_log_level('error')
+			dap.set_log_level('trace')
 
-			dap.adapters.gdb = {
-				id = 'gdb',
+			-- ========== c/cpp ========== --
+			dap.adapters.cppdbg = {
+				id = 'cppdbg',
 				type = 'executable',
-				command = 'gdb',
-				args = { '--quiet', '--interpreter=dap' }
+				command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7' .. (IsWin32 and '.cmd' or ''),
+				options = {
+					detached = false
+				}
 			}
 
 			dap.configurations.cpp = {
 				{
-					name = 'Run executable (GDB)',
-					type = 'gdb',
+					name = 'runit',
+					type = 'cppdbg',
 					request = 'launch',
-					program = function()
-						local cwd = vim.fn.getcwd()
-						return cwd .. '/bin/' .. vim.fn.fnamemodify(cwd, ':t') .. '.exe'
-					end,
-					args = { 'DEBUG' }
+
+					cwd = '${workspaceFolder}',
+					program = '${workspaceFolder}/bin/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
+
+					externalConsole = true
 				}
 			}
 
 			dap.configurations.c = dap.configurations.cpp
+			-- =========================== --
+
+			dap.adapters.lldb = {
+				type = 'server',
+				port = '${port}',
+				executable = {
+					command = vim.fn.stdpath('data') .. '/mason/bin/codelldb' .. (IsWin32 and '.cmd' or ''),
+					args = { '--port', '${port}' }
+				},
+				detached = false
+			}
+
+			dap.configurations.rust = {
+				{
+					name = 'runit',
+					type = 'lldb',
+					request = 'launch',
+
+					cwd = '${workspaceFolder}',
+					program = '${workspaceFolder}/target/debug/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
+
+					stopOnEntry = false,
+					terminal = 'console',
+
+					preRunCommands = { "breakpoint name configure --disable cpp_throw" }
+				}
+			}
 
 
-			-- open and close ui automatically
-			dap.listeners.before.launch.dapui_config = function()
+			-- open and close dap-view automatically
+			dap.listeners.before.launch['dap_view_open'] = function()
 				require('dap-view').setup()
-				vim.cmd('normal! md')
 				vim.cmd('DapViewOpen')
 
-				-- get those local variables opened nicely on the right
+				-- open local scope on the right
 				vim.cmd('wincmd j')
 				if vim.bo.filetype == 'dap-view-term' then
 					vim.cmd('bd')
@@ -62,24 +86,28 @@ return
 				vim.cmd('wincmd L')
 
 				vim.api.nvim_feedkeys('S', 'c', false)
-				vim.cmd([[ silent !pwsh -Command "& /scripts/minimize_window.ps1" ]])
+
+				-- refocus neovim
+				-- if IsWin32 then
+				-- 	vim.cmd([[ silent !pwsh -Command "& /scripts/minimize_window.ps1" ]])
+				-- end
+
+				-- surpress adapter exit notifications
+				local original_notify = vim.notify
+				vim.notify = function(msg, level, opts)
+					if msg:match('cppdbg') then
+						return
+					end
+					original_notify(msg, level, opts)
+				end
 			end
 
-			dap.listeners.before.event_terminated.dapui_config = function()
-				require('dap-view').setup()
+			dap.listeners.after.disconnect['dap_view_close'] = function()
 				vim.cmd('DapViewClose')
-				vim.cmd("normal! 'd")
-
-				-- evil
-				local func = vim.notify
-				vim.notify = function(_) end
-				vim.defer_fn(function()
-					vim.notify = func
-				end, 100)
 			end
 
 
-			-- highlight lines with breakpoints. no pesky signcolumn needed
+			-- highlight lines that have breakpoints
 			vim.api.nvim_set_hl(0, 'DapBreakpointLine', { bg = '#fb4934', fg = '#ebdbb2' })
 			vim.fn.sign_define('DapBreakpoint', {
 				linehl = 'DapBreakpointLine',
