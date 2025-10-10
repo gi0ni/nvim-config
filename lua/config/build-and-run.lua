@@ -139,9 +139,11 @@ function LaunchLinux(build, run)
 			run = string.format([[
 				./%s/%s
 			]], run, program)
-		end
 
-		command_b = string.format([[ %s && (echo; %s);]], build, run);
+			command_b = string.format([[ %s && (echo; %s);]], build, run);
+		else
+			command_b = string.format([[ %s && %s ]], build, run)
+		end
 	else
 		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
 	end
