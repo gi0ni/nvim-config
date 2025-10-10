@@ -83,8 +83,8 @@ return
 					program = '${workspaceFolder}/target/debug/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
 
 					stopOnEntry = false,
-					terminal = 'console', -- works on windows
-					console = 'externalTerminal' -- works on linux
+					terminal = (IsWin32 and 'console' or 'external'),
+					console = 'externalTerminal'
 				}
 			}
 			-- =========================== --
