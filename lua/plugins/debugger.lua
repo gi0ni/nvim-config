@@ -1,7 +1,9 @@
 -- FIX:
 -- 1. windows/lldb: prints harmless warning about 'feature ignored'. prob because of exceptions
--- 2. linux/lldb: does not launch a terminal window at all
+
 -- 3. linux/cppdbg: gdb prints harmless(?) warnings too. 'gdb failed to set controlling terminal'
+-- 4. refocus neovim
+-- 5. make WSEBTR take you to dap-view from any buffer
 
 return
 {
@@ -46,7 +48,7 @@ return
 
 			dap.configurations.cpp = {
 				{
-					name = 'runit',
+					name = 'debug',
 					type = 'cppdbg',
 					request = 'launch',
 
@@ -73,7 +75,7 @@ return
 
 			dap.configurations.rust = {
 				{
-					name = 'runit',
+					name = 'debug',
 					type = 'lldb',
 					request = 'launch',
 
@@ -81,7 +83,8 @@ return
 					program = '${workspaceFolder}/target/debug/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
 
 					stopOnEntry = false,
-					terminal = 'console'
+					terminal = 'console', -- works on windows
+					console = 'externalTerminal' -- works on linux
 				}
 			}
 			-- =========================== --
