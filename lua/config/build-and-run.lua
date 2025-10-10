@@ -12,11 +12,11 @@ vim.api.nvim_create_user_command('Build', function()
 	if vim.fn.isdirectory('build') ~= 0 then
 		vim.cmd('!ninja -C build')
 
-		-- rust
+	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		vim.cmd('!cargo build')
 
-		-- unknown
+	-- unknown
 	else
 		vim.notify("failed to run build system. unknown project type")
 	end
@@ -31,40 +31,28 @@ vim.keymap.set('n', '<leader>r', function()
 
 	-- cmake
 	if vim.fn.isdirectory('build') ~= 0 then
-		Launch("ninja -C build", "bin")
+		Launch("ninja -C build", "bin", "buildsystem")
 
-	-- single file c for toy programs
+	-- c single file
 	elseif vim.bo.filetype == 'c' then
+		local grep = (IsWin32 and 'rg' or 'grep')
+		vim.cmd('silent! !' .. grep .. ' -F "int main(int argc, char** argv)" ' .. file)
+
 		local program = vim.fn.fnamemodify(file, ':r')
-
-		if IsWin32 then
-			vim.cmd('silent! !rg -F "int main(int argc, char** argv)" ' .. file)
-		else
-			vim.cmd('silent! !grep -F "int main(int argc, char** argv)" ' .. file)
-		end
-
-		local args = ''
-		if vim.v.shell_error == 0 then
-			args = vim.fn.input('Enter Args: ')
-		end
-
-		Launch("gcc -g " .. file .. " -o " .. program, "./" .. program, args)
+		local args = (vim.v.shell_error and vim.fn.input('Enter Args: ') or '')
+		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler", args)
 
 	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
-		Launch("cargo build", "target/debug")
+		Launch("cargo build", "target/debug", "buildsystem")
 
 	-- python
 	elseif vim.bo.filetype == "python" then
-		if IsWin32 then
-			Launch("python", file)
-		else
-			Launch("python3", file)
-		end
+		Launch((IsWin32 and "python" or "python3"), file, "interpreter")
 
 	-- javascript
 	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
-		Launch("node", file)
+		Launch("node", file, "interpreter")
 
 	-- unknown
 	else
@@ -72,21 +60,20 @@ vim.keymap.set('n', '<leader>r', function()
 	end
 end)
 
-function Launch(build, run, args)
+
+function Launch(build, run, mode, args) -- mode can be buildsystem, compiler and interpreter
 	if IsWin32 then
-		LaunchWindows(build, run, args)
+		LaunchWindows(build, run, mode, args)
 	else
-		LaunchLinux(build, run, args)
+		LaunchLinux(build, run, mode, args)
 	end
 end
 
--- this is terrible :D
-function LaunchWindows(build, run, args)
-	local compiler = (build ~= "python" and build ~= "node")
 
-	if run:match('%./') ~= nil then
-		run = run .. ' ' .. args
-	elseif compiler then
+--==================== WINDOWS ====================--
+function LaunchWindows(build, run, mode, args)
+
+	if mode == "buildsystem" then
 		-- add compile command
 		build = string.format([[
 			%s
@@ -100,9 +87,16 @@ function LaunchWindows(build, run, args)
 		run = string.format([[
 			& %s/%s.exe
 		]], run, program)
-	else
+
+	elseif mode == "interpreter" then
 		run = build .. " " .. run
 		build = "cmd /c exit 0"
+
+	elseif mode == "compiler" then
+		run = run .. ' ' .. args
+
+	else
+		vim.notify("unknown launch mode '" .. mode .. "'!")
 	end
 
 	local command = string.format([[
@@ -138,27 +132,31 @@ function LaunchWindows(build, run, args)
 	vim.fn.jobstart([[ wt -p "PowerShell" --startingDirectory "." pwsh -c "]] .. command .. [["]])
 end
 
-function LaunchLinux(build, run, args)
 
-	local compiler = (build ~= "python3" and build ~= "node")
+--==================== LINUX ====================--
+function LaunchLinux(build, run, mode, args)
+
 	local command_b = [[]]
 
-	if compiler then
+	if mode == "buildsystem" then
 		-- get binary path
 		local cwd     = vim.fn.getcwd()
 		local program = vim.fn.fnamemodify(cwd, ":t")
 
-		if run:match('%./') == nil then -- TODO: should just add a third argument for flags
-			run = string.format([[
-				./%s/%s
-			]], run, program)
+		run = string.format([[
+			./%s/%s
+		]], run, program)
 
-			command_b = string.format([[ %s && (echo; %s);]], build, run);
-		else
-			command_b = string.format([[ %s && %s %s ]], build, run, args)
-		end
-	else
+		command_b = string.format([[ %s && (echo; %s);]], build, run);
+
+	elseif mode == "interpreter" then
 		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
+
+	elseif mode == "compiler" then
+		command_b = string.format([[ %s && %s %s ]], build, run, args)
+
+	else
+		vim.notify("unknown launch mode '" .. mode .. "'!")
 	end
 
 	local command_a = [[
