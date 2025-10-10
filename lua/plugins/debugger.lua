@@ -3,7 +3,6 @@
 -- 2. linux/lldb: does not launch a terminal window at all
 -- 3. linux/cppdbg: gdb prints harmless(?) warnings too. 'gdb failed to set controlling terminal'
 
-
 return
 {
 	{
@@ -93,7 +92,7 @@ return
 				require('dap-view').setup()
 				vim.cmd('DapViewOpen')
 
-				-- open local scope on the right
+				-- start with locals tab open by default
 				vim.cmd('wincmd j')
 				if vim.bo.filetype == 'dap-view-term' then
 					vim.cmd('bd')
@@ -107,7 +106,7 @@ return
 				-- 	vim.cmd([[ silent !pwsh -Command "& /scripts/minimize_window.ps1" ]])
 				-- end
 
-				-- surpress adapter exit notifications
+				-- close adapter disconnect notification
 				local original_notify = vim.notify
 				vim.notify = function(msg, level, opts)
 					if msg:match('cppdbg') then
