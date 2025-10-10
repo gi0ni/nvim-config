@@ -61,7 +61,13 @@ return
 					request = 'launch',
 
 					cwd = '${workspaceFolder}',
-					program = '${workspaceFolder}/bin/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or ''),
+					program = function()
+						if vim.fn.isdirectory('bin') ~= 0 then
+							return '${workspaceFolder}/bin/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or '')
+						else
+							return vim.fn.fnamemodify(vim.fn.expand('%'), ':r') .. (IsWin32 and '.exe' or '') -- this is for single file c
+						end
+					end,
 
 					externalConsole = true
 				}
