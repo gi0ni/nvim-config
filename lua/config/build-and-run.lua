@@ -1,5 +1,8 @@
+-- cmake
 vim.keymap.set('n', '<leader>m', ':!cmake -B build -G Ninja<CR>')
 
+
+-- build only
 vim.keymap.set('n', '<leader>n', ':Build<CR>')
 
 vim.api.nvim_create_user_command('Build', function()
@@ -19,6 +22,8 @@ vim.api.nvim_create_user_command('Build', function()
 	end
 end, { desc = 'build. build. build.' })
 
+
+-- build and run
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
@@ -27,6 +32,11 @@ vim.keymap.set('n', '<leader>r', function()
 	-- cmake
 	if vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin")
+
+	-- single file c for toy programs
+	elseif vim.bo.filetype == 'c' then
+		local program = vim.fn.fnamemodify(file, ':r')
+		Launch("gcc -g " .. file .. " -o " .. program, "./" .. program)
 
 	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
@@ -62,7 +72,8 @@ end
 function LaunchWindows(build, run)
 	local compiler = (build ~= "python" and build ~= "node")
 
-	if compiler then
+	if run:match('%./') ~= nil then
+	elseif compiler then
 		-- add compile command
 		build = string.format([[
 			%s
@@ -124,9 +135,11 @@ function LaunchLinux(build, run)
 		local cwd     = vim.fn.getcwd()
 		local program = vim.fn.fnamemodify(cwd, ":t")
 
-		run = string.format([[
-			./%s/%s
-		]], run, program)
+		if run:match('%./') == nil then -- TODO: should just add a third argument for flags
+			run = string.format([[
+				./%s/%s
+			]], run, program)
+		end
 
 		command_b = string.format([[ %s && (echo; %s);]], build, run);
 	else
