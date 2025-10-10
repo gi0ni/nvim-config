@@ -27,34 +27,19 @@ return
 				}
 			})
 
-			if vim.loop.os_uname().sysname == 'Windows_NT' then
-				local home = os.getenv('USERPROFILE')
+			lspconfig.rust_analyzer.setup({
+				cmd = { vim.fn.stdpath('data') .. '/mason/bin/rust-analyzer' .. (IsWin32 and '.cmd' or '') },
 
-				lspconfig.rust_analyzer.setup({
-					cmd = { home .. '/appdata/local/nvim-data/mason/bin/rust-analyzer.cmd' },
-					settings = {
-						['rust-analyzer'] = {
-							completion = {
-								callable = {
-									snippets = "add_parentheses" -- no placeholder args
-								}
+				settings = {
+					['rust-analyzer'] = {
+						completion = {
+							callable = {
+								snippets = "add_parentheses" -- no placeholder args
 							}
 						}
 					}
-				})
-			else
-				lspconfig.rust_analyzer.setup({
-					settings = {
-						['rust-analyzer'] = {
-							completion = {
-								callable = {
-									snippets = "add_parentheses" -- no placeholder args
-								}
-							}
-						}
-					}
-				})
-			end
+				}
+			})
 
 			vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end

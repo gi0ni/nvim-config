@@ -1,7 +1,5 @@
 vim.keymap.set('n', '<leader>m', ':!cmake -B build -G Ninja<CR>')
 
-local os = vim.loop.os_uname().sysname
-
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
 
@@ -17,7 +15,7 @@ vim.keymap.set('n', '<leader>r', function()
 
 	-- python
 	elseif vim.bo.filetype == "python" then
-		if os == 'Windows_NT' then
+		if IsWin32 then
 			Launch("python", file)
 		else
 			Launch("python3", file)
@@ -34,7 +32,7 @@ vim.keymap.set('n', '<leader>r', function()
 end)
 
 function Launch(build, run)
-	if os == 'Windows_NT' then
+	if IsWin32 then
 		LaunchWindows(build, run)
 	else
 		LaunchLinux(build, run)
