@@ -16,6 +16,12 @@ vim.api.nvim_create_user_command('Build', function()
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		vim.cmd('!cargo build')
 
+	-- c single file
+	elseif vim.bo.filetype == 'c' then
+		local file = vim.fn.expand('%')
+		local program = vim.fn.fnamemodify(file, ':r')
+		vim.cmd('!gcc -g ' .. file .. ' -o ' .. program)
+
 	-- unknown
 	else
 		vim.notify("failed to run build system. unknown project type")
@@ -33,15 +39,6 @@ vim.keymap.set('n', '<leader>r', function()
 	if vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin", "buildsystem")
 
-	-- c single file
-	elseif vim.bo.filetype == 'c' then
-		local grep = (IsWin32 and 'rg' or 'grep')
-		vim.cmd('silent! !' .. grep .. ' -F "int main(int argc, char** argv)" ' .. file)
-
-		local program = vim.fn.fnamemodify(file, ':r')
-		local args = (vim.v.shell_error and vim.fn.input('Enter Args: ') or '')
-		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler", args)
-
 	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		Launch("cargo build", "target/debug", "buildsystem")
@@ -53,6 +50,15 @@ vim.keymap.set('n', '<leader>r', function()
 	-- javascript
 	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
 		Launch("node", file, "interpreter")
+
+	-- c single file
+	elseif vim.bo.filetype == 'c' then
+		local grep = (IsWin32 and 'rg' or 'grep')
+		vim.cmd('silent! !' .. grep .. ' -F "int main(int argc, char** argv)" ' .. file)
+
+		local program = vim.fn.fnamemodify(file, ':r')
+		local args = (vim.v.shell_error == 0 and vim.fn.input('Enter Args: ') or '')
+		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler", args)
 
 	-- unknown
 	else
@@ -93,7 +99,7 @@ function LaunchWindows(build, run, mode, args)
 		build = "cmd /c exit 0"
 
 	elseif mode == "compiler" then
-		run = run .. ' ' .. args
+		run = '& ./' .. run .. ' ' .. args
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
