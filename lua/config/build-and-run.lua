@@ -1,3 +1,10 @@
+-- ask for args manually
+ArgsList = ''
+vim.keymap.set('n', '<leader>a', function()
+	ArgsList = vim.fn.input('Enter Args: ')
+end)
+
+
 -- cmake
 vim.keymap.set('n', '<leader>m', ':!cmake -B build -G Ninja<CR>')
 
@@ -53,12 +60,8 @@ vim.keymap.set('n', '<leader>r', function()
 
 	-- c single file
 	elseif vim.bo.filetype == 'c' then
-		local grep = (IsWin32 and 'rg' or 'grep')
-		vim.cmd('silent! !' .. grep .. ' -F "int main(int argc, char** argv)" ' .. file)
-
 		local program = vim.fn.fnamemodify(file, ':r')
-		local args = (vim.v.shell_error == 0 and vim.fn.input('Enter Args: ') or '')
-		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler", args)
+		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler")
 
 	-- unknown
 	else
@@ -67,17 +70,17 @@ vim.keymap.set('n', '<leader>r', function()
 end)
 
 
-function Launch(build, run, mode, args) -- mode can be buildsystem, compiler and interpreter
+function Launch(build, run, mode) -- mode can be buildsystem, compiler and interpreter
 	if IsWin32 then
-		LaunchWindows(build, run, mode, args)
+		LaunchWindows(build, run, mode)
 	else
-		LaunchLinux(build, run, mode, args)
+		LaunchLinux(build, run, mode)
 	end
 end
 
 
 --==================== WINDOWS ====================--
-function LaunchWindows(build, run, mode, args)
+function LaunchWindows(build, run, mode)
 
 	if mode == "buildsystem" then
 		-- add compile command
@@ -99,7 +102,7 @@ function LaunchWindows(build, run, mode, args)
 		build = "cmd /c exit 0"
 
 	elseif mode == "compiler" then
-		run = '& ./' .. run .. ' ' .. args
+		run = '& ./' .. run .. ' ' .. ArgsList
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
@@ -140,7 +143,7 @@ end
 
 
 --==================== LINUX ====================--
-function LaunchLinux(build, run, mode, args)
+function LaunchLinux(build, run, mode)
 
 	local command_b = [[]]
 
@@ -159,7 +162,7 @@ function LaunchLinux(build, run, mode, args)
 		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
 
 	elseif mode == "compiler" then
-		command_b = string.format([[ %s && ./%s %s ]], build, run, args)
+		command_b = string.format([[ %s && ./%s %s ]], build, run, ArgsList)
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
