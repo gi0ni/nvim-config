@@ -159,7 +159,7 @@ function LaunchLinux(build, run, mode, args)
 		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
 
 	elseif mode == "compiler" then
-		command_b = string.format([[ %s && %s %s ]], build, run, args)
+		command_b = string.format([[ %s && ./%s %s ]], build, run, args)
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
