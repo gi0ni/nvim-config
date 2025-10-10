@@ -12,7 +12,15 @@ return
 		lazy = true,
 
 		keys = {
-			{ '<leader>d', ':DapNew<CR>', silent = true },
+			{ '<leader>d', function()
+				vim.cmd('Build')
+
+				if vim.v.shell_error == 0 then
+					vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Esc>', true, false, true), 'm', false)
+					vim.cmd('DapNew')
+				end
+			end, silent = true },
+
 			{ '<leader>b', ':lua require("dap").toggle_breakpoint()<CR>', silent = true },
 			{ '<leader>q', ':DapClearBreakpoints<CR>', silent = true },
 

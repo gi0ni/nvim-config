@@ -1,21 +1,23 @@
 vim.keymap.set('n', '<leader>m', ':!cmake -B build -G Ninja<CR>')
 
-vim.keymap.set('n', '<leader>n', function()
+vim.keymap.set('n', '<leader>n', ':Build<CR>')
+
+vim.api.nvim_create_user_command('Build', function()
 	vim.cmd('wa')
 
 	-- cmake
 	if vim.fn.isdirectory('build') ~= 0 then
 		vim.cmd('!ninja -C build')
 
-	-- rust
+		-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		vim.cmd('!cargo build')
 
-	-- unknown
+		-- unknown
 	else
 		vim.notify("failed to run build system. unknown project type")
 	end
-end)
+end, { desc = 'build. build. build.' })
 
 vim.keymap.set('n', '<leader>r', function()
 	vim.cmd('wa')
