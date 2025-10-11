@@ -1,9 +1,7 @@
 -- FIX:
 -- 1. windows/lldb: prints harmless warning about 'feature ignored'. prob because of exceptions
-
 -- 3. linux/cppdbg: gdb prints harmless(?) warnings too. 'gdb failed to set controlling terminal'
 -- 4. refocus neovim
--- 5. make WSEBTR take you to dap-view from any buffer
 
 return
 {
@@ -22,13 +20,21 @@ return
 			end, silent = true },
 
 			{ '<leader>b', ':lua require("dap").toggle_breakpoint()<CR>', silent = true },
-			{ '<leader>q', ':DapClearBreakpoints<CR>', silent = true },
+			{ '<leader>B', ':DapClearBreakpoints<CR>', silent = true },
+			{ '<leader>w', ':DapViewWatch<CR>', silent = true },
 
 			{ '1', function() return require('dap').session() ~= nil and ':DapStepOver<CR>'  or '1' end, expr = true, silent = true },
 			{ '2', function() return require('dap').session() ~= nil and ':DapStepInto<CR>'  or '2' end, expr = true, silent = true },
 			{ '3', function() return require('dap').session() ~= nil and ':DapStepOut<CR>'   or '3' end, expr = true, silent = true },
 			{ '4', function() return require('dap').session() ~= nil and ':DapContinue<CR>'  or '4' end, expr = true, silent = true },
 			{ '`', function() return require('dap').session() ~= nil and ':DapTerminate<CR>' or '`' end, expr = true, silent = true },
+
+			{ 'W', function() return require('dap').session() ~= nil and ':DapViewJump watches<CR>'     or 'W' end, expr = true, silent = true },
+			{ 'S', function() return require('dap').session() ~= nil and ':DapViewJump scopes<CR>'      or 'S' end, expr = true, silent = true },
+			{ 'E', function() return require('dap').session() ~= nil and ':DapViewJump exceptions<CR>'  or 'E' end, expr = true, silent = true },
+			{ 'B', function() return require('dap').session() ~= nil and ':DapViewJump breakpoints<CR>' or 'B' end, expr = true, silent = true },
+			{ 'T', function() return require('dap').session() ~= nil and ':DapViewJump threads<CR>'     or 'T' end, expr = true, silent = true },
+			{ 'R', function() return require('dap').session() ~= nil and ':DapViewJump repl<CR>'        or 'R' end, expr = true, silent = true },
 		},
 
 		config = function()
