@@ -13,6 +13,7 @@ return
 			vim.api.nvim_set_hl(0, 'cDefine',  { link = 'Include' })
 			vim.api.nvim_set_hl(0, 'String',   { link = 'Aqua' })
 			vim.api.nvim_set_hl(0, 'cSpecial', { link = 'Green' })
+			vim.api.nvim_set_hl(0, 'LspInlayHint', { fg = '#618d88' })
 		end,
 	},
 
