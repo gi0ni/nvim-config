@@ -21,13 +21,19 @@ vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv", opt)
 vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", opt)
 
 -- yank and put
-vim.keymap.set('n', '<space>y', '"+yy')
-vim.keymap.set('v', '<space>y', '"+y')
+vim.keymap.set({'n', 'v'}, 'd', '"dd')
+vim.keymap.set({'n', 'v'}, 'c', '"dc')
+vim.keymap.set('n', 'x', '"dx')
+
+vim.keymap.set({'n', 'v'}, 'p', '"0p`[=`]')
+vim.keymap.set({'n', 'v'}, 'P', '"0P`[=`]')
+vim.keymap.set({'n', 'v'}, 'gp', 'p`[=`]')
+vim.keymap.set({'n', 'v'}, 'gP', 'P`[=`]')
 
 -- TODO: if on empty line do NOT paste below
 
-vim.keymap.set({'n', 'v'}, 'p', 'p`[=`]')
-vim.keymap.set({'n', 'v'}, 'P', 'P`[=`]')
+vim.keymap.set('n', '<space>y', '"+yy')
+vim.keymap.set('v', '<space>y', '"+y')
 vim.keymap.set({'n', 'v'}, '<leader>p', '"+p`[=`]')
 
 
@@ -61,11 +67,16 @@ vim.keymap.set('n', '<leader>gr', function()
 			return true
 		end
 	})
+
+	vim.opt.cmdwinheight = 1
 	vim.lsp.buf.rename()
+
 	vim.defer_fn(function()
 		if cmdId then
 			vim.api.nvim_del_autocmd(cmdId)
 		end
+
+		vim.opt.cmdwinheight = 7
 	end, 500)
 end)
 
