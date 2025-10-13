@@ -62,6 +62,10 @@ return
 				'html',
 				'cssls',
 				'ts_ls'
+			},
+
+			handlers = {
+				rust_analyzer = function() end
 			}
 		}
 	},
