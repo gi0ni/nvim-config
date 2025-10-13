@@ -1,3 +1,5 @@
+-- FIX: rust-analyzer sometimes launches 2 instances. type annotations get shown twice and you get asked 2 times to rename something
+
 return
 {
 	-- linter
