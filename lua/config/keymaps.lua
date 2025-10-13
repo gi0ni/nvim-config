@@ -32,7 +32,7 @@ vim.keymap.set('v', '<space>y', '"+y')
 -- TODO: if on empty line do NOT paste below
 
 vim.keymap.set('n', 'p', 'p`[=`]')
-vim.keymap.set('v', 'p', '"0p`[=`]')
+vim.keymap.set('v', 'p', 'P`[=`]')
 vim.keymap.set({'n', 'v'}, 'P', 'P`[=`]')
 vim.keymap.set({'n', 'v'}, '<leader>p', '"+p`[=`]')
 
