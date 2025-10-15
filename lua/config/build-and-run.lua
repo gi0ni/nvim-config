@@ -58,6 +58,10 @@ vim.keymap.set('n', '<leader>r', function()
 	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
 		Launch("node", file, "interpreter")
 
+	-- bash scripts
+	elseif not IsWin32 and vim.bo.filetype == 'sh' then
+		LaunchLinux("bash", file, "interpreter")
+
 	-- c single file
 	elseif vim.bo.filetype == 'c' then
 		local program = vim.fn.fnamemodify(file, ':r')
