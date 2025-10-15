@@ -9,6 +9,10 @@ vim.keymap.set('n', '<leader>a', function()
 		ArgsListTokenized[key] = nil
 	end
 
+	if ArgsList == '' then
+		return
+	end
+
 	local temp = vim.split(ArgsList, ' +')
 
 	for key, val in pairs(temp) do
