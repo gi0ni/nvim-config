@@ -74,7 +74,7 @@ return
 							return vim.fn.fnamemodify(vim.fn.expand('%'), ':r') .. (IsWin32 and '.exe' or '') -- this is for single file c
 						end
 					end,
-					args = vim.split(ArgsList, ' +'),
+					args = ArgsListTokenized,
 
 					externalConsole = true
 				}
