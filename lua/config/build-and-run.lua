@@ -98,15 +98,15 @@ function LaunchWindows(build, run, mode)
 		local program = vim.fn.fnamemodify(cwd, ":t")
 
 		run = string.format([[
-			& %s/%s.exe
-		]], run, program)
+			& %s/%s.exe %s
+		]], run, program, ArgsList)
 
 	elseif mode == "interpreter" then
-		run = build .. " " .. run
+		run = build .. " " .. run .. " " .. ArgsList
 		build = "cmd /c exit 0"
 
 	elseif mode == "compiler" then
-		run = '& ./' .. run .. ' ' .. ArgsList
+		run = "& ./" .. run .. " " .. ArgsList
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
@@ -160,10 +160,10 @@ function LaunchLinux(build, run, mode)
 			./%s/%s
 		]], run, program)
 
-		command_b = string.format([[ %s && (echo; %s);]], build, run);
+		command_b = string.format([[ %s && (echo; %s %s);]], build, run, ArgsList);
 
 	elseif mode == "interpreter" then
-		command_b = string.format([[ %s %s; ]], build, run) -- e.g. python program.py
+		command_b = string.format([[ %s %s %s; ]], build, run, ArgsList) -- e.g. python program.py
 
 	elseif mode == "compiler" then
 		command_b = string.format([[ %s && (./%s %s); ]], build, run, ArgsList)
