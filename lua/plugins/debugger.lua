@@ -68,10 +68,10 @@ return
 
 					cwd = '${workspaceFolder}',
 					program = function()
-						if vim.fn.isdirectory('bin') ~= 0 then
+						if vim.fn.filereadable('CMakeLists.txt') == 1 then
 							return '${workspaceFolder}/bin/${workspaceFolderBasename}' .. (IsWin32 and '.exe' or '')
 						else
-							return vim.fn.fnamemodify(vim.fn.expand('%'), ':r') .. (IsWin32 and '.exe' or '') -- this is for single file c
+							return 'bin/' .. vim.fn.fnamemodify(vim.fn.expand('%'), ':r') .. (IsWin32 and '.exe' or '') -- this is for single file c
 						end
 					end,
 					args = ArgsListTokenized,
