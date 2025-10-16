@@ -42,7 +42,7 @@ vim.api.nvim_create_user_command('Build', function()
 	-- c single file
 	elseif vim.bo.filetype == 'c' then
 		local file = vim.fn.expand('%')
-		if vim.fn.isdirectory("bin") == 0 then vim.cmd("silent! !mkdir bin") end
+		if vim.fn.isdirectory('bin') == 0 then vim.cmd('silent! !mkdir bin') end
 		local program = 'bin/' .. vim.fn.fnamemodify(file, ':r')
 		vim.cmd('!gcc -g ' .. file .. ' -o ' .. program)
 
