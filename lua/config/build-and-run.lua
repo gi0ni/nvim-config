@@ -42,7 +42,8 @@ vim.api.nvim_create_user_command('Build', function()
 	-- c single file
 	elseif vim.bo.filetype == 'c' then
 		local file = vim.fn.expand('%')
-		local program = vim.fn.fnamemodify(file, ':r')
+		if vim.fn.isdirectory("bin") == 0 then vim.cmd("silent! !mkdir bin") end
+		local program = 'bin/' .. vim.fn.fnamemodify(file, ':r')
 		vim.cmd('!gcc -g ' .. file .. ' -o ' .. program)
 
 	-- unknown
@@ -80,7 +81,8 @@ vim.keymap.set('n', '<leader>r', function()
 
 	-- c single file
 	elseif vim.bo.filetype == 'c' then
-		local program = vim.fn.fnamemodify(file, ':r')
+		if vim.fn.isdirectory("bin") == 0 then vim.cmd("silent! !mkdir bin") end
+		local program = "bin/" .. vim.fn.fnamemodify(file, ":r")
 		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler")
 
 	-- unknown
