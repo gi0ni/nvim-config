@@ -23,7 +23,8 @@ vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", opt)
 -- yank and put
 vim.keymap.set({'n', 'v'}, 'd', '"dd')
 vim.keymap.set({'n', 'v'}, 'c', '"dc')
-vim.keymap.set('n', 'x', '"0x')
+vim.keymap.set('n', 'x', '"dx')
+vim.keymap.set('v', 'x', '"0x')
 
 vim.keymap.set({'n', 'v'}, 'p', '"0p`[=`]')
 vim.keymap.set({'n', 'v'}, 'P', '"0P`[=`]')
