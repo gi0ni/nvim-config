@@ -55,42 +55,52 @@ end, { desc = 'build. build. build.' })
 
 -- build and run
 vim.keymap.set('n', '<leader>r', function()
+	Run(0)
+end)
+
+vim.keymap.set('n', '<F5>', function()
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		Run(bufnr)
+	end
+end)
+
+function Run(bufnr)
 	vim.cmd('wa')
 
-	local file = vim.fn.expand('%')
+	local file = vim.api.nvim_buf_get_name(bufnr)
+	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
 
 	-- cmake
 	if vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin", "buildsystem")
 
-	-- rust
+		-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		Launch("cargo build", "target/debug", "buildsystem")
 
-	-- python
-	elseif vim.bo.filetype == "python" then
+		-- python
+	elseif filetype == "python" then
 		Launch((IsWin32 and "python" or "python3"), file, "interpreter")
 
-	-- javascript
-	elseif vim.bo.filetype == "javascript" or vim.bo.filetype == "typescript" then
+		-- javascript
+	elseif filetype == "javascript" or filetype == "typescript" then
 		Launch("node", file, "interpreter")
 
-	-- bash scripts
-	elseif not IsWin32 and vim.bo.filetype == 'sh' then
+		-- bash scripts
+	elseif not IsWin32 and filetype == 'sh' then
 		LaunchLinux("bash", file, "interpreter")
 
-	-- c single file
-	elseif vim.bo.filetype == 'c' then
+		-- c single file
+	elseif filetype == 'c' then
 		if vim.fn.isdirectory("bin") == 0 then vim.cmd("silent! !mkdir bin") end
-		local program = "bin/" .. vim.fn.fnamemodify(file, ":r")
+		local program = "bin/" .. vim.fn.fnamemodify(file, ":tr")
 		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler")
 
-	-- unknown
+		-- unknown
 	else
 		vim.notify("failed to run '" .. file .. "'. unknown file type")
 	end
-end)
-
+end
 
 function Launch(build, run, mode) -- mode can be buildsystem, compiler and interpreter
 	if IsWin32 then
