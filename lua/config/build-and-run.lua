@@ -93,7 +93,7 @@ function Run(bufnr)
 		-- c single file
 	elseif filetype == 'c' then
 		if vim.fn.isdirectory("bin") == 0 then vim.cmd("silent! !mkdir bin") end
-		local program = "bin/" .. vim.fn.fnamemodify(file, ":tr")
+		local program = "bin/" .. vim.fn.fnamemodify(file, ":t:r")
 		Launch("gcc -g " .. file .. " -o " .. program, program, "compiler")
 
 		-- unknown
