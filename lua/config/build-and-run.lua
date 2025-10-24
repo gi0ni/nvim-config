@@ -66,6 +66,7 @@ vim.keymap.set('n', '<F5>', function()
 	end
 
 	if not found then
+		vim.notify('only works with single file c applets')
 		return
 	end
 
