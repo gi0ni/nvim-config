@@ -59,6 +59,16 @@ vim.keymap.set('n', '<leader>r', function()
 end)
 
 vim.keymap.set('n', '<F5>', function()
+	local found = false
+	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
+		local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
+		found = (filetype == 'c')
+	end
+
+	if not found then
+		return
+	end
+
 	for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
 		Run(bufnr)
 	end
