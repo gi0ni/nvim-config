@@ -40,8 +40,9 @@ return
 				}
 			})
 
-			vim.api.nvim_set_hl(0, '@core_token',         { link = '@keyword.directive.glsl' })
-			vim.api.nvim_set_hl(0, '@function.call.glsl', { link = '@function.glsl' })
+			vim.api.nvim_set_hl(0, '@core_token',          { link = '@keyword.directive.glsl' })
+			vim.api.nvim_set_hl(0, '@function.call.glsl',  { link = '@function.glsl' })
+			vim.api.nvim_set_hl(0, '@keyword.import.glsl', { link = 'PreProc' })
 		end
 	}
 }
