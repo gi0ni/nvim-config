@@ -90,17 +90,9 @@ return
 					{
 						name = 'cmp_gl', -- glad headers don't come with docs for some reason
 						entry_filter = function(_, _)
-							local lines = vim.api.nvim_buf_get_lines(0, 0, 5, false)
-
-							for i = 1, 5 do
-								local current_line = lines[i] or ''
-								if current_line:match('#include <glad/glad.h>') then
-									return true
-								end
-							end
-
-							return false
-						end
+							return vim.fn.isdirectory('shd') == 1;
+						end,
+						priority = 9999
 					},
 					{ name = 'nvim_lsp' },
 					{ name = 'nvim_lsp_signature_help' },
