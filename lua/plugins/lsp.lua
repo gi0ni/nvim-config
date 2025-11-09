@@ -95,7 +95,6 @@ return
 						priority = 9999
 					},
 					{ name = 'nvim_lsp' },
-					{ name = 'nvim_lua' },
 					{ name = 'nvim_lsp_signature_help' },
 					{ name = 'path' }
 				},
@@ -119,6 +118,5 @@ return
 	{ 'hrsh7th/cmp-nvim-lsp', opts = {} },
 	{ 'hrsh7th/cmp-nvim-lsp-signature-help' },
 	{ 'gi0ni/cmp-path' },
-	{ 'gi0ni/cmp-gl', opts = {} },
-	{ 'hrsh7th/cmp-nvim-lua' }
+	{ 'gi0ni/cmp-gl', opts = {} }
 }
