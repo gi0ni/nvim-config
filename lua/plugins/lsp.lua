@@ -91,8 +91,7 @@ return
 						name = 'cmp_gl', -- glad headers don't come with docs for some reason
 						entry_filter = function(_, _)
 							return vim.fn.isdirectory('shd') == 1;
-						end,
-						priority = 9999
+						end
 					},
 					{ name = 'nvim_lsp' },
 					{ name = 'nvim_lsp_signature_help' },
