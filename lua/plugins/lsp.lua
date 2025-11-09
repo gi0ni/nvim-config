@@ -7,9 +7,7 @@ return
 		'neovim/nvim-lspconfig',
 
 		config = function()
-			local lspconfig = require('lspconfig')
-
-			lspconfig.lua_ls.setup({
+			vim.lsp.config('lua_ls', {
 				settings = {
 					Lua = {
 						diagnostics = {
@@ -21,7 +19,7 @@ return
 				}
 			})
 
-			lspconfig.clangd.setup({
+			vim.lsp.config('clangd', {
 				cmd = {
 					'clangd',
 					'-header-insertion=never',
@@ -29,7 +27,7 @@ return
 				}
 			})
 
-			lspconfig.rust_analyzer.setup({
+			vim.lsp.config('rust_analyzer', {
 				cmd = { vim.fn.stdpath('data') .. '/mason/bin/rust-analyzer' .. (IsWin32 and '.cmd' or '') },
 
 				settings = {
@@ -42,6 +40,10 @@ return
 					}
 				}
 			})
+
+			vim.lsp.enable('lus_ls')
+			vim.lsp.enable('clangd')
+			vim.lsp.enable('rust_analyzer')
 
 			vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end
