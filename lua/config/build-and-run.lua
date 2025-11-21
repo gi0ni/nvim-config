@@ -5,7 +5,7 @@ vim.keymap.set('n', '<leader>a', function()
 	ArgsList = vim.fn.input('Enter Args: ')
 
 	-- copy by value
-	for key, val in pairs(ArgsListTokenized) do
+	for key, _ in pairs(ArgsListTokenized) do
 		ArgsListTokenized[key] = nil
 	end
 
