@@ -82,7 +82,10 @@ function Run(bufnr)
 	local filetype = vim.api.nvim_buf_get_option(bufnr, 'filetype');
 
 	-- cmake
-	if vim.fn.isdirectory('build') ~= 0 then
+	if vim.fn.filereadable('build.sh') == 1 then
+		vim.cmd("silent! !./build.sh")
+
+	elseif vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin", "buildsystem")
 
 		-- rust
