@@ -119,7 +119,14 @@ return
 		'nvim-telescope/telescope.nvim',
 		dependencies = { 'nvim-lua/plenary.nvim' },
 
-		opts = {},
+		opts = {
+			defaults = {
+				file_ignore_patterns = {
+					"bin/",
+					"build/"
+				}
+			}
+		},
 		keys = {
 			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
 			{ '<leader>fg', '<cmd>Telescope live_grep<CR>'  },
