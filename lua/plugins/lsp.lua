@@ -24,7 +24,8 @@ return
 					'clangd',
 					'-header-insertion=never',
 					'--function-arg-placeholders=0',
-					'--compile-commands-dir=build'
+					'--compile-commands-dir=build',
+					'--background-index'
 				}
 			})
 
