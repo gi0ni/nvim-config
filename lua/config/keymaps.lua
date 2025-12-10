@@ -48,8 +48,9 @@ vim.keymap.set('n', '<leader>gD', vim.lsp.buf.declaration)
 vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation)
 vim.keymap.set('n', '<leader>gR', vim.lsp.buf.references)
 vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
-vim.keymap.set('n', '<leader>i',  vim.lsp.buf.hover)
-vim.keymap.set('n', '<leader>o',  ':lua vim.diagnostic.open_float()<CR>', opt)
+vim.keymap.set('n', '<leader>gk', vim.lsp.buf.hover)
+vim.keymap.set('n', '<leader>o', ':lua vim.diagnostic.open_float()<CR>', opt)
+vim.keymap.set('n', '<leader>i', ':lua vim.lsp.buf.code_action()<CR>', opt)
 
 local hints_enabled = false
 vim.keymap.set('n', '<leader>gh', function()
