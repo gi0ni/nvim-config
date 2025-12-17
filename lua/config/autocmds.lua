@@ -25,19 +25,3 @@ vim.api.nvim_create_autocmd('BufEnter', {
 		end, { expr = true, buffer = args.buf })
 	end
 })
-
--- terminal
-vim.api.nvim_create_autocmd('BufEnter', {
-	pattern = 'term://*',
-	callback = function()
-		vim.cmd('normal! a')
-	end
-})
-
-vim.api.nvim_create_autocmd('TermLeave', {
-	pattern = 'term://*',
-	callback = function()
-		local keys = vim.api.nvim_replace_termcodes('<C-w><C-w>', true, false, true)
-		vim.api.nvim_feedkeys(keys, 'n', true)
-	end
-})
