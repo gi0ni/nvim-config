@@ -18,6 +18,7 @@ vim.keymap.set({ 'n', 'v' }, '<C-b>', '<Down>zz');
 vim.keymap.set('n', '<C-d>', '');
 vim.keymap.set('n', 'q:', '');
 vim.keymap.set('n', 'ZZ', 'zz');
+vim.keymap.set('n', '*', '*N', opt);
 
 -- shift in any direction
 vim.keymap.set('v', '>', '>gv')
