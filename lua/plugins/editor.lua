@@ -122,8 +122,8 @@ return
 		opts = {
 			defaults = {
 				file_ignore_patterns = {
-					"bin/",
-					"build/"
+					"bin[/\\]",
+					"build[/\\]"
 				}
 			}
 		},
