@@ -1,4 +1,5 @@
 vim.opt.nu = true
+-- vim.opt.relativenumber = true -- just use <x>gg to jump to line <x> lmao
 vim.diagnostic.config({ virtual_text = true })
 vim.opt.signcolumn = "no"
 
