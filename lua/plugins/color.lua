@@ -26,7 +26,7 @@ return
 			},
 
 			ensure_installed = {
-				'html', 'glsl'
+				'html', 'glsl', 'python'
 			}
 		},
 
