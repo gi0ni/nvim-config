@@ -2,6 +2,7 @@ vim.opt.nu = true
 -- vim.opt.relativenumber = true -- just use <x>gg to jump to line <x> lmao
 vim.diagnostic.config({ virtual_text = true })
 vim.opt.signcolumn = "no"
+vim.opt.shortmess:append('I')
 
 vim.opt.tabstop    = 4
 vim.opt.shiftwidth = 4
