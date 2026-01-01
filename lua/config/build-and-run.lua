@@ -83,7 +83,7 @@ function Run(bufnr)
 
 	-- cmake
 	if vim.fn.filereadable('build-and-run.sh') == 1 then
-		vim.cmd("silent! !./build-and-run.sh")
+		vim.cmd("silent! !./build-and-run.sh "..ArgsList)
 
 	elseif vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin", "buildsystem")
