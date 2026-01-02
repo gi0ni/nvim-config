@@ -123,7 +123,8 @@ return
 			defaults = {
 				file_ignore_patterns = {
 					"bin[/\\]",
-					"build[/\\]"
+					"build[/\\]",
+					"lib[/\\]"
 				}
 			}
 		},
