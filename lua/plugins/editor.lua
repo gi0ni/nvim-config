@@ -124,7 +124,8 @@ return
 				file_ignore_patterns = {
 					"bin[/\\]",
 					"build[/\\]",
-					"lib[/\\]"
+					"lib[/\\]",
+					"inc[/\\]"
 				}
 			}
 		},
