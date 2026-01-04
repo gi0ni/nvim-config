@@ -236,5 +236,5 @@ function LaunchLinux(build, run, mode)
 	]]
 
 	local final_command = command_a .. command_b .. command_c
-	vim.fn.jobstart("gnome-terminal -- bash -ic '" .. final_command .. "'")
+	vim.fn.jobstart("tmux new-window -n build '" .. final_command .. "'")
 end
