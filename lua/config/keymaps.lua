@@ -132,13 +132,19 @@ vim.keymap.set('n', '<leader>h', '<C-w>h')
 vim.keymap.set('n', '<leader>j', '<C-w>j')
 vim.keymap.set('n', '<leader>k', '<C-w>k')
 vim.keymap.set('n', '<leader>l', '<C-w>l')
+
+vim.keymap.set('n', '<leader>H', '<C-w>h')
+vim.keymap.set('n', '<leader>J', '<C-w>j')
+vim.keymap.set('n', '<leader>K', '<C-w>k')
+vim.keymap.set('n', '<leader>L', '<C-w>l')
+
 vim.keymap.set('n', '<leader>S', '<C-w>r')
 
 -- move
-vim.keymap.set('n', '<leader>H', ':wincmd H<CR>', opt)
-vim.keymap.set('n', '<leader>J', ':wincmd J<CR>', opt)
-vim.keymap.set('n', '<leader>K', ':wincmd K<CR>', opt)
-vim.keymap.set('n', '<leader>L', ':wincmd L<CR>', opt)
+vim.keymap.set('n', '<M-h>', ':wincmd H<CR>', opt)
+vim.keymap.set('n', '<M-j>', ':wincmd J<CR>', opt)
+vim.keymap.set('n', '<M-k>', ':wincmd K<CR>', opt)
+vim.keymap.set('n', '<M-l>', ':wincmd L<CR>', opt)
 
 -- resize
 vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', opt)
