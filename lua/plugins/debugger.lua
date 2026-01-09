@@ -43,8 +43,8 @@ return
 
 			if IsWin32 == false then
 				dap.defaults.fallback.external_terminal = {
-					command = '/usr/bin/gnome-terminal',
-					args = { '--' }
+					command = 'tmux',
+					args = { 'new-window', '-n', 'debug' }
 				}
 
 				dap.defaults.fallback.force_external_terminal = true
