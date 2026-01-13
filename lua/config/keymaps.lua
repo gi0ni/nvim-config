@@ -119,9 +119,9 @@ vim.keymap.set('n', '<leader>c', ':close<CR>',        opt)
 -- quick terminal split
 vim.keymap.set('n', '<leader>t', function()
 	if IsWin32 then
-		vim.cmd('split | wincmd j | resize 7 | term pwsh -nologo')
+		vim.cmd('vsplit | wincmd l | term pwsh -nologo')
 	else
-		vim.cmd('split | wincmd j | resize 7 | term')
+		vim.cmd('vsplit | wincmd l | term')
 	end
 
 	vim.cmd('normal! a')
