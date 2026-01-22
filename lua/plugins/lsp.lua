@@ -47,7 +47,7 @@ return
 			vim.lsp.enable('clangd')
 			vim.lsp.enable('rust_analyzer')
 
-			vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
+			-- vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end
 	},
 
