@@ -181,7 +181,7 @@ function LaunchWindows(build, run, mode)
 
 		<# pause #>
 		Write-Host -NoNewLine 'Press any key to continue...'
-		$null = $Host.UI.RawUI.ReadKey('NoEcho, IncludeKeyDown')
+		$null = [System.Console]::ReadKey()
 	]], build, run):gsub("[\n\t]+", "\\;")
 
 	vim.fn.jobstart([[ wt -p "PowerShell" --startingDirectory "." pwsh -c "]] .. command .. [["]])
