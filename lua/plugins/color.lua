@@ -31,7 +31,7 @@ return
 		},
 
 		config = function(_, opts)
-			require('nvim-treesitter.config' .. (not IsWin32 and 's' or '')).setup(opts)
+			require('nvim-treesitter.config' .. (not (vim.loop.os_uname().sysname == 'Windows_NT') and 's' or '')).setup(opts)
 
 			vim.filetype.add({
 				extension = {
