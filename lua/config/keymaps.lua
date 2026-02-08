@@ -37,7 +37,8 @@ vim.keymap.set({'n', 'v'}, 'P', '"0P`[=`]')
 vim.keymap.set({'n', 'v'}, 'gp', 'p`[=`]')
 vim.keymap.set({'n', 'v'}, 'gP', 'P`[=`]')
 
--- TODO: if on empty line do NOT paste below
+-- search selection
+vim.keymap.set('v', 'f', 'y/\\V<C-r>"')
 
 vim.keymap.set('n', '<space>y', '"+yy')
 vim.keymap.set('v', '<space>y', '"+y')
