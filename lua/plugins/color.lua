@@ -36,7 +36,11 @@ return
 			vim.filetype.add({
 				extension = {
 					vert = 'glsl',
-					frag = 'glsl'
+					frag = 'glsl',
+					geom = 'glsl',
+					tesc = 'glsl',
+					tese = 'glsl',
+					comp = 'glsl'
 				}
 			})
 
