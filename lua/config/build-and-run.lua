@@ -89,11 +89,15 @@ function Run(bufnr)
 	elseif vim.fn.isdirectory('build') ~= 0 then
 		Launch("ninja -C build", "bin", "buildsystem")
 
-		-- rust
+	-- rust
 	elseif vim.fn.filereadable('Cargo.toml') == 1 then
 		Launch("cargo build", "target/debug", "buildsystem")
 
-		-- python
+	-- java
+	elseif vim.fn.filereadable('src/Program.java') == 1 then
+		Launch("javac -d bin src/*.java", "java -cp bin Program", "java-wtf")
+
+	-- python
 	elseif filetype == "python" then
 		Launch((IsWin32 and "python" or "python3"), file, "interpreter")
 
@@ -205,11 +209,14 @@ function LaunchLinux(build, run, mode)
 
 		command_b = string.format([[ %s && (echo; %s %s);]], build, run, ArgsList);
 
-	elseif mode == "interpreter" then
-		command_b = string.format([[ %s %s %s; ]], build, run, ArgsList) -- e.g. python program.py
-
 	elseif mode == "compiler" then
 		command_b = string.format([[ %s && (./%s %s); ]], build, run, ArgsList)
+
+	elseif mode == "java-wtf" then
+		command_b = string.format([[ %s && (%s %s); ]], build, run, ArgsList)
+
+	elseif mode == "interpreter" then
+		command_b = string.format([[ %s %s %s; ]], build, run, ArgsList) -- e.g. python program.py
 
 	else
 		vim.notify("unknown launch mode '" .. mode .. "'!")
