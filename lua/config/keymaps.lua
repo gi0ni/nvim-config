@@ -38,7 +38,7 @@ vim.keymap.set({'n', 'v'}, 'gp', 'p`[=`]')
 vim.keymap.set({'n', 'v'}, 'gP', 'P`[=`]')
 
 -- search selection
-vim.keymap.set('v', 'f', 'y/\\V<C-r>"<CR>')
+vim.keymap.set('v', 'f', 'y/\\V<C-r>"<CR>N')
 
 vim.keymap.set('n', '<space>y', '"+yy')
 vim.keymap.set('v', '<space>y', '"+y')
