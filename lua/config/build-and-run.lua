@@ -95,7 +95,7 @@ function Run(bufnr)
 
 	-- java
 	elseif vim.fn.filereadable('src/Program.java') == 1 then
-		Launch("javac -d bin src/*.java", "java -cp bin Program", "java-wtf")
+		Launch("javac -d bin src/*.java", "java -cp bin Program", "jit")
 
 	-- python
 	elseif filetype == "python" then
@@ -212,7 +212,7 @@ function LaunchLinux(build, run, mode)
 	elseif mode == "compiler" then
 		command_b = string.format([[ %s && (./%s %s); ]], build, run, ArgsList)
 
-	elseif mode == "java-wtf" then
+	elseif mode == "jit" then
 		command_b = string.format([[ %s && (%s %s); ]], build, run, ArgsList)
 
 	elseif mode == "interpreter" then
