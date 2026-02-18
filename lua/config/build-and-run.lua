@@ -95,7 +95,7 @@ function Run(bufnr)
 
 	-- java
 	elseif vim.fn.filereadable('src/Program.java') == 1 then
-		Launch("javac -d bin src/*.java", "java -cp bin Program", "jit")
+		Launch("javac -d bin -g src/*.java", "java -cp bin Program", "jit")
 
 	-- python
 	elseif filetype == "python" then
