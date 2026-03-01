@@ -193,6 +193,9 @@ return
 		opts = {
 			highlight = {
 				keyword = "bg"
+			},
+			keywords = {
+				PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL" }, color = "#10b981" },
 			}
 		}
 	},
