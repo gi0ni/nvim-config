@@ -43,15 +43,9 @@ return
 				}
 			})
 
-			vim.lsp.config('jdtls', {
-				cmd = { vim.fn.stdpath('data') .. '/mason/bin/jdtls' .. (IsWin32 and '.cmd' or '') },
-				root_dir = vim.fn.getcwd()
-			})
-
 			vim.lsp.enable('lus_ls')
 			vim.lsp.enable('clangd')
 			vim.lsp.enable('rust_analyzer')
-			vim.lsp.enable('jdtls')
 
 			-- vim.lsp.set_log_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end
@@ -68,7 +62,6 @@ return
 
 				'clangd',
 				'rust_analyzer',
-				'jdtls',
 
 				'html',
 				'cssls',
