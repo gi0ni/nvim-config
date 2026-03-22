@@ -22,8 +22,6 @@ return
 		lazy = false,
 		build = ':TSUpdate',
 
-		opts = {},
-
 		config = function()
 			local site = require('nvim-treesitter')
 			site.setup({
