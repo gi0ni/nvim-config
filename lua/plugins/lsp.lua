@@ -19,6 +19,20 @@ return
 				}
 			})
 
+			vim.lsp.config('pylsp', {
+				settings = {
+					pylsp = {
+						plugins = {
+							pycodestyle = {
+								ignore = {
+									'E501'
+								}
+							}
+						}
+					}
+				}
+			})
+
 			vim.lsp.config('clangd', {
 				cmd = {
 					'clangd',
@@ -43,9 +57,13 @@ return
 				}
 			})
 
-			vim.lsp.enable('lus_ls')
+			vim.lsp.enable('lua_ls')
+			vim.lsp.enable('pylsp')
 			vim.lsp.enable('clangd')
 			vim.lsp.enable('rust_analyzer')
+			vim.lsp.enable('html')
+			vim.lsp.enable('cssls')
+			vim.lsp.enable('ts_ls')
 
 			vim.lsp.log.set_level('off') -- clangd REALLY likes logging the most insignificant stuff
 		end

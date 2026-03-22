@@ -19,19 +19,17 @@ return
 
 	{
 		'nvim-treesitter/nvim-treesitter',
-		opts = {
-			highlight = {
-				enable = true,
-				disable = 'lua', 'html'
-			},
+		lazy = false,
+		build = ':TSUpdate',
 
-			ensure_installed = {
-				'html', 'glsl', 'python'
-			}
-		},
+		opts = {},
 
-		config = function(_, opts)
-			require('nvim-treesitter.config' .. (not (vim.loop.os_uname().sysname == 'Windows_NT') and 's' or '')).setup(opts)
+		config = function()
+			local site = require('nvim-treesitter')
+			site.setup({
+				install_dir = vim.fn.stdpath('data') .. '/site'
+			})
+			site.install({ 'html', 'glsl', 'python'})
 
 			vim.filetype.add({
 				extension = {
