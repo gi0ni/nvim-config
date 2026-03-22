@@ -29,7 +29,7 @@ return
 			site.setup({
 				install_dir = vim.fn.stdpath('data') .. '/site'
 			})
-			site.install({ 'html', 'glsl', 'python'})
+			site.install({ 'html', 'glsl', 'python' })
 
 			vim.filetype.add({
 				extension = {
