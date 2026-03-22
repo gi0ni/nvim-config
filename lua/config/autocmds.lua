@@ -25,3 +25,11 @@ vim.api.nvim_create_autocmd('BufEnter', {
 		end, { expr = true, buffer = args.buf })
 	end
 })
+
+-- Enable treesitter indentation only for python scripts
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "python",
+	callback = function()
+		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+	end,
+})
