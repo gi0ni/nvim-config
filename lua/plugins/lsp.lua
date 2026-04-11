@@ -25,7 +25,10 @@ return
 						plugins = {
 							pycodestyle = {
 								ignore = {
-									'E501'
+									'E501', -- Lines longer than 79 characters
+									'E302', -- 2 blank lines after imports
+									'E305', -- 2 blank lines after definitions
+									'E231', -- Whitespace after operator
 								}
 							}
 						}
