@@ -155,11 +155,6 @@ return
 	},
 
 	{
-		'windwp/nvim-autopairs',
-		opts = {}
-	},
-
-	{
 		'tpope/vim-surround'
 	},
 

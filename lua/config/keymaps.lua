@@ -1,18 +1,21 @@
 require('config.build-and-run')
 local opt = { silent = true }
 
--- toggle file explorer
+-- Learn how to use Vim properly, dumbass.
+vim.keymap.set({'n', 'i', 'v'}, '<Up>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v'}, '<Right>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v'}, '<Left>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v'}, '<Down>', '<Nop>')
+
+-- Toggle the file explorer split
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', opt)
 
--- clear search results
+-- Clear search result highlights
 vim.keymap.set('n', '<Esc>', ':noh<CR>', opt)
 
--- exit terminal mode
-vim.keymap.set('t', '<Esc>', '<C-\\><C-n>')
-
--- scroll
-vim.keymap.set({ 'n', 'v' }, '<C-f>', '<Up>zz');
-vim.keymap.set({ 'n', 'v' }, '<C-b>', '<Down>zz');
+-- Scroll while keeping the cursor in the middle of the screen
+vim.keymap.set({'n', 'v'}, '<C-f>', '<Up>zz');
+vim.keymap.set({'n', 'v'}, '<C-b>', '<Down>zz');
 
 -- nope
 vim.keymap.set('n', '<C-d>', '');

@@ -15,14 +15,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
 		vim.keymap.set('n', 'a', function()
 			return vim.fn.getline('.'):match('^%s*$') and 'a<C-f>' or 'a'
 		end, { expr = true, buffer = args.buf })
-
-		vim.keymap.set('i', '<Up>', function()
-			return vim.fn.getline(vim.fn.line('.') - 1):match('^%s*$') and '<Up><C-f>' or '<Up>'
-		end, { expr = true, buffer = args.buf })
-
-		vim.keymap.set('i', '<Down>', function()
-			return vim.fn.getline(vim.fn.line('.') + 1):match('^%s*$') and '<Down><C-f>' or '<Down>'
-		end, { expr = true, buffer = args.buf })
 	end
 })
 
