@@ -1,5 +1,5 @@
-vim.opt.shortmess:append('I') -- Disable the start screen.
-vim.opt.fillchars:append({ eob = ' ' }) -- Do not display ~ at the end of short buffers.
+vim.opt.shortmess:append('I') -- Disable start screen.
+vim.opt.fillchars:append({ eob = ' ' }) -- Do not display ~ after end of buffers.
 vim.opt.guicursor = "n-v-c:block-Cursor"
 
 vim.opt.relativenumber = true
