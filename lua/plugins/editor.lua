@@ -147,12 +147,6 @@ return
 	},
 
 	{
-		'windwp/nvim-ts-autotag',
-		dependencies = { 'nvim-treesitter/nvim-treesitter' },
-		opts = {}
-	},
-
-	{
 		'numToStr/Comment.nvim',
 		config = function()
 			require('Comment').setup()
