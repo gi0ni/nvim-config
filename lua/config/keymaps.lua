@@ -2,10 +2,10 @@ require('config.build')
 local sopt = { silent = true }
 
 -- Learn how to use Vim properly, dumbass
-vim.keymap.set({'n', 'i', 'v', 't'}, '<Up>', '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't'}, '<Right>', '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't'}, '<Left>', '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't'}, '<Down>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Up>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Right>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Left>', '<Nop>')
+vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Down>', '<Nop>')
 
 -- Toggle the file explorer split
 vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', sopt)
