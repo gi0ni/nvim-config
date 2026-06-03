@@ -1,14 +1,15 @@
+vim.opt.shortmess:append('I') -- Disable the start screen.
+vim.opt.fillchars:append({ eob = ' ' }) -- Do not display ~ at the end of short buffers.
+vim.opt.guicursor = "n-v-c:block-Cursor"
+
+vim.opt.relativenumber = true
 vim.opt.nu = true
-vim.opt.relativenumber = true -- You can also use <abs>gg to jump to a line.
+
 vim.diagnostic.config({ virtual_text = true })
 vim.opt.signcolumn = "no"
-vim.opt.shortmess:append('I')
 
-vim.opt.tabstop    = 4
 vim.opt.shiftwidth = 4
-vim.opt.cinscopedecls = ''
+vim.opt.tabstop = 4
+vim.opt.cinkeys:remove('0#') -- Disable auto indent for keywords like 'public:' and # directives.
 vim.opt.cinkeys:remove(':')
-vim.opt.cinkeys:remove('0#')
-
-vim.opt.fillchars:append({ eob = ' ' })
--- vim.opt.guicursor = 'i-ci:ver25-Cursor/lCursor-blinkwait1000-blinkon100-blinkoff100'
+vim.opt.cinscopedecls = ''
