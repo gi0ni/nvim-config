@@ -1,5 +1,5 @@
 require('config.build-and-run')
-local sopt = {silent = true}
+local sopt = { silent = true }
 
 -- Learn how to use Vim properly, dumbass
 vim.keymap.set({'n', 'i', 'v', 't'}, '<Up>', '<Nop>')
