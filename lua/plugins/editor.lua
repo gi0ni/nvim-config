@@ -174,15 +174,6 @@ return
 
 	-- niche
 	{
-		'max397574/better-escape.nvim',
-		config = function()
-			require('better_escape').setup {
-				timeout = 150
-			}
-		end
-	},
-
-	{
 		'folke/todo-comments.nvim',
 		dependencies = { 'nvim-lua/plenary.nvim' },
 		opts = {
