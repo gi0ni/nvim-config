@@ -196,11 +196,6 @@ return
 	},
 
 	{
-		'gi0ni/smart-semicolon.nvim',
-		opts = {}
-	},
-
-	{
 		'folke/flash.nvim',
 		event = 'VeryLazy',
 
