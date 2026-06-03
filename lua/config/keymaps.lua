@@ -1,4 +1,4 @@
-require('config.build-and-run')
+require('config.build')
 local sopt = { silent = true }
 
 -- Learn how to use Vim properly, dumbass
