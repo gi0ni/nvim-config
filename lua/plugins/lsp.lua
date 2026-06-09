@@ -39,11 +39,14 @@ return
 				}
 			})
 
+			local capabilities = require('cmp_nvim_lsp').default_capabilities()
+			capabilities.textDocument.completion.completionItem.snippetSupport = false
+
 			vim.lsp.config('clangd', {
+				capabilities = capabilities,
 				cmd = {
 					'clangd',
 					'-header-insertion=never',
-					'--function-arg-placeholders=0',
 					'--compile-commands-dir=build',
 					'--background-index'
 				}
@@ -132,7 +135,14 @@ return
 					['<Tab>'] = cmp.mapping.confirm({ select = true }),
 					['<C-g>'] = function() if cmp.visible_docs() then cmp.close_docs() else cmp.open_docs() end
 				  end
-				})
+				}),
+
+				formatting = {
+					format = function(_, vim_item)
+						vim_item.menu = ''
+						return vim_item
+					end
+				}
 			})
 		end
 	},
