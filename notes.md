@@ -6,3 +6,4 @@
 6. You can use ; to repeat the last motion.
 7. You can press <C-h> in insert mode for quick Backspace.
 8. <C-f> to edit command.
+9. :u0 discards all changes g- and g+ can also be used to undo/redo
