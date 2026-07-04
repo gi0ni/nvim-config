@@ -135,6 +135,9 @@ vim.keymap.set('n', '<leader>t', function()
 	vim.cmd('normal! a')
 end, sopt)
 
+-- Close terminal shortcut 'cause the existing one is way too complicated to remember
+vim.keymap.set('t', '<leader>q', '<C-\\><C-n>')
+
 -- Focus
 vim.keymap.set('n', '<leader>h', '<C-w>h')
 vim.keymap.set('n', '<leader>j', '<C-w>j')
