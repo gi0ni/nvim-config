@@ -1,9 +1,10 @@
-1. Find and replace quickly: * ---> cgn ---> n ---> .
-2. ???: <visual> ---> dg
-3. Secondary escape available by default: <C-[> <===> <Esc>
-4. You can use jk to exit terminal mode for some reason.
-5. Accept code action from LSP with: <leader>i
-6. You can use ; to repeat the last motion.
-7. You can press <C-h> in insert mode for quick Backspace.
-8. <C-f> to edit command.
-9. :u0 discards all changes g- and g+ can also be used to undo/redo
+o   cgn + . + n   : find and replace
+
+o   Ctrl-[        : Esc
+o   Ctrl-w + w    : switch splits
+o   ;             : repeat last motion
+o   Ctrl-f        : command mode edit
+
+o   LEADER-i      : code action
+o   Ctrl-h        : Backspace
+o   :u0           : discard changes
