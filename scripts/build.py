@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.2                                                               *
+# *      v0.0.3                                                               *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -312,8 +312,17 @@ class Slave:
 # =============================================================================
 def ManualConfig():
     # e.g.
-    # AddTask(name="server", buildCmd="ninja -C build", launchCmd="bin/server", predicate=lambda: subprocess.run("ps aux | grep 'server'") == 1)
-    # AddTask(name="client", launchCmd="bin/client")
+    # AddTask(
+    #     name="server",
+    #     buildCmd="ninja -C build",
+    #     launchCmd="bin/server",
+    #     predicate=lambda: subprocess.run(["bash", "-c", "ps aux | grep 'bin/server' | grep -v grep"]).returncode == 1
+    # )
+    #
+    # AddTask(
+    #     name="client",
+    #     launchCmd="bin/client"
+    # )
 
 
 
