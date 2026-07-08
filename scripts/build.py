@@ -1,12 +1,12 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.5                                                               *
+# *      v0.0.7                                                               *
 # *      @author gi0ni                                                        *
 # =============================================================================
+# NOTE: No idea how to get args containing quotes working on Windows.
 
 
 import platform
-import shlex
 import os
 import sys
 import subprocess
@@ -32,7 +32,7 @@ platformCommands = {
 
     "Windows": {
         "wait": ["pwsh", "-NoLogo", "-Command", "$null = [System.Console]::ReadKey()"],
-        "term": ["wt", "-profile", "PowerShell", "--startingDirectory", ".", "pwsh", "-CommandWithArgs"]
+        "term": ["wt", "--"]
     }
 }
 
@@ -60,15 +60,11 @@ Color = {
 # TODO: Might be useful to be able to run more than one build/launch command in the same terminal window.
 class Task:
     def __init__(self, name=None, buildCmd=None, launchCmd=None, predicate=None):
-        self.name      = name                   if name is not None    else "build"
-        self.predicate = predicate              if callable(predicate) else None
+        self.name      = name      if name is not None    else "build"
+        self.predicate = predicate if callable(predicate) else None
 
-        if not isMasterScript: # No point in wasting time if master is not going to use them
-            self.buildCmd  = shlex.split(buildCmd)  if buildCmd            else None
-            self.launchCmd = shlex.split(launchCmd) if launchCmd           else None
-
-        self.originalBuildCmd = buildCmd
-        self.originalLaunchCmd = launchCmd
+        self.buildCmd  = buildCmd  if buildCmd  else None
+        self.launchCmd = launchCmd if launchCmd else None
 
 
     def ExecuteBuild(self) -> bool:
@@ -79,7 +75,7 @@ class Task:
         try:
             returnCode = subprocess.run(self.buildCmd).returncode
         except FileNotFoundError:
-            FailGracefully("{0}[BUILD FAILED]:{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.originalBuildCmd))
+            FailGracefully("{0}[BUILD FAILED]:{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.buildCmd))
 
         buildPassed = (returnCode == 0)
         if buildPassed and self.HasLaunch():
@@ -94,9 +90,9 @@ class Task:
 
         returnCode = 1
         try:
-            returnCode = subprocess.run(self.launchCmd + slaveArgs).returncode
+            returnCode = subprocess.run(self.launchCmd).returncode
         except FileNotFoundError:
-            FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.originalLaunchCmd))
+            FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
         
         return returnCode
 
@@ -110,16 +106,15 @@ class Task:
 
 
     def HasBuild(self):
-        return self.originalBuildCmd is not None
+        return self.buildCmd is not None
 
 
     def HasLaunch(self):
-        return self.originalLaunchCmd is not None
+        return self.launchCmd is not None
 
 
 tasks: List[Task] = []
 isMasterScript = True
-slaveArgs = []
 
 def AddTask(name=None, buildCmd=None, launchCmd=None, predicate=None):
     task = Task(name, buildCmd, launchCmd, predicate)
@@ -133,7 +128,6 @@ def AddTask(name=None, buildCmd=None, launchCmd=None, predicate=None):
 # =============================================================================
 def ParseArgs():
     global isMasterScript
-    global slaveArgs
 
     argc = len(sys.argv)
 
@@ -159,12 +153,6 @@ def ParseArgs():
                 pos = FindNextDashArg(sys.argv, i)
                 launchCommands = sys.argv[i + 1:pos]
                 i = pos - 1
-
-            case "--args":
-                pos = FindNextDashArg(sys.argv, i)
-                slaveArgs = sys.argv[i + 1:pos]
-                i = pos - 1
-
 
     InitTasksFromArgs(buildCommands, launchCommands)
 
@@ -216,13 +204,10 @@ class Master:
             spawnCmd = ["-n", task.name] + spawnCmd
 
         if task.HasBuild():
-            spawnCmd += ["--build", task.originalBuildCmd]
+            spawnCmd += ["--build", task.buildCmd]
 
         if task.HasLaunch():
-            spawnCmd += ["--launch", task.originalLaunchCmd]
-
-        if slaveArgs:
-            spawnCmd += ["--args"] + slaveArgs
+            spawnCmd += ["--launch", task.launchCmd]
 
         spawnCmd = platformCommands[platformName]["term"] + spawnCmd
         self.slaves += [subprocess.Popen(spawnCmd)]
