@@ -8,3 +8,5 @@ o   Ctrl-f        : command mode edit
 o   LEADER-i      : code action
 o   Ctrl-h        : Backspace
 o   :u0           : discard changes
+
+o   :filter highlights [pattern]
