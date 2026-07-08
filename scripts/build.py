@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.1                                                               *
+# *      v0.0.2                                                               *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -61,16 +61,18 @@ Color = {
 class Task:
     def __init__(self, name=None, buildCmd=None, launchCmd=None, predicate=None):
         self.name      = name                   if name is not None    else "build"
-        self.buildCmd  = shlex.split(buildCmd)  if buildCmd            else None
-        self.launchCmd = shlex.split(launchCmd) if launchCmd           else None
         self.predicate = predicate              if callable(predicate) else None
+
+        if not isMasterScript: # No point in wasting time if master is not going to use them
+            self.buildCmd  = shlex.split(buildCmd)  if buildCmd            else None
+            self.launchCmd = shlex.split(launchCmd) if launchCmd           else None
 
         self.originalBuildCmd = buildCmd
         self.originalLaunchCmd = launchCmd
 
 
     def ExecuteBuild(self) -> bool:
-        if self.buildCmd is None:
+        if not self.HasBuild():
             return True
 
         returnCode = 1
@@ -87,7 +89,7 @@ class Task:
 
 
     def ExecuteLaunch(self) -> int:
-        if self.launchCmd is None:
+        if not self.HasLaunch():
             return 0
 
         returnCode = 1
@@ -108,11 +110,11 @@ class Task:
 
 
     def HasBuild(self):
-        return self.buildCmd is not None
+        return self.originalBuildCmd is not None
 
 
     def HasLaunch(self):
-        return self.launchCmd is not None
+        return self.originalLaunchCmd is not None
 
 
 tasks: List[Task] = []
@@ -213,10 +215,10 @@ class Master:
         if platformName == "Linux":
             spawnCmd = ["-n", task.name] + spawnCmd
 
-        if task.buildCmd is not None:
+        if task.HasBuild():
             spawnCmd += ["--build", task.originalBuildCmd]
 
-        if task.launchCmd is not None:
+        if task.HasLaunch():
             spawnCmd += ["--launch", task.originalLaunchCmd]
 
         if slaveArgs:
