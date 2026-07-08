@@ -6,7 +6,7 @@ return
 
 		config = function()
 			require("everforest").setup({
-				background = 'medium',
+				background = 'hard',
 			})
 
 			vim.cmd('colorscheme everforest')
@@ -30,7 +30,7 @@ return
 				install_dir = vim.fn.stdpath('data') .. '/site'
 			})
 
-			site.install({ 'glsl', 'python' })
+			site.install({'glsl', 'python'})
 		end
 	}
 }
