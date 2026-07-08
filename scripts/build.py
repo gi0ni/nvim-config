@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.4                                                               *
+# *      v0.0.5                                                               *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -284,7 +284,7 @@ class Slave:
         formattedTime = self.GetFormattedTime(runtimeNano)
 
         print("\n\n\n", end="")
-        print("Process returned %s in %s minutes." % (formattedReturnCode, formattedTime))
+        print("Process returned %s in %s." % (formattedReturnCode, formattedTime))
 
 
     def GetFormattedReturnCode(self, returnCode):
@@ -301,7 +301,14 @@ class Slave:
         seconds = millis / 1000
         minutes = seconds / 60
 
-        result = "%s%02d:%02d.%03d%s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, Color["CLEAR"])
+        units = "millis"
+        if minutes > 0:
+            units = "minutes"
+        elif seconds > 0:
+            units = "seconds"
+
+
+        result = "%s%02d:%02d.%03d%s %s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, Color["CLEAR"], units)
         return result
 
 
