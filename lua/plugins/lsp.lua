@@ -1,8 +1,8 @@
--- FIX: rust-analyzer sometimes launches 2 instances. type annotations get shown twice and you get asked 2 times to rename something
+-- FIX: rust-analyzer sometimes launches 2 instances. Type annotations get shown twice and you get asked twice to rename something
 
 return
 {
-	-- linter
+	-- LSP config for linting
 	{
 		'neovim/nvim-lspconfig',
 
@@ -25,6 +25,7 @@ return
 						plugins = {
 							pycodestyle = {
 								ignore = {
+									-- TODO: Just straight up copy what the errors say here so you can tell how stupid they are
 									'E501', -- Lines longer than 79 characters
 									'E302', -- 2 blank lines after imports
 									'E305', -- 2 blank lines after definitions
@@ -32,6 +33,12 @@ return
 									'E251', -- Whitespace after parameter equals
 									'E701', -- Multiple statements on same line
 									'E303', -- Too many blank lines
+
+									'E261', -- at least two spaces before inline comment
+									'W293', -- blank line contains whitespace
+									'E221', -- multiple spaces before operator
+									'E272', -- multiple spaces before keyword
+									'E241', -- multiple spaces after ':'
 								}
 							}
 						}
@@ -59,7 +66,7 @@ return
 					['rust-analyzer'] = {
 						completion = {
 							callable = {
-								snippets = "add_parentheses" -- no placeholder args
+								snippets = "add_parentheses" -- No placeholder args
 							}
 						}
 					}
@@ -107,7 +114,7 @@ return
 	},
 
 
-	-- complete suggestions
+	-- Completion suggestion via Nvim.cmp
 	{
 		'hrsh7th/nvim-cmp',
 
