@@ -1,16 +1,16 @@
 return
 {
-	-- basic editor utilities
+	-- Some basic editor features (tabs, indent level, file explorer on the side and statusline)
 	{
 		'akinsho/bufferline.nvim',
 		dependencies = { 'nvim-tree/nvim-web-devicons' },
 
 		config = function()
 			require('bufferline').setup({
-				vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', { silent = true }),
-				vim.keymap.set('n', ']b', ':BufferLineCycleNext<CR>', { silent = true }),
-				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  { silent = true }),
-				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  { silent = true }),
+				vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', {silent=true}),
+				vim.keymap.set('n', ']b', ':BufferLineCycleNext<CR>', {silent=true}),
+				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  {silent=true}),
+				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  {silent=true}),
 
 				options = {
 					numbers = 'none',
@@ -26,9 +26,9 @@ return
 			})
 
 			for i = 1, 9 do
-				vim.keymap.set('n', '<leader>' .. i, ':lua require("bufferline").go_to( ' .. i .. ', true)<CR>', { silent = true })
+				vim.keymap.set('n', '<leader>' .. i, ':lua require("bufferline").go_to( ' .. i .. ', true)<CR>', {silent=true})
 			end
-			vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', { silent = true })
+			vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', {silent=true})
 		end
 	},
 
@@ -102,7 +102,7 @@ return
 		end
 	},
 
-	-- convinience
+	-- Essential plugins (telescope and lazygit integration)
 	{
 		'nvim-telescope/telescope.nvim',
 		dependencies = { 'nvim-lua/plenary.nvim' },
@@ -110,17 +110,19 @@ return
 		opts = {
 			defaults = {
 				file_ignore_patterns = {
-					"bin[/\\]",
-					"build[/\\]",
-					"lib[/\\]",
-					"inc[/\\]"
+					'bin[/\\]',
+					'build[/\\]',
+					'lib[/\\]',
+					'inc[/\\]',
+					'target[/\\]'
 				}
 			}
 		},
+
 		keys = {
 			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
-			{ '<leader>fg', '<cmd>Telescope live_grep<CR>'  },
-			{ '<leader>fb', '<cmd>Telescope buffers<CR>'    }
+			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
+			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
 		}
 	},
 
@@ -142,6 +144,9 @@ return
 		}
 	},
 
+
+
+	-- Some convinience plugins (better escape, todo comments, vim surround and folke's flash)
 	{
 		'tpope/vim-surround'
 	},
@@ -153,42 +158,33 @@ return
 		end
 	},
 
-
-	-- niche
 	{
 		'max397574/better-escape.nvim',
 		config = function()
 			require('better_escape').setup {
 				timeout = 150,
-				default_mappings = false, -- setting this to false removes all the default mappings
+				default_mappings = false,
 				mappings = {
-					-- i for insert
 					i = {
 						j = {
-							-- These can all also be functions
-							k = "<Esc>",
-							j = "<Esc>",
+							k = '<Esc>',
+							j = '<Esc>',
 						},
 					},
 					c = {
 						j = {
-							k = "<C-c>",
-							j = "<C-c>",
+							k = '<C-c>',
+							j = '<C-c>',
 						},
 					},
-					-- t = {
-					-- 	j = {
-					-- 		k = "<C-\\><C-n>",
-					-- 	},
-					-- },
 					v = {
 						j = {
-							k = "<Esc>",
+							k = '<Esc>',
 						},
 					},
 					s = {
 						j = {
-							k = "<Esc>",
+							k = '<Esc>',
 						},
 					},
 				}
@@ -201,10 +197,10 @@ return
 		dependencies = { 'nvim-lua/plenary.nvim' },
 		opts = {
 			highlight = {
-				keyword = "bg"
+				keyword = 'bg'
 			},
 			keywords = {
-				PERF = { icon = " ", alt = { "OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL" }, color = "#10b981" },
+				PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE', 'TIL' }, color = '#10b981' },
 			}
 		}
 	},
