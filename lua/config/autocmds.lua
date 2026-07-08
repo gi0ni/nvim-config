@@ -1,10 +1,20 @@
--- disable comment insertion
-vim.api.nvim_create_autocmd('FileType', { pattern = '*', callback = function() vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' }) end })
+-- Disable auto comment insertion in insert mode. No, this will not work if set only once in `options.lua`
+vim.api.nvim_create_autocmd('FileType', {
+	pattern = '*',
+	callback = function()
+		vim.opt_local.formatoptions:remove({'c', 'r', 'o'})
+	end
+})
 
--- remember cursor position
-vim.api.nvim_create_autocmd('BufReadPost', { pattern = '*', callback = function() vim.cmd('normal! `"zz') end })
+-- Remember the cursor position when opening a file
+vim.api.nvim_create_autocmd('BufReadPost', {
+	pattern = '*',
+	callback = function()
+		vim.cmd('normal! `"zz')
+	end
+})
 
--- indent blank lines
+-- Make append command go to the correct indentation level
 vim.api.nvim_create_autocmd('BufEnter', {
 	pattern = '*',
 	callback = function(args)
@@ -14,14 +24,6 @@ vim.api.nvim_create_autocmd('BufEnter', {
 
 		vim.keymap.set('n', 'a', function()
 			return vim.fn.getline('.'):match('^%s*$') and 'a<C-f>' or 'a'
-		end, { expr = true, buffer = args.buf })
+		end, {expr=true, buffer=args.buf})
 	end
-})
-
--- Enable treesitter indentation only for python scripts
-vim.api.nvim_create_autocmd("FileType", {
-	pattern = "python",
-	callback = function()
-		vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
-	end,
 })
