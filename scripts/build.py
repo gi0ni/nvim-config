@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.10                                                              *
+# *      v0.0.11                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 # NOTE: No idea how to get args containing quotes working on Windows.
@@ -98,7 +98,7 @@ class Task:
             returnCode = subprocess.run(self.tokenizedLaunchCmd).returncode
         except FileNotFoundError:
             FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
-        
+
         return returnCode
 
 
@@ -278,6 +278,12 @@ class Slave:
 
 
     def GetFormattedReturnCode(self, returnCode):
+        if returnCode < 0:
+            if platformName == "Linux":
+                returnCode += 2 ** 8
+            elif platformName == "Windows":
+                returnCode += 2 ** 32
+
         result = "code %d (0x%08X)" % (returnCode, returnCode)
 
         color = Color["GREEN"] if returnCode == 0 else Color["RED"]
