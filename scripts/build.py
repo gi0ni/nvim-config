@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.8                                                               *
+# *      v0.0.10                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 # NOTE: No idea how to get args containing quotes working on Windows.
@@ -9,6 +9,7 @@
 import platform
 import os
 import sys
+import shlex
 import subprocess
 import time
 from typing import List
@@ -58,7 +59,6 @@ Color = {
 
 
 # TODO: Might be useful to be able to run more than one build/launch command in the same terminal window.
-# FIX: Should use shlex to tokenize the commands. The master still needs to send the untokenized string to the slaves though.
 class Task:
     def __init__(self, name=None, buildCmd=None, launchCmd=None, predicate=None):
         self.name      = name      if name is not None    else "build"
@@ -67,6 +67,10 @@ class Task:
         self.buildCmd  = buildCmd  if buildCmd  else None
         self.launchCmd = launchCmd if launchCmd else None
 
+        if not isMasterScript:
+            self.tokenizedBuildCmd  = shlex.split(self.buildCmd)  if self.buildCmd  else None
+            self.tokenizedLaunchCmd = shlex.split(self.launchCmd) if self.launchCmd else None
+
 
     def ExecuteBuild(self) -> bool:
         if not self.HasBuild():
@@ -74,7 +78,7 @@ class Task:
 
         returnCode = 1
         try:
-            returnCode = subprocess.run(self.buildCmd, shell=True).returncode
+            returnCode = subprocess.run(self.tokenizedBuildCmd).returncode
         except FileNotFoundError:
             FailGracefully("{0}[BUILD FAILED]:{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.buildCmd))
 
@@ -91,7 +95,7 @@ class Task:
 
         returnCode = 1
         try:
-            returnCode = subprocess.run(self.launchCmd, shell=True).returncode
+            returnCode = subprocess.run(self.tokenizedLaunchCmd).returncode
         except FileNotFoundError:
             FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
         
@@ -282,10 +286,10 @@ class Slave:
 
 
     def GetFormattedTime(self, nanos: int) -> str:
-        micros = nanos / 1000
-        millis = micros / 1000
-        seconds = millis / 1000
-        minutes = seconds / 60
+        micros = nanos // 1000
+        millis = micros // 1000
+        seconds = millis // 1000
+        minutes = seconds // 60
 
         units = "millis"
         if minutes > 0:
@@ -294,7 +298,7 @@ class Slave:
             units = "seconds"
 
 
-        result = "%s%02d:%02d.%03d%s %s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, Color["CLEAR"], units)
+        result = "%s%02d:%02d.%03d %s%s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, units, Color["CLEAR"])
         return result
 
 
