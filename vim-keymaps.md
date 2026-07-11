@@ -10,4 +10,5 @@ o   Ctrl-h         : Backspace
 o   :u0            : discard changes
 
 o   :filter highlights [pattern]
-o  Ctrl-p, Ctrl-n  : navigate command history, works in terminal too
+o  Ctrl-p, Ctrl-n  : navigate command history, works in terminal too and also scrolls through the Nvim.cmp list
+o   Ctrl-u         : delete the entire line to beginning
