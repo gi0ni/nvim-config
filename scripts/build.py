@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.7                                                               *
+# *      v0.0.8                                                               *
 # *      @author gi0ni                                                        *
 # =============================================================================
 # NOTE: No idea how to get args containing quotes working on Windows.
@@ -58,6 +58,7 @@ Color = {
 
 
 # TODO: Might be useful to be able to run more than one build/launch command in the same terminal window.
+# FIX: Should use shlex to tokenize the commands. The master still needs to send the untokenized string to the slaves though.
 class Task:
     def __init__(self, name=None, buildCmd=None, launchCmd=None, predicate=None):
         self.name      = name      if name is not None    else "build"
@@ -73,7 +74,7 @@ class Task:
 
         returnCode = 1
         try:
-            returnCode = subprocess.run(self.buildCmd).returncode
+            returnCode = subprocess.run(self.buildCmd, shell=True).returncode
         except FileNotFoundError:
             FailGracefully("{0}[BUILD FAILED]:{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.buildCmd))
 
@@ -90,7 +91,7 @@ class Task:
 
         returnCode = 1
         try:
-            returnCode = subprocess.run(self.launchCmd).returncode
+            returnCode = subprocess.run(self.launchCmd, shell=True).returncode
         except FileNotFoundError:
             FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
         
@@ -185,7 +186,7 @@ class Master:
     def __init__(self):
         self.slaves: List[subprocess.Popen] = []
 
-        ManualConfig()
+        UserConfig()
 
         if not tasks:
             AddTask(name="error")
@@ -302,7 +303,7 @@ class Slave:
 # *                                 CONFIG                                    *
 # *                                                                           *
 # =============================================================================
-def ManualConfig():
+def UserConfig():
     # e.g.
     # AddTask(
     #     name="server",
