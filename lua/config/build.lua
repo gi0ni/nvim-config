@@ -13,7 +13,7 @@ vim.keymap.set('n', '<leader>ba', function()
 		return
 	end
 
-	-- Important! Copy temporary table by value.
+	-- Important! Copy temporary table by value
 	local tokens = vim.split(ArgsList, ' +')
 
 	for key, val in pairs(tokens) do

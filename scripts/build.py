@@ -1,9 +1,9 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.11                                                              *
+# *      v0.0.12                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
-# NOTE: No idea how to get args containing quotes working on Windows.
+# NOTE: No idea how to get args containing quotes working on Windows
 
 
 import platform
@@ -58,7 +58,7 @@ Color = {
 }
 
 
-# TODO: Might be useful to be able to run more than one build/launch command in the same terminal window.
+# TODO: Might be useful to be able to run more than one build/launch command in the same terminal window
 class Task:
     def __init__(self, name=None, buildCmd=None, launchCmd=None, predicate=None):
         self.name      = name      if name is not None    else "build"
@@ -80,7 +80,7 @@ class Task:
         try:
             returnCode = subprocess.run(self.tokenizedBuildCmd).returncode
         except FileNotFoundError:
-            FailGracefully("{0}[BUILD FAILED]:{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.buildCmd))
+            FailGracefully("{0}<BUILD FAILED>{1} Failed to run unknown command {0}`{2}`{1}!".format(Color["RED"], Color["CLEAR"], self.buildCmd))
 
         buildPassed = (returnCode == 0)
         if buildPassed and self.HasLaunch():
@@ -97,7 +97,7 @@ class Task:
         try:
             returnCode = subprocess.run(self.tokenizedLaunchCmd).returncode
         except FileNotFoundError:
-            FailGracefully("{0}[LAUNCH FAILED]:{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
+            FailGracefully("{0}<LAUNCH FAILED>{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
 
         return returnCode
 
@@ -138,7 +138,7 @@ def ParseArgs():
 
     # An element in one of these 2 lists is a string. It represents a command
     # joined together with its args in one single string. Each element will be
-    # split into a list of tokens later.
+    # split into a list of tokens later
     buildCommands = []
     launchCommands = []
 
@@ -264,9 +264,9 @@ class Slave:
     def PrintBuildStatus(self, buildPassed):
         print("\n\n\n", end="")
         if buildPassed:
-            print("{0}[BUILD PASSED]{1} Build task completed with {0}no errors{1}. Good work!".format(Color["GREEN"], Color["CLEAR"]))
+            print("{0}<BUILD PASSED>{1} Build task completed with {0}no errors{1}. Good work!".format(Color["GREEN"], Color["CLEAR"]))
         else:
-            print("{0}[BUILD FAILED]{1} Build task terminated, {0}some errors{1} need fixing...".format(Color["RED"], Color["CLEAR"]))
+            print("{0}<BUILD FAILED>{1} Build task terminated, {0}some errors{1} need fixing...".format(Color["RED"], Color["CLEAR"]))
 
 
     def PrintLaunchStatus(self, returnCode, runtimeNano):
