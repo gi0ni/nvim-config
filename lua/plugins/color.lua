@@ -14,6 +14,8 @@ return
 			local hl = require('utils.hl')
 			hl.set('ErrorMsg', {link='Red', underline=false})
 			hl.set('LspInlayHint', {link='Grey'})
+			hl.set('String', {link='Aqua'})
+			hl.set('cDefine', {link='Purple'})
 		end
 	},
 
