@@ -66,7 +66,7 @@ return
 					['rust-analyzer'] = {
 						completion = {
 							callable = {
-								snippets = "add_parentheses" -- No placeholder args
+								snippets = 'add_parentheses' -- No placeholder args
 							}
 						}
 					}
@@ -114,14 +114,24 @@ return
 	},
 
 
-	-- Completion suggestion via Nvim.cmp
+	-- Autocomplete
 	{
 		'hrsh7th/nvim-cmp',
 
 		config = function()
 			local cmp = require('cmp')
+			local borderedWindow = cmp.config.window.bordered({
+				border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+				scrollbar = false,
+				winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None'
+			})
+			-- borderedWindow.winblend = 20
 
 			cmp.setup({
+				completion = {
+					completeopt = 'menu,menuone,noinsert'
+				},
+
 				sources = {
 					{
 						name = 'cmp_gl', -- glad headers don't come with docs for some reason
@@ -149,13 +159,18 @@ return
 						vim_item.menu = ''
 						return vim_item
 					end
+				},
+
+				window = {
+					completion = borderedWindow,
+					documentation = borderedWindow,
 				}
 			})
 		end
 	},
 
-	{ 'hrsh7th/cmp-nvim-lsp', opts = {} },
-	{ 'hrsh7th/cmp-nvim-lsp-signature-help' },
-	{ 'gi0ni/cmp-path' },
-	{ 'gi0ni/cmp-gl', opts = {} }
+	{'hrsh7th/cmp-nvim-lsp', opts = {}},
+	{'hrsh7th/cmp-nvim-lsp-signature-help'},
+	{'gi0ni/cmp-path'},
+	{'gi0ni/cmp-gl', opts = {}}
 }

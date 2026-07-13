@@ -13,7 +13,10 @@ return
 				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  {silent=true}),
 
 				options = {
-					numbers = 'none',
+					numbers = function(opts)
+						return string.format(' %s', opts.ordinal)
+					end,
+					buffer_close_icon = ' ',
 					offsets = {
 						{
 							filetype = 'NvimTree',
@@ -220,5 +223,5 @@ return
 		keys = {
 			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
 		}
-	},
+	}
 }

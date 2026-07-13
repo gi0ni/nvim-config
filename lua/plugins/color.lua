@@ -1,12 +1,23 @@
 return
 {
 	{
-		"neanias/everforest-nvim",
+		'neanias/everforest-nvim',
 		priority = 1000,
 
 		config = function()
-			require("everforest").setup({
+			require('everforest').setup({
 				background = 'hard',
+
+				colours_override = function(palette)
+					palette.bg0 = palette.bg_dim
+					palette.bg_dim = '#101314'
+				end,
+
+				on_highlights = function(hl, palette)
+					hl.LineNr = {fg=palette.fg}
+					hl.CmpBorder = {bg=palette.bg0}
+					hl.CmpNormal = {bg=palette.bg0}
+				end
 			})
 
 			vim.cmd('colorscheme everforest')

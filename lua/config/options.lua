@@ -1,9 +1,10 @@
 vim.opt.relativenumber = true
 vim.opt.nu = true
-vim.opt.guicursor = "n-v-c:block-Cursor"
+vim.opt.guicursor = 'n-v-c:block-Cursor'
+-- vim.opt.winblend = 20
 
 vim.diagnostic.config({virtual_text = true})
-vim.opt.signcolumn = "no"
+vim.opt.signcolumn = 'no'
 vim.opt.foldenable = false
 
 vim.opt.shiftwidth = 4
