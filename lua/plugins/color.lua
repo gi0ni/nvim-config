@@ -11,10 +11,12 @@ return
 				colours_override = function(palette)
 					palette.bg0 = palette.bg_dim
 					palette.bg_dim = '#101314'
+					palette.statusline2 = palette.blue -- Make insert mode blue
 				end,
 
 				on_highlights = function(hl, palette)
 					hl.LineNr = {fg=palette.fg}
+					hl.Visual = {fg=palette.red, bg=palette.bg_visual}
 					hl.CmpBorder = {bg=palette.bg0}
 					hl.CmpNormal = {bg=palette.bg0}
 				end
