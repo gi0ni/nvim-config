@@ -1,9 +1,8 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.12                                                              *
+# *      v0.0.14                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
-# NOTE: No idea how to get args containing quotes working on Windows
 
 
 import platform
@@ -297,11 +296,11 @@ class Slave:
         seconds = millis // 1000
         minutes = seconds // 60
 
-        units = "millis"
+        units = "ms"
         if minutes > 0:
-            units = "minutes"
+            units = "min"
         elif seconds > 0:
-            units = "seconds"
+            units = "sec"
 
 
         result = "%s%02d:%02d.%03d %s%s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, units, Color["CLEAR"])
