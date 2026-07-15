@@ -149,7 +149,7 @@ return
 					['<C-b>'] = cmp.mapping.scroll_docs(4),
 					['<C-r>'] = cmp.mapping.abort(),
 					['<C-e>'] = cmp.mapping.complete(),
-					['<Tab>'] = cmp.mapping.confirm({ select = true }),
+					['<Tab>'] = cmp.mapping.confirm({select=true}),
 					['<C-g>'] = function() if cmp.visible_docs() then cmp.close_docs() else cmp.open_docs() end
 				  end
 				}),

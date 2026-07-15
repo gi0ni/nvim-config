@@ -93,25 +93,14 @@ vim.keymap.set('n', '<leader>gr', function()
 	end, 500)
 end)
 
--- Nvim.cmp hover
+-- Open nvim.cmp docs in normal mode
 vim.keymap.set('n', 'K', function()
-	local line = vim.fn.getline('.')
-	local col = vim.fn.col('.')
-	local chr = line:sub(col + 1, col + 1)
-
-	if not string.find('(),', chr, 1, true) then
-		vim.cmd('normal! e')
-	end
-
-	vim.cmd('startinsert')
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Right>', true, false, true), 'm', false)
+	vim.cmd('normal! e')
+	vim.api.nvim_feedkeys('a', 'm', false)
 
 	local cmp = require('cmp')
 	vim.schedule(function()
 		cmp.complete()
-		vim.schedule(function()
-			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('<Down>', true, false, true), 'm', false)
-		end)
 	end)
 end, sopt)
 
