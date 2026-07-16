@@ -5,6 +5,6 @@
 	(#eq? @core.token "core")
 )
 
-((layout_specification) @layout.specifier
-	(#set! "priority" 200)
-)
+; ((layout_specification) @layout.specifier
+; 	(#set! "priority" 200)
+; )
