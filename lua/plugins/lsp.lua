@@ -126,6 +126,12 @@ return
 					completeopt = 'menu,menuone,noinsert'
 				},
 
+				view = {
+					docs = {
+						auto_open = false
+					}
+				},
+
 				sources = {
 					{
 						name = 'cmp_gl', -- glad headers don't come with docs for some reason
@@ -144,7 +150,7 @@ return
 					['<C-r>'] = cmp.mapping.abort(),
 					['<C-e>'] = cmp.mapping.complete(),
 					['<Tab>'] = cmp.mapping.confirm({select=true}),
-					['<C-g>'] = function() if cmp.visible_docs() then cmp.close_docs() else cmp.open_docs() end
+					['<M-g>'] = function() if cmp.visible_docs() then cmp.close_docs() else cmp.open_docs() end
 				  end
 				}),
 
