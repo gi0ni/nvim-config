@@ -120,12 +120,6 @@ return
 
 		config = function()
 			local cmp = require('cmp')
-			local borderedWindow = cmp.config.window.bordered({
-				border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-				scrollbar = false,
-				winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None'
-			})
-			-- borderedWindow.winblend = 20
 
 			cmp.setup({
 				completion = {
@@ -162,8 +156,18 @@ return
 				},
 
 				window = {
-					completion = borderedWindow,
-					documentation = borderedWindow,
+					completion = cmp.config.window.bordered({
+						border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+						scrollbar = false,
+						winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None',
+						max_height = 10
+					}),
+					documentation = cmp.config.window.bordered({
+						border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
+						scrollbar = false,
+						winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None',
+						max_height = 20
+					})
 				}
 			})
 		end
