@@ -133,15 +133,9 @@ return
 				},
 
 				sources = {
-					{
-						name = 'cmp_gl', -- glad headers don't come with docs for some reason
-						entry_filter = function(_, _)
-							return vim.fn.isdirectory('shd') == 1;
-						end
-					},
 					{ name = 'nvim_lsp' },
 					{ name = 'nvim_lsp_signature_help' },
-					{ name = 'path' }
+					{ name = 'path', option = { get_cwd = function(_) return vim.fn.getcwd() end } }
 				},
 
 				mapping = cmp.mapping.preset.insert({
@@ -181,6 +175,5 @@ return
 
 	{'hrsh7th/cmp-nvim-lsp', opts = {}},
 	{'hrsh7th/cmp-nvim-lsp-signature-help'},
-	{'gi0ni/cmp-path'},
-	{'gi0ni/cmp-gl', opts = {}}
+	{'hrsh7th/cmp-path'},
 }
