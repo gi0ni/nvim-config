@@ -1,3 +1,5 @@
+o   diw            : delete word backwards
+o   vT?d           : delete backwards to char
 o   cgn + . + n    : find and replace
 
 o   Ctrl-[         : Esc
@@ -10,7 +12,7 @@ o   Ctrl-h         : Backspace
 o   :u0            : discard changes
 
 o   :filter highlights [pattern]
-o  Ctrl-p, Ctrl-n  : navigate command history, works with nvim.cmp and telescope too!
+o   Ctrl-p, Ctrl-n : navigate command history, works with nvim.cmp and telescope too!
 
 
 ##### Term Commands #####
