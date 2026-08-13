@@ -1,4 +1,6 @@
 o   diw            : delete word backwards
+o   Ctrl-g         : display file path
+
 o   vT?d           : delete backwards to char
 o   cgn + . + n    : find and replace
 
