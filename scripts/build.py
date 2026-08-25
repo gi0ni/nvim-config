@@ -96,7 +96,7 @@ class Task:
         try:
             returnCode = subprocess.run(self.tokenizedLaunchCmd).returncode
         except FileNotFoundError:
-            FailGracefully("{0}<LAUNCH FAILED>{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd))
+            FailGracefully("{0}<LAUNCH FAILED>{1} Executable {0}`{2}`{1} could not be found!".format(Color["RED"], Color["CLEAR"], self.launchCmd.strip()))
 
         return returnCode
 
