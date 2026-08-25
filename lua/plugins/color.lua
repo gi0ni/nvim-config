@@ -45,7 +45,7 @@ return
 				install_dir = vim.fn.stdpath('data') .. '/site'
 			})
 
-			site.install({'glsl', 'python'})
+			site.install({'cpp', 'glsl', 'python'})
 		end
 	}
 }
