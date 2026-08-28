@@ -1,4 +1,8 @@
 o   di | ci        : delete inside, change inside
+o   %              : matching paranthesis
+o   !.<command>    : put command out in buffer
+
+o   Ctrl-r=        : calculator
 
 o   diw            : delete word backwards
 o   Ctrl-g         : display file path
