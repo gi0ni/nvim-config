@@ -1,3 +1,5 @@
+o   di | ci        : delete inside, change inside
+
 o   diw            : delete word backwards
 o   Ctrl-g         : display file path
 
