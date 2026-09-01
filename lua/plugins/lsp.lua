@@ -16,6 +16,17 @@ return
 					}
 				}
 			})
+			vim.lsp.config("pylsp", {
+				settings = {
+					pylsp = {
+						plugins = {
+							pycodestyle = {
+								maxLineLength = 120
+							}
+						}
+					}
+				}
+			})
 			vim.lsp.config("clangd", {
 				cmd = {
 					"clangd",
