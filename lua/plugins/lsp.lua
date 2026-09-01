@@ -19,11 +19,7 @@ return
 				}
 			})
 
-			local capabilities = require('cmp_nvim_lsp').default_capabilities()
-			capabilities.textDocument.completion.completionItem.snippetSupport = false
-
 			vim.lsp.config('clangd', {
-				capabilities = capabilities,
 				cmd = {
 					'clangd',
 					'-header-insertion=never',
@@ -87,60 +83,75 @@ return
 	},
 
 
-	-- Autocomplete
+	-- Completion suggestions
 	{
-		'hrsh7th/nvim-cmp',
-
-		config = function()
-			local cmp = require('cmp')
-
-			cmp.setup({
-				completion = {
-					completeopt = 'menu,menuone,noinsert'
+		'saghen/blink.cmp',
+		version = '1.*',
+		opts = {
+			keymap = {
+				preset = 'none',
+				['<C-r>'] = {'show', 'hide'},
+				['<C-e>'] = {'select_and_accept'},
+				['<M-g>'] = {'show_documentation', 'hide_documentation'}, -- FIX: This does not work while the signature is shown. Why?
+				['<C-f>'] = {'scroll_documentation_up', 'scroll_signature_up'},
+				['<C-b>'] = {'scroll_documentation_down', 'scroll_signature_down'},
+				['<C-n>'] = {'select_next'},
+				['<C-p>'] = {'select_prev'},
+				['<C-k>'] = {'show_signature', 'hide_signature'},
+				['<Tab>'] = {'snippet_forward', 'fallback'},
+				['<S-Tab>'] = {'snippet_backward'}
+			},
+			appearance = {
+				nerd_font_variant = 'mono'
+			},
+			completion = {
+				documentation = {
+					auto_show = false,
+					window = {
+						border = 'rounded',
+						scrollbar = false
+					},
 				},
-
-				sources = {
-					{ name = 'nvim_lsp' },
-					{ name = 'nvim_lsp_signature_help' },
-					{ name = 'path', option = { get_cwd = function(_) return vim.fn.getcwd() end } }
+				menu = {
+					border = 'rounded',
+					scrollbar = false
 				},
-
-				mapping = cmp.mapping.preset.insert({
-					['<C-f>'] = cmp.mapping.scroll_docs(-4),
-					['<C-b>'] = cmp.mapping.scroll_docs(4),
-					['<C-r>'] = cmp.mapping.abort(),
-					['<C-e>'] = cmp.mapping.complete(),
-					['<Tab>'] = cmp.mapping.confirm({select=true}),
-					['<M-g>'] = function() if cmp.visible_docs() then cmp.close_docs() else cmp.open_docs() end
-				  end
-				}),
-
-				formatting = {
-					format = function(_, vim_item)
-						vim_item.menu = ''
-						return vim_item
-					end
-				},
-
+			},
+			signature = {
+				enabled = true,
 				window = {
-					completion = cmp.config.window.bordered({
-						border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-						scrollbar = false,
-						winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None',
-						max_height = 10
-					}),
-					documentation = cmp.config.window.bordered({
-						border = { '╭', '─', '╮', '│', '╯', '─', '╰', '│' },
-						scrollbar = false,
-						winhighlight = 'Normal:CmpNormal,FloatBorder:CmpBorder,CursorLine:Visual,Search:None',
-						max_height = 20
-					})
+					show_documentation = false,
+					border = 'rounded',
+					scrollbar = false
 				}
-			})
-		end
-	},
+			},
+			sources = {
+				default = { 'lsp', 'path' } -- 'snippets', 'buffer'
+			},
+			fuzzy = {
+				implementation = 'prefer_rust_with_warning'
+			}
+		},
+		opts_extend = {
+			'sources.default'
+		},
+		config = function(_, opts)
+			require('blink.cmp').setup(opts)
 
-	{'hrsh7th/cmp-nvim-lsp', opts = {}},
-	{'hrsh7th/cmp-nvim-lsp-signature-help'},
-	{'hrsh7th/cmp-path'},
+			local hl = require('utils.hl')
+			hl.set('BlinkCmpMenu', {link='Normal'})
+			hl.set('BlinkCmpMenuBorder', {link='Normal'})
+			hl.set('BlinkCmpMenuSelection', {link='Visual'})
+			hl.set('BlinkCmpLabelDetail', {link='Normal'})
+			hl.set('BlinkCmpLabelDeprecated', {link='ErrorMsg'})
+
+			hl.set('BlinkCmpDoc', {link='Normal'})
+			hl.set('BlinkCmpDocBorder', {link='Normal'})
+			hl.set('BlinkCmpDocSeparator', {link='Normal'})
+
+			hl.set('BlinkCmpSignatureHelp', {link='Normal'})
+			hl.set('BlinkCmpSignatureHelpBorder', {link='Normal'})
+			hl.set('BlinkCmpSignatureHelpActiveParameter', {link='Visual'})
+		end
+	}
 }
