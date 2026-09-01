@@ -93,9 +93,6 @@ vim.keymap.set('n', '<leader>gr', function()
 	end, 500)
 end)
 
--- Open LSP docs in normal mode for symbol under the cursor
-vim.keymap.set('n', 'K', vim.lsp.buf.hover())
-
 -- Quick splits
 vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  sopt)
 vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', sopt)
