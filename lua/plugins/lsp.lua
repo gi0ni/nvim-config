@@ -19,33 +19,6 @@ return
 				}
 			})
 
-			vim.lsp.config('pylsp', {
-				settings = {
-					pylsp = {
-						plugins = {
-							pycodestyle = {
-								ignore = {
-									-- TODO: Just straight up copy what the errors say here so you can tell how stupid they are
-									'E501', -- Lines longer than 79 characters
-									'E302', -- 2 blank lines after imports
-									'E305', -- 2 blank lines after definitions
-									'E231', -- Whitespace after operator
-									'E251', -- Whitespace after parameter equals
-									'E701', -- Multiple statements on same line
-									'E303', -- Too many blank lines
-
-									'E261', -- at least two spaces before inline comment
-									'W293', -- blank line contains whitespace
-									'E221', -- multiple spaces before operator
-									'E272', -- multiple spaces before keyword
-									'E241', -- multiple spaces after ':'
-								}
-							}
-						}
-					}
-				}
-			})
-
 			local capabilities = require('cmp_nvim_lsp').default_capabilities()
 			capabilities.textDocument.completion.completionItem.snippetSupport = false
 
