@@ -108,20 +108,17 @@ return
 				documentation = {
 					auto_show = false,
 					window = {
-						border = 'rounded',
 						scrollbar = false
 					},
 				},
 				menu = {
-					border = 'rounded',
 					scrollbar = false
 				},
 			},
 			signature = {
 				enabled = true,
 				window = {
-					show_documentation = true,
-					border = 'rounded',
+					show_documentation = false,
 					scrollbar = false
 				}
 			},
