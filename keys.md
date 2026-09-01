@@ -20,7 +20,7 @@ o   Ctrl-h         : Backspace
 o   :u0            : discard changes
 
 o   :filter highlights [pattern]
-o   Ctrl-p, Ctrl-n : navigate command history, works with nvim.cmp and telescope too!
+o   Ctrl-p, Ctrl-n : navigate command history, works with telescope too!
 
 
 ##### Term Commands #####
