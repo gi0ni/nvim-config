@@ -1,5 +1,5 @@
 ;; extends
-; NOTE: You can use :InspectTree from the editor
+; NOTE: You can use `:InspectTree` in the editor. It shows you the parse tree for the current buffer
 
 ((identifier) @core.token
 	(#has-ancestor? preproc_call)

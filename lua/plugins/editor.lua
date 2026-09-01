@@ -1,102 +1,90 @@
+local sopt = {silent=true}
+
 return
 {
-	-- Some basic editor features (tabs, indent level, file explorer on the side and statusline)
-	{
-		'akinsho/bufferline.nvim',
-		dependencies = { 'nvim-tree/nvim-web-devicons' },
-
+	{ -- Basic text editor features (tabs, visible indent level, file tree)
+		"akinsho/bufferline.nvim",
+		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
-			require('bufferline').setup({
-				vim.keymap.set('n', '[b', ':BufferLineCyclePrev<CR>', {silent=true}),
-				vim.keymap.set('n', ']b', ':BufferLineCycleNext<CR>', {silent=true}),
-				vim.keymap.set('n', '[B', ':BufferLineMovePrev<CR>',  {silent=true}),
-				vim.keymap.set('n', ']B', ':BufferLineMoveNext<CR>',  {silent=true}),
+			require("bufferline").setup({
+				vim.keymap.set("n", "[b", ":BufferLineCyclePrev<CR>", sopt),
+				vim.keymap.set("n", "]b", ":BufferLineCycleNext<CR>", sopt),
+				vim.keymap.set("n", "[B", ":BufferLineMovePrev<CR>",  sopt),
+				vim.keymap.set("n", "]B", ":BufferLineMoveNext<CR>",  sopt),
 
 				options = {
 					numbers = function(opts)
-						return string.format(' %s', opts.ordinal)
+						return string.format(" %s", opts.ordinal)
 					end,
-					buffer_close_icon = ' ',
+					buffer_close_icon = " ",
 					offsets = {
 						{
-							filetype = 'NvimTree',
-							text = '',
+							filetype = "NvimTree",
+							text = "",
 							padding = 0,
-							highlight = 'NvimTreeNormal'
+							highlight = "NvimTreeNormal"
 						}
 					}
 				}
 			})
 
 			for i = 1, 9 do
-				vim.keymap.set('n', '<leader>' .. i, ':lua require("bufferline").go_to( ' .. i .. ', true)<CR>', {silent=true})
+				vim.keymap.set("n", "<leader>" .. i, ":lua require('bufferline').go_to( " .. i .. ", true)<CR>", sopt)
 			end
-			vim.keymap.set('n', '<leader>0', ':lua require("bufferline").go_to(10, true)<CR>', {silent=true})
+			vim.keymap.set("n", "<leader>0", ":lua require('bufferline').go_to(10, true)<CR>", sopt)
 		end
 	},
-
 	{
-		'nvim-tree/nvim-tree.lua',
-		dependencies = { 'nvim-tree/nvim-web-devicons' },
-
+		"nvim-tree/nvim-tree.lua",
+		dependencies = {"nvim-tree/nvim-web-devicons"},
 		config = function()
-			require('nvim-tree').setup({
+			require("nvim-tree").setup({
 				update_focused_file = {
 					update_cwd = false
 				},
-
 				renderer = {
-					root_folder_label = ':~'
+					root_folder_label = ":~"
 				},
-
 				view = {
 					preserve_window_proportions = true
 				},
-
 				filters = {
 					dotfiles = true
 				}
 			})
 		end
 	},
-
 	{
-		'lukas-reineke/indent-blankline.nvim',
-		main = 'ibl',
-
+		"lukas-reineke/indent-blankline.nvim",
+		main = "ibl",
 		opts = {
 			indent = {
-				char = '|'
+				char = "|"
 			},
-
 			scope = {
 				show_start = false,
 				show_end   = false
 			}
 		}
 	},
-
 	{
-		'nvim-lualine/lualine.nvim',
+		"nvim-lualine/lualine.nvim",
 		opts = {},
-
 		config = function()
-			require('lualine').setup {
+			require("lualine").setup {
 				options = {
-					section_separators   = { left = '', right = '' },
-					component_separators = { left = '/', right = '/' },
-
+					section_separators   = { left = "", right = "" },
+					component_separators = { left = "/", right = "/" },
 					disabled_filetypes = {
 						statusline = {
-							'NvimTree'
+							"NvimTree"
 						}
 					}
 				},
-
 				sections = {
 					lualine_a = {
 						{
-							'mode',
+							"mode",
 							padding = { left = 3, right = 3 }
 						}
 					}
@@ -104,114 +92,98 @@ return
 			}
 		end
 	},
-
-	-- Essential plugins (telescope and lazygit integration)
-	{
-		'nvim-telescope/telescope.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
-
+	{ -- Essential worflow plugins (telescope, lazygit integration)
+		"nvim-telescope/telescope.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {
 			defaults = {
 				file_ignore_patterns = {
-					'bin[/\\]',
-					'build[/\\]',
-					'lib[/\\]',
-					'inc[/\\]',
-					'target[/\\]'
+					"bin[/\\]",
+					"build[/\\]",
+					"lib[/\\]",
+					"inc[/\\]",
+					"target[/\\]"
 				}
 			}
 		},
-
 		keys = {
-			{ '<leader>ff', '<cmd>Telescope find_files<CR>' },
-			{ '<leader>fg', '<cmd>Telescope live_grep<CR>' },
-			{ '<leader>fb', '<cmd>Telescope buffers<CR>' }
+			{"<leader>ff", "<cmd>Telescope find_files<CR>"},
+			{"<leader>fg", "<cmd>Telescope live_grep<CR>"},
+			{"<leader>fb", "<cmd>Telescope buffers<CR>"}
 		}
 	},
-
 	{
-		'kdheepak/lazygit.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		"kdheepak/lazygit.nvim",
+		dependencies = {"nvim-lua/plenary.nvim"},
 		lazy = true,
-
 		cmd = {
-			'LazyGit',
-			'LazyGitConfig',
-			'LazyGitCurrentFile',
-			'LazyGitFilter',
-			'LazyGitFilterCurrentFile',
+			"LazyGit",
+			"LazyGitConfig",
+			"LazyGitCurrentFile",
+			"LazyGitFilter",
+			"LazyGitFilterCurrentFile",
 		},
-
 		keys = {
-			{ '<leader>gg', '<cmd>LazyGit<CR>' }
+			{"<leader>gg", "<cmd>LazyGit<CR>"}
 		}
 	},
-
-
-
-	-- Some convinience plugins (better escape, todo comments, vim surround and folke's flash)
-	{
-		'tpope/vim-surround'
+	{ -- Smaller, quality of life plugins
+		"tpope/vim-surround"
 	},
-
 	{
-		'nvim-mini/mini.comment',
+		"nvim-mini/mini.comment",
 		config = function()
-			require('mini.comment').setup()
+			require("mini.comment").setup()
 		end
 	},
-
 	{
-		'max397574/better-escape.nvim',
+		"max397574/better-escape.nvim",
 		config = function()
-			require('better_escape').setup {
+			require("better_escape").setup {
 				timeout = 150,
 				default_mappings = false,
 				mappings = {
 					i = {
 						j = {
-							k = '<Esc>',
-							j = '<Esc>',
+							k = "<Esc>",
+							j = "<Esc>",
 						},
 					},
 					c = {
 						j = {
-							k = '<C-c>',
-							j = '<C-c>',
+							k = "<C-c>",
+							j = "<C-c>",
 						},
 					},
 					v = {
 						j = {
-							k = '<Esc>',
+							k = "<Esc>",
 						},
 					},
 					s = {
 						j = {
-							k = '<Esc>',
+							k = "<Esc>",
 						},
 					},
 				}
 			}
 		end
 	},
-
 	{
-		'folke/todo-comments.nvim',
-		dependencies = { 'nvim-lua/plenary.nvim' },
+		"folke/todo-comments.nvim",
+		dependencies = { "nvim-lua/plenary.nvim" },
 		opts = {
 			highlight = {
-				keyword = 'bg'
+				keyword = "bg"
 			},
 			keywords = {
-				PERF = { icon = ' ', alt = { 'OPTIM', 'PERFORMANCE', 'OPTIMIZE', 'TIL' }, color = '#10b981' },
+				PERF = { icon = " ", alt = {"OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL"}, color = "#10b981" },
 			}
 		}
 	},
-
 	{
-		'folke/flash.nvim',
-		event = 'VeryLazy',
-
+		"folke/flash.nvim",
+		event = "VeryLazy",
 		opts = {
 			modes = {
 				char = {
@@ -219,9 +191,8 @@ return
 				}
 			}
 		},
-
 		keys = {
-			{ 's', mode = { 'n', 'x', 'o' }, function() require('flash').jump() end, desc = 'Flash' }
+			{ "s", mode = {"n", "x", "o"}, function() require("flash").jump() end, desc = "Flash" }
 		}
 	}
 }

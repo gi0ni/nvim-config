@@ -1,82 +1,81 @@
-require('config.build')
+require("config.build")
 local sopt = {silent=true}
 
 -- Learn how to use Vim properly, dumbass
-vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Up>',    '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Right>', '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Left>',  '<Nop>')
-vim.keymap.set({'n', 'i', 'v', 't', 'c'}, '<Down>',  '<Nop>')
+vim.keymap.set({"n", "i", "v", "t", "c"}, "<Up>",    "<Nop>")
+vim.keymap.set({"n", "i", "v", "t", "c"}, "<Right>", "<Nop>")
+vim.keymap.set({"n", "i", "v", "t", "c"}, "<Left>",  "<Nop>")
+vim.keymap.set({"n", "i", "v", "t", "c"}, "<Down>",  "<Nop>")
 
 -- Toggle the file explorer split
-vim.keymap.set('n', '<leader>e', ':NvimTreeToggle<CR>', sopt)
+vim.keymap.set("n", "<leader>e", ":NvimTreeToggle<CR>", sopt)
 
 -- Clear search result highlights
-vim.keymap.set('n', '<Esc>', ':noh<CR>', sopt)
+vim.keymap.set("n", "<Esc>", ":noh<CR>", sopt)
 
 -- Scroll while keeping the cursor in the middle of the screen
-vim.keymap.set({'n', 'v'}, '<C-f>', '<Up>zz');
-vim.keymap.set({'n', 'v'}, '<C-b>', '<Down>zz');
+vim.keymap.set({"n", "v"}, "<C-f>", "<Up>zz");
+vim.keymap.set({"n", "v"}, "<C-b>", "<Down>zz");
 
 -- Search things more easily
-vim.keymap.set('v', '<leader>z', 'y/\\V<C-r>"<CR>N')
-vim.keymap.set({'n', 'v'}, '*', '*N');
+vim.keymap.set("v", "<leader>z", [[y/\V<C-r>"<CR>N]])
+vim.keymap.set({"n", "v"}, "*", "*N");
 
 -- Change line identation
-vim.keymap.set('v', '>', '>gv')
-vim.keymap.set('v', '<', '<gv')
+vim.keymap.set("v", ">", ">gv")
+vim.keymap.set("v", "<", "<gv")
 
 -- Shift lines up and down
-vim.keymap.set('v', 'J', ":move '>+1<CR>gv=gv", sopt)
-vim.keymap.set('v', 'K', ":move '<-2<CR>gv=gv", sopt)
+vim.keymap.set("v", "J", ":move '>+1<CR>gv=gv", sopt)
+vim.keymap.set("v", "K", ":move '<-2<CR>gv=gv", sopt)
 
 -- ##### Yank and put tweaks #####
 -- Do not overwrite yank register when deleting
-vim.keymap.set({'n', 'v'}, 'd', '"dd')
-vim.keymap.set({'n', 'v'}, 'c', '"dc')
-vim.keymap.set('n', 'x', '"dx')
+vim.keymap.set({"n", "v"}, "d", [["dd]])
+vim.keymap.set({"n", "v"}, "c", [["dc]])
+vim.keymap.set("n", "x", [["dx]])
 
 -- Cut only with x in visual mode
-vim.keymap.set('v', 'x', '"0x')
+vim.keymap.set("v", "x", [["0x]])
 
 -- Auto indent when putting
-vim.keymap.set({'n', 'v'}, 'p', '"0p`[=`]')
-vim.keymap.set({'n', 'v'}, 'P', '"0P`[=`]')
-vim.keymap.set({'n', 'v'}, 'gp', 'p`[=`]')
-vim.keymap.set({'n', 'v'}, 'gP', 'P`[=`]')
+vim.keymap.set({"n", "v"}, "p", '"0p`[=`]')
+vim.keymap.set({"n", "v"}, "P", '"0P`[=`]')
+vim.keymap.set({"n", "v"}, "gp", "p`[=`]")
+vim.keymap.set({"n", "v"}, "gP", "P`[=`]")
 
--- Quick yank/put to system clipboard
-vim.keymap.set('n', '<space>y', '"+yy')
-vim.keymap.set('v', '<space>y', '"+y')
-vim.keymap.set({'n', 'v'}, '<leader>p', '"+p`[=`]')
+-- Quick yank&put to system clipboard
+vim.keymap.set("n", "<space>y", [["+yy]])
+vim.keymap.set("v", "<space>y", [["+y]])
+vim.keymap.set({"n", "v"}, "<leader>p", '"+p`[=`]')
 -- #####
 
 -- LSP keymaps
-vim.keymap.set('n', '<leader>gd', vim.lsp.buf.definition)
-vim.keymap.set('n', '<leader>gD', vim.lsp.buf.declaration)
-vim.keymap.set('n', '<leader>gi', vim.lsp.buf.implementation)
-vim.keymap.set('n', '<leader>gR', vim.lsp.buf.references)
-vim.keymap.set('n', '<leader>gt', vim.lsp.buf.type_definition)
-vim.keymap.set('n', '<leader>gk', vim.lsp.buf.hover)
-vim.keymap.set('n', '<leader>go', ':lua vim.diagnostic.open_float()<CR>', sopt)
-vim.keymap.set('n', '<leader>ga', ':lua vim.lsp.buf.code_action()<CR>', sopt)
+vim.keymap.set("n", "<leader>gd", vim.lsp.buf.definition)
+vim.keymap.set("n", "<leader>gD", vim.lsp.buf.declaration)
+vim.keymap.set("n", "<leader>gi", vim.lsp.buf.implementation)
+vim.keymap.set("n", "<leader>gR", vim.lsp.buf.references)
+vim.keymap.set("n", "<leader>gt", vim.lsp.buf.type_definition)
+vim.keymap.set("n", "<leader>go", ":lua vim.diagnostic.open_float()<CR>", sopt)
+vim.keymap.set("n", "<leader>ga", ":lua vim.lsp.buf.code_action()<CR>", sopt)
 
 local hints_enabled = false
-vim.keymap.set('n', '<leader>gh', function()
+vim.keymap.set("n", "<leader>gh", function()
 	vim.lsp.inlay_hint.enable(not hints_enabled, {0})
 	hints_enabled = not hints_enabled;
 end, sopt)
 
--- Jump to diagnostic using Telescope
-vim.keymap.set('n', '<leader>fd', ':lua require("telescope.builtin").diagnostics()<CR>', sopt)
+-- Jump to LSP diagnostic using Telescope
+vim.keymap.set("n", "<leader>fd", ":lua require('telescope.builtin').diagnostics()<CR>", sopt)
 
--- Fancy scoped token replace, no command history visible
-vim.keymap.set('n', '<leader>gr', function()
+-- Fancy scoped token replace, command history hidden
+vim.keymap.set("n", "<leader>gr", function()
 	local cmdId
-	cmdId = vim.api.nvim_create_autocmd({'CmdlineEnter'}, {
+	cmdId = vim.api.nvim_create_autocmd({"CmdlineEnter"}, {
 		callback = function()
-			local key = vim.api.nvim_replace_termcodes('<C-f>', true, false, true)
-			vim.api.nvim_feedkeys(key, 'c', false)
-			vim.api.nvim_feedkeys('0', 'n', false)
+			local key = vim.api.nvim_replace_termcodes("<C-f>", true, false, true)
+			vim.api.nvim_feedkeys(key, "c", false)
+			vim.api.nvim_feedkeys("0", "n", false)
 			cmdId = nil
 			return true
 		end
@@ -94,26 +93,26 @@ vim.keymap.set('n', '<leader>gr', function()
 end)
 
 -- Quick splits
-vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  sopt)
-vim.keymap.set('n', '<leader>v', ':vsplit<CR><C-w>l', sopt)
-vim.keymap.set('n', '<leader>c', ':close<CR>',        sopt)
+vim.keymap.set("n", "<leader>s", ":split<CR><C-w>j",  sopt)
+vim.keymap.set("n", "<leader>v", ":vsplit<CR><C-w>l", sopt)
+vim.keymap.set("n", "<leader>c", ":close<CR>",        sopt)
 
 -- Resize splits
-vim.keymap.set('n', '<C-Left>',  ':vertical resize +2<CR>', sopt)
-vim.keymap.set('n', '<C-Right>', ':vertical resize -2<CR>', sopt)
-vim.keymap.set('n', '<C-Up>', ':resize +2<CR>', sopt)
-vim.keymap.set('n', '<C-Down>', ':resize -2<CR>', sopt)
+vim.keymap.set("n", "<C-Left>",  ":vertical resize +2<CR>", sopt)
+vim.keymap.set("n", "<C-Right>", ":vertical resize -2<CR>", sopt)
+vim.keymap.set("n", "<C-Up>", ":resize +2<CR>", sopt)
+vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", sopt)
 
 -- Open terminal split
-vim.keymap.set('n', '<leader>t', function()
+vim.keymap.set("n", "<leader>t", function()
 	if IsWin32 then
-		vim.cmd('vsplit | wincmd l | term pwsh -NoLogo')
+		vim.cmd("vsplit | wincmd l | term pwsh -NoLogo")
 	else
-		vim.cmd('vsplit | wincmd l | term')
+		vim.cmd("vsplit | wincmd l | term")
 	end
 
-	vim.cmd('normal! a')
+	vim.cmd("normal! a")
 end, sopt)
 
--- Make exiting terminal mode much easier
-vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>')
+-- Exit terminal mode much more easily
+vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>")

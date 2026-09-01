@@ -1,8 +1,8 @@
 ArgsList = nil
 ArgsListTokenized = {}
 
-vim.keymap.set('n', '<leader>ba', function()
-	ArgsList = vim.fn.input('Enter Args: ')
+vim.keymap.set("n", "<leader>ba", function()
+	ArgsList = vim.fn.input("Enter Args: ")
 
 	-- This is how you remove elements from a table in Lua...
 	for key in pairs(ArgsListTokenized) do
@@ -14,16 +14,16 @@ vim.keymap.set('n', '<leader>ba', function()
 	end
 
 	-- Important! Copy temporary table by value
-	local tokens = vim.split(ArgsList, ' +')
+	local tokens = vim.split(ArgsList, " +")
 
 	for key, val in pairs(tokens) do
 		ArgsListTokenized[key] = val
 	end
 end)
 
--- Quick build (and run) shortcuts for a wide variety of languages (4!)
-local pythonRuntime = IsWin32 and 'python' or 'python3'
-local globalBuildScript = vim.fn.stdpath('config') .. '/scripts/build.py'
+-- Quick build (and run) shortcuts for a wide variety of languages (4)
+local pythonRuntime = IsWin32 and "python" or "python3"
+local globalBuildScript = vim.fn.stdpath("config") .. "/scripts/build.py"
 
 local curDirName
 local bufferName
@@ -31,60 +31,60 @@ local binaryName
 
 local launchDisabled = false
 
-vim.keymap.set('n', '<leader>r', function()
+vim.keymap.set("n", "<leader>r", function()
 	Build({launch=true})
 end)
 
-vim.keymap.set('n', '<leader>bb', function()
+vim.keymap.set("n", "<leader>bb", function()
 	Build({launch=false})
 end)
 
-vim.keymap.set('n', '<leader>bm', ':!cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug')
+vim.keymap.set("n", "<leader>bm", ":!cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug")
 
-vim.keymap.set('n', '<leader>bpy', function()
-	if vim.fn.filereadable('build.py') == 1 then
-		vim.notify('There already is a local `build.py`. Will not overwrite.')
+vim.keymap.set("n", "<leader>bpy", function()
+	if vim.fn.filereadable("build.py") == 1 then
+		vim.notify("There already is a local `build.py`. Will not overwrite.")
 		return
 	end
 
-	local inpfile = io.open(globalBuildScript, 'r')
-	local outfile = io.open('build.py', 'w')
+	local inpfile = io.open(globalBuildScript, "r")
+	local outfile = io.open("build.py", "w")
 
 	if inpfile == nil or outfile == nil then
-		vim.notify('Error. Failed to copy file!')
+		vim.notify("Error. Failed to copy file!")
 		return
 	end
 
-	local contents = inpfile:read('*a')
+	local contents = inpfile:read("*a")
 	inpfile:close()
 
 	outfile:write(contents)
 	outfile:close()
-	vim.notify(string.format('Copied `%s` to local directory.', vim.fn.stdpath('config') .. '/scripts/build.py'))
+	vim.notify(string.format("Copied `%s` to local directory.", vim.fn.stdpath("config") .. "/scripts/build.py"))
 end)
 
 function Build(opt)
 	launchDisabled = not opt.launch
 
-	vim.cmd('wa')
+	vim.cmd("wa")
 
-	if vim.fn.filereadable('build.py') == 1 then
-		RunBuildScript(nil, nil, 'build.py')
+	if vim.fn.filereadable("build.py") == 1 then
+		RunBuildScript(nil, nil, "build.py")
 		return
 	end
 
-	curDirName = vim.fn.fnamemodify(vim.fn.getcwd(), ':t')
-	bufferName = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ':t')
-	binaryName = curDirName .. (IsWin32 and '.exe' or '')
+	curDirName = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+	bufferName = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+	binaryName = curDirName .. (IsWin32 and ".exe" or "")
 
 	local config = ResolveBuilder()
 	if config == nil then
-		vim.notify(string.format('Failed to launch `%s`. No configuration found.', bufferName))
+		vim.notify(string.format("Failed to launch `%s`. No configuration found.", bufferName))
 		return
 	end
 
 	if config.build == nil and (config.launch == nil or launchDisabled) then
-		vim.notify('No commands were given. There is nothing to do.')
+		vim.notify("No commands were given. There is nothing to do.")
 		return
 	end
 
@@ -100,38 +100,38 @@ local builders = {
 
 local builderConfig = {
 	[builders.CMAKE] = {
-		build = 'ninja -C build',
-		launch = 'bin/{binaryName} {ArgsList}',
+		build = "ninja -C build",
+		launch = "bin/{binaryName} {ArgsList}",
 		pattern = {
-			type = 'file',
-			what = 'CMakeLists.txt'
+			type = "file",
+			what = "CMakeLists.txt"
 		}
 	},
 
 	[builders.CARGO] = {
-		build = 'cargo build',
-		launch = 'target/debug/{binaryName} {ArgsList}',
+		build = "cargo build",
+		launch = "target/debug/{binaryName} {ArgsList}",
 		pattern = {
-			type = 'file',
-			what = 'Cargo.toml'
+			type = "file",
+			what = "Cargo.toml"
 		}
 	},
 
 	[builders.PYTHON] = {
 		build = nil,
-		launch = '{pythonRuntime} {bufferName} {ArgsList}',
+		launch = "{pythonRuntime} {bufferName} {ArgsList}",
 		pattern = {
-			type = 'extension',
-			what = 'py'
+			type = "extension",
+			what = "py"
 		}
 	},
 
 	[builders.BASH] = {
 		build = nil,
-		launch = 'bash {bufferName} {ArgsList}',
+		launch = "bash {bufferName} {ArgsList}",
 		pattern = {
-			type = 'extension',
-			what = 'sh'
+			type = "extension",
+			what = "sh"
 		}
 	}
 }
@@ -162,24 +162,24 @@ function ResolveBuilder()
 end
 
 function MatchBuilderPattern(pattern)
-	if pattern.type == 'file' then
+	if pattern.type == "file" then
 		return vim.fn.filereadable(pattern.what) == 1
 
-	elseif pattern.type == 'extension' then
-		local ext = vim.fn.fnamemodify(bufferName, ':e')
+	elseif pattern.type == "extension" then
+		local ext = vim.fn.fnamemodify(bufferName, ":e")
 		return ext == pattern.what
 	end
 end
 
 function GetBuilderCommands(config)
 	local fmtArgs = {
-		['{binaryName}'] = binaryName,
-		['{ArgsList}'] = ArgsList or '',
-		['{pythonRuntime}'] = pythonRuntime,
-		['{bufferName}'] = bufferName,
+		["{binaryName}"] = binaryName,
+		["{ArgsList}"] = ArgsList or "",
+		["{pythonRuntime}"] = pythonRuntime,
+		["{bufferName}"] = bufferName,
 	}
 
-	local regexPattern = '{[a-zA-Z_][0-9a-zA-Z_]*}'
+	local regexPattern = "{[a-zA-Z_][0-9a-zA-Z_]*}"
 
 	return {
 		build = config.build and string.gsub(config.build, regexPattern, fmtArgs) or nil,
@@ -193,12 +193,12 @@ function RunBuildScript(buildCmd, launchCmd, buildScript)
 	local cmd = {pythonRuntime, buildScript}
 
 	if buildCmd ~= nil then
-		table.insert(cmd, '--build')
+		table.insert(cmd, "--build")
 		table.insert(cmd, buildCmd)
 	end
 
 	if launchCmd ~= nil then
-		table.insert(cmd, '--launch')
+		table.insert(cmd, "--launch")
 		table.insert(cmd, launchCmd)
 	end
 

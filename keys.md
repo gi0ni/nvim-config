@@ -1,30 +1,30 @@
-o   di | ci        : delete inside, change inside
-o   %              : matching paranthesis
-o   !.<command>    : put command out in buffer
+*   di | ci        : delete inside, change inside
+*   %              : matching paranthesis
+*   !.<command>    : put command out in buffer
 
-o   Ctrl-r=        : calculator
+*   Ctrl-r=        : calculator
 
-o   diw            : delete word backwards
-o   Ctrl-g         : display file path
+*   diw            : delete word backwards
+*   Ctrl-g         : display file path
 
-o   vT?d           : delete backwards to char
-o   cgn + . + n    : find and replace
+*   vT?d           : delete backwards to char
+*   cgn + . + n    : find and replace
 
-o   Ctrl-[         : Esc
-o   Ctrl-w + w     : switch splits
-o   ;              : repeat last motion
-o   Ctrl-f         : command mode edit
+*   Ctrl-[         : Esc
+*   Ctrl-w + w     : switch splits
+*   ;              : repeat last motion
+*   Ctrl-f         : command mode edit
 
-o   LEADER-gi      : code action
-o   Ctrl-h         : Backspace
-o   :u0            : discard changes
+*   LEADER-gi      : code action
+*   Ctrl-h         : Backspace
+*   :u0            : discard changes
 
-o   :filter highlights [pattern]
-o   Ctrl-p, Ctrl-n : navigate command history, works with telescope too!
+*   :filter highlights [pattern]
+*   Ctrl-p, Ctrl-n : navigate command history, works with telescope too!
 
 
-##### Term Commands #####
-o Ctrl-p, Ctrl-n
-o Ctrl-u, Ctrl-k
-o Ctrl-a, Ctrl-e
-o Ctrl-b, Ctrl-f, Alt-b, Alt-f
+#### Term Commands ####
+* Ctrl-p, Ctrl-n
+* Ctrl-u, Ctrl-k
+* Ctrl-a, Ctrl-e
+* Ctrl-b, Ctrl-f, Alt-b, Alt-f
