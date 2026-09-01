@@ -93,16 +93,8 @@ vim.keymap.set('n', '<leader>gr', function()
 	end, 500)
 end)
 
--- Open nvim.cmp docs in normal mode
-vim.keymap.set('n', 'K', function()
-	vim.cmd('normal! e')
-	vim.api.nvim_feedkeys('a', 'm', false)
-
-	local cmp = require('cmp')
-	vim.schedule(function()
-		cmp.complete()
-	end)
-end, sopt)
+-- Open LSP docs in normal mode for symbol under the cursor
+vim.keymap.set('n', 'K', vim.lsp.buf.hover())
 
 -- Quick splits
 vim.keymap.set('n', '<leader>s', ':split<CR><C-w>j',  sopt)
@@ -126,5 +118,5 @@ vim.keymap.set('n', '<leader>t', function()
 	vim.cmd('normal! a')
 end, sopt)
 
--- Makes exiting terminal mode much easier
+-- Make exiting terminal mode much easier
 vim.keymap.set('t', '<C-w>', '<C-\\><C-n><C-w>')
