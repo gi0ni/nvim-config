@@ -27,6 +27,10 @@ return
 			local hl = require('utils.hl')
 			hl.set('ErrorMsg', {link='Red', underline=false}) -- This prevents underlines in the cmdline area
 			hl.set('LspInlayHint', {link='Grey'})
+
+			hl.set('NormalFloat', {link='Normal'})
+			hl.set('FloatBorder', {link='Normal'})
+
 			hl.set('String', {link='Aqua'})
 			hl.set('cDefine', {link='Purple'})
 		end
