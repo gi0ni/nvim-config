@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.14                                                              *
+# *      v0.0.15                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -119,8 +119,11 @@ class Task:
 
 tasks: List[Task] = []
 isMasterScript = True
+launchDisabled = False
 
 def AddTask(name=None, buildCmd=None, launchCmd=None, predicate=None):
+    if launchDisabled:
+        launchCmd = None
     task = Task(name, buildCmd, launchCmd, predicate)
     tasks.append(task)
 
@@ -132,6 +135,7 @@ def AddTask(name=None, buildCmd=None, launchCmd=None, predicate=None):
 # =============================================================================
 def ParseArgs():
     global isMasterScript
+    global launchDisabled
 
     argc = len(sys.argv)
 
@@ -157,6 +161,9 @@ def ParseArgs():
                 pos = FindNextDashArg(sys.argv, i)
                 launchCommands = sys.argv[i + 1:pos]
                 i = pos - 1
+
+            case "--launchDisabled":
+                launchDisabled = True
 
     InitTasksFromArgs(buildCommands, launchCommands)
 
@@ -230,6 +237,8 @@ class Master:
 class Slave:
     def __init__(self):
         task = self.GetTask()
+        if not task or task.IsEmpty():
+            self.HandleNoWorkGiven()
 
         runtimeNano = 0
         returnCode = 1
@@ -252,11 +261,7 @@ class Slave:
 
     def GetTask(self) -> Task:
         if not tasks or tasks[0].IsEmpty():
-            print("\n%sNo commands were given. There is nothing to do.%s" % (Color["YELLOW"], Color["CLEAR"]))
-            print("Press any key to continue...", end="", flush=True)
-            WaitForKeypress()
-            sys.exit(0)
-
+            return None
         return tasks[0]
 
 
@@ -305,6 +310,13 @@ class Slave:
 
         result = "%s%02d:%02d.%03d %s%s" % (Color["YELLOW"], minutes, seconds % 60, millis % 1000, units, Color["CLEAR"])
         return result
+
+
+    def HandleNoWorkGiven(self):
+        print("\n%sNo commands were given. There is nothing to do.%s" % (Color["YELLOW"], Color["CLEAR"]))
+        print("Press any key to continue...", end="", flush=True)
+        WaitForKeypress()
+        sys.exit(0)
 
 
 # =============================================================================
