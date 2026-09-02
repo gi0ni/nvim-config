@@ -2,7 +2,7 @@ ArgsList = nil
 ArgsListTokenized = {}
 
 vim.keymap.set("n", "<leader>ba", function()
-	ArgsList = vim.fn.input("Enter Args: ")
+	ArgsList = vim.fn.input("Enter arguments: ")
 
 	-- This is how you remove elements from a table in Lua...
 	for key in pairs(ArgsListTokenized) do
@@ -28,8 +28,6 @@ local globalBuildScript = vim.fn.stdpath("config") .. "/scripts/build.py"
 local curDirName
 local bufferName
 local binaryName
-
-local launchDisabled = false
 
 vim.keymap.set("n", "<leader>r", function()
 	Build({launch=true})
@@ -64,12 +62,15 @@ vim.keymap.set("n", "<leader>bpy", function()
 end)
 
 function Build(opt)
-	launchDisabled = not opt.launch
+	local launchDisabled = (opt.launch == false)
 
 	vim.cmd("wa")
 
 	if vim.fn.filereadable("build.py") == 1 then
-		RunBuildScript(nil, nil, "build.py")
+		RunBuildScript(nil, nil, {
+			buildScript = "build.py",
+			launchDisabled = launchDisabled
+		})
 		return
 	end
 
@@ -88,7 +89,9 @@ function Build(opt)
 		return
 	end
 
-	RunBuildScript(config.build, config.launch)
+	RunBuildScript(config.build, config.launch, {
+		launchDisabled = launchDisabled
+	})
 end
 
 local builders = {
@@ -187,8 +190,9 @@ function GetBuilderCommands(config)
 	}
 end
 
-function RunBuildScript(buildCmd, launchCmd, buildScript)
-	buildScript = buildScript or globalBuildScript
+function RunBuildScript(buildCmd, launchCmd, opt)
+	local buildScript = opt.buildScript or globalBuildScript
+	local launchDisabled = opt.launchDisabled or false
 
 	local cmd = {pythonRuntime, buildScript}
 
@@ -200,6 +204,10 @@ function RunBuildScript(buildCmd, launchCmd, buildScript)
 	if launchCmd ~= nil then
 		table.insert(cmd, "--launch")
 		table.insert(cmd, launchCmd)
+	end
+
+	if launchDisabled then
+		table.insert(cmd, "--launchDisabled")
 	end
 
 	vim.fn.jobstart(cmd)
