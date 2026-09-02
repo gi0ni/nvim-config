@@ -1,9 +1,5 @@
--- FIX:
--- Fix debugger disconnecting when an exception happens. That's the entire point of the debugger!!
--- * Windows/lldb: Prints harmless warning about `feature ignored`. Prob because of exceptions
--- * Linux/cppdbg: gdb prints harmless(?) warnings too. `gdb failed to set controlling terminal`
-
 local sopt = {silent=true}
+local lldb_path = vim.fn.exepath("lldb-dap")
 
 return
 {
@@ -11,121 +7,78 @@ return
 		"mfussenegger/nvim-dap",
 		lazy = true,
 		keys = {
-			{"<leader>d", ":DapNew<CR>", sopt},
-
+			{"<leader>dr", ":DapNew<CR>", sopt},
 			{"<leader>db", ":lua require('dap').toggle_breakpoint()<CR>", sopt},
-			{"<leader>dB", ":DapClearBreakpoints<CR>", sopt},
+			{"<leader>dc", ":DapClearBreakpoints<CR>", sopt},
 			{"<leader>dw", ":DapViewWatch<CR>", sopt},
 
-			{"<leader>d1", ":DapStepOver<CR>", sopt},
-			{"<leader>d2", ":DapStepInto<CR>", sopt},
-			{"<leader>d3", ":DapStepOut<CR>", sopt},
-			{"<leader>d4", ":DapContinue<CR>", sopt},
-			{"<leader>d`", ":DapTerminate<CR>", sopt},
-
-			{"<leader>dW", ":DapViewJump watches<CR>", sopt},
-			{"<leader>dS", ":DapViewJump scopes<CR>", sopt},
-			{"<leader>dE", ":DapViewJump exceptions<CR>", sopt},
-			{"<leader>dB", ":DapViewJump breakpoints<CR>", sopt},
-			{"<leader>dT", ":DapViewJump threads<CR>", sopt},
-			{"<leader>dR", ":DapViewJump repl<CR>", sopt},
+			{"<M-1>", ":DapStepOver<CR>", sopt},
+			{"<M-2>", ":DapStepInto<CR>", sopt},
+			{"<M-3>", ":DapStepOut<CR>", sopt},
+			{"<M-4>", ":DapContinue<CR>", sopt},
+			{"<M-5>", ":DapTerminate<CR>", sopt},
+			{"<M-6>", ":lua require('dap').down()<CR>", sopt},
+			{"<M-7>", ":lua require('dap').up()<CR>", sopt}
 		},
 		config = function()
 			local dap = require("dap")
+			dap.defaults.cpp.exception_breakpoints = {"cpp_throw", "cpp_catch"}
 			dap.set_log_level("error")
 
 			if IsWin32 == false then
 				dap.defaults.fallback.external_terminal = {
 					command = "tmux",
-					args = { "new-window", "-n", "debug" }
+					args = {"new-window", "-dn", "debug"}
 				}
-				dap.defaults.fallback.force_external_terminal = true
 			end
 
-			-- ##### C/C++ #####
-			dap.adapters.cppdbg = {
-				id = "cppdbg",
+			dap.adapters.lldb = {
 				type = "executable",
-				command = vim.fn.stdpath("data") .. "/mason/bin/OpenDebugAD7" .. (IsWin32 and ".cmd" or ""),
+				command = lldb_path,
 				options = {
 					detached = false
 				}
 			}
-			dap.configurations.cpp = {
-				{
-					name = "debug",
-					type = "cppdbg",
-					request = "launch",
-					cwd = "${workspaceFolder}",
-					program = function()
-						local binaryPath = vim.fn.input("Binary Path: ./")
-						return "${workspaceFolder}/" .. binaryPath
-					end,
-					args = ArgsListTokenized,
-					externalConsole = true
-				}
-			}
-			dap.configurations.c = dap.configurations.cpp
-
-			-- ##### Rust #####
-			dap.adapters.lldb = {
-				type = "server",
-				port = "${port}",
-				executable = {
-					command = vim.fn.stdpath("data") .. "/mason/bin/codelldb" .. (IsWin32 and ".cmd" or ""),
-					args = { "--port", "${port}" }
-				},
-				detached = false
-			}
-			dap.configurations.rust = {
+			dap.configurations.c = {
 				{
 					name = "debug",
 					type = "lldb",
 					request = "launch",
-					cwd = "${workspaceFolder}",
 					program = function()
-						local binaryPath = vim.fn.input("Binary Path: ./")
-						return "${workspaceFolder}/" .. binaryPath
+						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 					end,
+					cwd = "${workspaceFolder}",
 					stopOnEntry = false,
-					terminal = (IsWin32 and "console" or "external"),
+					runInTerminal = true,
 					console = "externalTerminal"
 				}
 			}
+			dap.configurations.cpp = dap.configurations.c
+			dap.configurations.rust = dap.configurations.c
 
 			-- Open and close dap-view automatically
 			dap.listeners.before.launch["dap_view_open"] = function()
-				require("dap-view").setup()
+				require("dap-view").setup({
+					windows = {
+						position = "right",
+						size = 0.5,
+						terminal = {
+							hide = true
+						}
+					}
+				})
 				vim.cmd("DapViewOpen")
-
-				-- Start with the locals tab open by default
-				vim.cmd("wincmd j")
-				if vim.bo.filetype == "dap-view-term" then
-					vim.cmd("bd")
-				end
-				vim.cmd("wincmd L")
-
-				vim.api.nvim_feedkeys("S", "c", false)
-
-				-- Hide adapter disconnect notification
-				local original_notify = vim.notify
-				vim.notify = function(msg, level, opts)
-					if msg:match("cppdbg") then
-						return
-					end
-					original_notify(msg, level, opts)
-				end
 			end
 
 			dap.listeners.after.disconnect["dap_view_close"] = function()
 				vim.cmd("DapViewClose")
 			end
 
-			-- Custom highlights for lines with breakpoints
+			-- Custom style for lines with breakpoints
 			vim.api.nvim_set_hl(0, "DapBreakpointLine", {bg="#fb4934", fg="#ebdbb2"})
 			vim.fn.sign_define("DapBreakpoint", {
 				linehl = "DapBreakpointLine",
-				numhl  = "DapBreakpointLine"
+				numhl = "DapBreakpointLine"
 			})
 
 			local function place_custom_breakpoints()
