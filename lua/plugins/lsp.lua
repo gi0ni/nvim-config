@@ -1,8 +1,6 @@
--- FIX: rust-analyzer sometimes launches 2 instances. Type annotations get shown twice and you get asked twice to rename something
-
 return
 {
-	{ -- Source file linting
+	{ -- Source file linting --
 		"neovim/nvim-lspconfig",
 		config = function()
 			vim.lsp.config("lua_ls", {
@@ -36,13 +34,11 @@ return
 				}
 			})
 			vim.lsp.config("rust_analyzer", {
-				cmd = { vim.fn.stdpath("data") .. "/mason/bin/rust-analyzer" .. (IsWin32 and ".cmd" or "") },
-
 				settings = {
 					["rust-analyzer"] = {
 						completion = {
 							callable = {
-								snippets = "add_parentheses" -- No placeholder args
+								snippets = "add_parentheses" -- Disable placeholder args
 							}
 						}
 					}
@@ -53,8 +49,6 @@ return
 			vim.lsp.enable("pylsp")
 			vim.lsp.enable("clangd")
 			vim.lsp.enable("rust_analyzer")
-			vim.lsp.enable("html")
-			vim.lsp.enable("cssls")
 			vim.lsp.enable("ts_ls")
 
 			vim.lsp.log.set_level("off") -- clangd REALLY likes logging the most insignificant stuff
@@ -67,14 +61,9 @@ return
 			ensure_installed = {
 				"lua_ls",
 				"pylsp",
-				"clangd",
-				"rust_analyzer",
-				"html",
-				"cssls",
+				-- "clangd", -- Just use the ones installed by the system
+				-- "rust_analyzer",
 				"ts_ls"
-			},
-			handlers = {
-				rust_analyzer = function() end
 			}
 		}
 	},
@@ -82,7 +71,7 @@ return
 		"mason-org/mason.nvim",
 		opts = {}
 	},
-	{ -- Completion suggestions
+	{ -- Completion suggestions --
 		"saghen/blink.cmp",
 		version = "1.*",
 		opts = {
@@ -93,8 +82,8 @@ return
 				["<M-g>"] = {"show_documentation", "hide_documentation"},
 				["<C-f>"] = {"scroll_documentation_up", "scroll_signature_up"},
 				["<C-b>"] = {"scroll_documentation_down", "scroll_signature_down"},
-				["<C-n>"] = {"select_next"},
-				["<C-p>"] = {"select_prev"},
+				["<C-n>"] = {"select_next", "fallback"},
+				["<C-p>"] = {"select_prev", "fallback"},
 				["<C-k>"] = {"show_signature", "hide_signature"},
 				["<Tab>"] = {"snippet_forward", "fallback"},
 				["<S-Tab>"] = {"snippet_backward"}
@@ -118,6 +107,11 @@ return
 				window = {
 					show_documentation = false,
 					scrollbar = false
+				}
+			},
+			cmdline = {
+				keymap = {
+					preset = "inherit"
 				}
 			},
 			sources = {
