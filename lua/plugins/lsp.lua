@@ -77,16 +77,16 @@ return
 		opts = {
 			keymap = {
 				preset = "none",
-				["<C-r>"] = {"show", "hide"},
-				["<C-e>"] = {"select_and_accept"},
-				["<M-g>"] = {"show_documentation", "hide_documentation"},
-				["<C-f>"] = {"scroll_documentation_up", "scroll_signature_up"},
-				["<C-b>"] = {"scroll_documentation_down", "scroll_signature_down"},
+				["<C-r>"] = {"show", "hide", "fallback"},
+				["<C-e>"] = {"select_and_accept", "fallback"},
+				["<M-g>"] = {"show_documentation", "hide_documentation", "fallback"},
+				["<C-f>"] = {"scroll_documentation_up", "scroll_signature_up", "fallback"},
+				["<C-b>"] = {"scroll_documentation_down", "scroll_signature_down", "fallback"},
 				["<C-n>"] = {"select_next", "fallback"},
 				["<C-p>"] = {"select_prev", "fallback"},
-				["<C-k>"] = {"show_signature", "hide_signature"},
+				["<C-k>"] = {"show_signature", "hide_signature", "fallback"},
 				["<Tab>"] = {"snippet_forward", "fallback"},
-				["<S-Tab>"] = {"snippet_backward"}
+				["<S-Tab>"] = {"snippet_backward", "fallback"}
 			},
 			appearance = {
 				nerd_font_variant = "mono"
@@ -112,6 +112,11 @@ return
 			cmdline = {
 				keymap = {
 					preset = "inherit"
+				},
+				completion = {
+					ghost_text = {
+						enabled = false
+					}
 				}
 			},
 			sources = {

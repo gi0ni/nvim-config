@@ -68,7 +68,7 @@ end, sopt)
 -- Jump to LSP diagnostic using Telescope
 vim.keymap.set("n", "<leader>fd", ":lua require('telescope.builtin').diagnostics()<CR>", sopt)
 
--- Fancy scoped token replace, command history hidden
+-- Fancy scoped token replace, command history is hidden
 vim.keymap.set("n", "<leader>gr", function()
 	local cmdId
 	cmdId = vim.api.nvim_create_autocmd({"CmdlineEnter"}, {
