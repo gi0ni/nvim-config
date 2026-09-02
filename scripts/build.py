@@ -315,16 +315,16 @@ class Slave:
 # =============================================================================
 def user_config():
     # e.g.
-    # AddTask(
+    # add_task(
     #     name="server",
-    #     buildCmd="ninja -C build",
-    #     launchCmd="bin/server",
+    #     build_cmd="ninja -C build",
+    #     launch_cmd="bin/server",
     #     predicate=lambda: subprocess.run(["bash", "-c", "ps aux | grep 'bin/server' | grep -v grep"]).returncode == 1
     # )
     #
-    # AddTask(
+    # add_task(
     #     name="client",
-    #     launchCmd="bin/client"
+    #     launch_cmd="bin/client"
     # )
 
 
