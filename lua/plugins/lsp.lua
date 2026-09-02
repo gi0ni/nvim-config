@@ -33,17 +33,6 @@ return
 					"--background-index"
 				}
 			})
-			vim.lsp.config("rust_analyzer", {
-				settings = {
-					["rust-analyzer"] = {
-						completion = {
-							callable = {
-								snippets = "add_parentheses" -- Disable placeholder args
-							}
-						}
-					}
-				}
-			})
 
 			vim.lsp.enable("lua_ls")
 			vim.lsp.enable("pylsp")
@@ -61,7 +50,7 @@ return
 			ensure_installed = {
 				"lua_ls",
 				"pylsp",
-				-- "clangd", -- Just use the ones installed by the system
+				-- "clangd", -- Just use the system installed ones
 				-- "rust_analyzer",
 				"ts_ls"
 			}
@@ -138,6 +127,7 @@ return
 			hl.set("BlinkCmpMenuSelection", {link="Visual"})
 			hl.set("BlinkCmpLabelDetail", {link="Normal"})
 			hl.set("BlinkCmpLabelDeprecated", {link="ErrorMsg"})
+			hl.set("BlinkCmpLabelDescription", {link="Normal"})
 
 			hl.set("BlinkCmpDoc", {link="Normal"})
 			hl.set("BlinkCmpDocBorder", {link="Normal"})
