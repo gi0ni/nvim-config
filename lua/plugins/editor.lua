@@ -2,15 +2,15 @@ local sopt = {silent=true}
 
 return
 {
-	{ -- Basic text editor features (tabs, visible indent level, file tree)
+	{ -- Basic text editor features (tabs, visible indent level, file tree) --
 		"akinsho/bufferline.nvim",
 		dependencies = { "nvim-tree/nvim-web-devicons" },
 		config = function()
 			require("bufferline").setup({
 				vim.keymap.set("n", "[b", ":BufferLineCyclePrev<CR>", sopt),
 				vim.keymap.set("n", "]b", ":BufferLineCycleNext<CR>", sopt),
-				vim.keymap.set("n", "[B", ":BufferLineMovePrev<CR>",  sopt),
-				vim.keymap.set("n", "]B", ":BufferLineMoveNext<CR>",  sopt),
+				vim.keymap.set("n", "[B", ":BufferLineMovePrev<CR>", sopt),
+				vim.keymap.set("n", "]B", ":BufferLineMoveNext<CR>", sopt),
 
 				options = {
 					numbers = function(opts)
@@ -71,10 +71,10 @@ return
 		"nvim-lualine/lualine.nvim",
 		opts = {},
 		config = function()
-			require("lualine").setup {
+			require("lualine").setup{
 				options = {
-					section_separators   = { left = "", right = "" },
-					component_separators = { left = "/", right = "/" },
+					section_separators   = {left = "", right = ""},
+					component_separators = {left = "/", right = "/"},
 					disabled_filetypes = {
 						statusline = {
 							"NvimTree"
@@ -85,16 +85,16 @@ return
 					lualine_a = {
 						{
 							"mode",
-							padding = { left = 3, right = 3 }
+							padding = {left = 3, right = 3}
 						}
 					}
 				}
 			}
 		end
 	},
-	{ -- Essential worflow plugins (telescope, lazygit integration)
+	{ -- Essential worflow plugins (telescope, lazygit integration) --
 		"nvim-telescope/telescope.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {"nvim-lua/plenary.nvim"},
 		opts = {
 			defaults = {
 				file_ignore_patterns = {
@@ -107,9 +107,9 @@ return
 			}
 		},
 		keys = {
-			{"<leader>ff", "<cmd>Telescope find_files<CR>"},
-			{"<leader>fg", "<cmd>Telescope live_grep<CR>"},
-			{"<leader>fb", "<cmd>Telescope buffers<CR>"}
+			{"<leader>ff", ":Telescope find_files<CR>", sopt},
+			{"<leader>fg", ":Telescope live_grep<CR>", sopt},
+			{"<leader>fb", ":Telescope buffers<CR>", sopt}
 		}
 	},
 	{
@@ -124,10 +124,10 @@ return
 			"LazyGitFilterCurrentFile",
 		},
 		keys = {
-			{"<leader>gg", "<cmd>LazyGit<CR>"}
+			{"<leader>gg", "<cmd>LazyGit<CR>", sopt}
 		}
 	},
-	{ -- Smaller, quality of life plugins
+	{ -- Smaller, quality of life plugins --
 		"tpope/vim-surround"
 	},
 	{
@@ -144,40 +144,30 @@ return
 				default_mappings = false,
 				mappings = {
 					i = {
-						j = {
-							k = "<Esc>",
-							j = "<Esc>",
-						},
+						j = {k = "<Esc>"},
 					},
 					c = {
-						j = {
-							k = "<C-c>",
-							j = "<C-c>",
-						},
+						j = {k = "<C-c>"},
 					},
 					v = {
-						j = {
-							k = "<Esc>",
-						},
+						j = {k = "<Esc>"},
 					},
 					s = {
-						j = {
-							k = "<Esc>",
-						},
-					},
+						j = {k = "<Esc>"}
+					}
 				}
 			}
 		end
 	},
 	{
 		"folke/todo-comments.nvim",
-		dependencies = { "nvim-lua/plenary.nvim" },
+		dependencies = {"nvim-lua/plenary.nvim"},
 		opts = {
 			highlight = {
 				keyword = "bg"
 			},
 			keywords = {
-				PERF = { icon = " ", alt = {"OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL"}, color = "#10b981" },
+				PERF = {icon = " ", alt = {"OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL"}, color = "#10b981"},
 			}
 		}
 	},
@@ -192,7 +182,7 @@ return
 			}
 		},
 		keys = {
-			{ "s", mode = {"n", "x", "o"}, function() require("flash").jump() end, desc = "Flash" }
+			{"s", mode = {"n", "x", "o"}, function() require("flash").jump() end, desc = "Flash"}
 		}
 	}
 }
