@@ -14,14 +14,12 @@ return
 				on_highlights = function(hl, palette)
 					hl.LineNr = {fg=palette.fg}
 					hl.Visual = {fg=palette.red, bg=palette.bg_visual}
-					hl.CmpBorder = {bg=palette.bg0}
-					hl.CmpNormal = {bg=palette.bg0}
 				end
 			})
 			vim.cmd("colorscheme everforest")
 
 			local hl = require("utils.hl")
-			hl.set("ErrorMsg", {link="Red", underline=false}) -- This prevents underlines in the cmdline area
+			hl.set("ErrorMsg", {link="Red", underline=false}) -- This prevents ugly underlines for cmdline area errors
 			hl.set("LspInlayHint", {link="Grey"})
 
 			hl.set("NormalFloat", {link="Normal"})
