@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.16                                                              *
+# *      v0.0.17                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -50,6 +50,7 @@ Color = {
     "RED":    "\033[31m",
     "GREEN":  "\033[32m",
     "YELLOW": "\033[33m",
+    "PURPLE": "\033[35m",
     "CLEAR":  "\033[0m"
 }
 
@@ -63,9 +64,8 @@ class Task:
         self.build_cmd = build_cmd if build_cmd else None
         self.launch_cmd = launch_cmd if launch_cmd else None
 
-        if not is_master_script:
-            self.tokenized_build_cmd = shlex.split(self.build_cmd) if self.build_cmd else None
-            self.tokenized_launch_cmd = shlex.split(self.launch_cmd) if self.launch_cmd else None
+        self.tokenized_build_cmd = shlex.split(self.build_cmd) if self.build_cmd else None
+        self.tokenized_launch_cmd = shlex.split(self.launch_cmd) if self.launch_cmd else None
 
     def execute_build(self) -> bool:
         if not self.has_build():
@@ -75,13 +75,10 @@ class Task:
         try:
             return_code = subprocess.run(self.tokenized_build_cmd).returncode
         except FileNotFoundError:
-            fail_gracefully("{0}<BUILD FAILED>{1} Failed to run unknown command {0}`{2}`{1}!"
-                            .format(Color["RED"], Color["CLEAR"], self.build_cmd))
+            fail_gracefully("{1}[BUILD][✗]{0} failed to run unknown command {2}`{3}`{0}!"
+                            .format(Color["CLEAR"], Color["RED"], Color["PURPLE"], self.build_cmd))
 
         build_passed = (return_code == 0)
-        if build_passed and self.has_launch():
-            print("\n\n", end="")
-
         return build_passed
 
     def execute_launch(self) -> int:
@@ -92,8 +89,8 @@ class Task:
         try:
             return_code = subprocess.run(self.tokenized_launch_cmd).returncode
         except FileNotFoundError:
-            fail_gracefully("{0}<LAUNCH FAILED>{1} Executable {0}`{2}`{1} could not be found!"
-                            .format(Color["RED"], Color["CLEAR"], self.launch_cmd.strip()))
+            fail_gracefully("{1}[LUNCH][✗]{0} failed to find binary {2}`{3}`{0}!"
+                            .format(Color["CLEAR"], Color["RED"], Color["PURPLE"], self.launch_cmd.strip()))
 
         return return_code
 
@@ -235,17 +232,25 @@ class Slave:
         runtime_nano = 0
         return_code = 1
 
+        start = time.perf_counter_ns()
         build_passed = task.execute_build()
+        end = time.perf_counter_ns()
+
+        runtime_nano = end - start
+        self.print_build_status(task, build_passed, runtime_nano)
 
         if build_passed and task.has_launch():
+            if task.has_build():
+                print("Open binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
+                      .format(Color["CLEAR"], Color["PURPLE"],
+                              task.tokenized_launch_cmd[0], task.tokenized_launch_cmd[1:]))
+
             start = time.perf_counter_ns()
             return_code = task.execute_launch()
             end = time.perf_counter_ns()
 
             runtime_nano = end - start
             self.print_launch_status(return_code, runtime_nano)
-        else:
-            self.print_build_status(build_passed)
 
         print("Press any key to continue...", end="", flush=True)
         wait_for_keypress()
@@ -255,14 +260,18 @@ class Slave:
             return None
         return tasks[0]
 
-    def print_build_status(self, build_passed):
-        print("\n\n\n", end="")
+    def print_build_status(self, task, build_passed, runtime_nanos):
+        if not task.has_build():
+            return
+
+        print("\n\n", end="")
+
         if build_passed:
-            print("{0}<BUILD PASSED>{1} Build task completed with {0}no errors{1}. Good work!"
-                  .format(Color["GREEN"], Color["CLEAR"]))
+            print("{2}[BUILD][✓]{0} completed in {1}{3}{0} with {2}no errors{0}!"
+                  .format(Color["CLEAR"], Color["YELLOW"], Color["GREEN"], self.get_formatted_time(runtime_nanos)))
         else:
-            print("{0}<BUILD FAILED>{1} Build task terminated, {0}some errors{1} need fixing..."
-                  .format(Color["RED"], Color["CLEAR"]))
+            print("{1}[BUILD][✗]{0} terminated at {2}{3}{0}, there are {1}some errors{0}..."
+                  .format(Color["CLEAR"], Color["RED"], Color["YELLOW"], self.get_formatted_time(runtime_nanos)))
 
     def print_launch_status(self, returnCode, runtimeNano):
         formattedReturnCode = self.get_formatted_return_code(returnCode)
