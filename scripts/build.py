@@ -241,7 +241,7 @@ class Slave:
 
         if build_passed and task.has_launch():
             if task.has_build():
-                print("Open binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
+                print("Run binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
                       .format(Color["CLEAR"], Color["PURPLE"],
                               task.tokenized_launch_cmd[0], task.tokenized_launch_cmd[1:]))
 
