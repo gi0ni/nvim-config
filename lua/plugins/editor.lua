@@ -7,7 +7,7 @@ local lualine_theme = {
 	normal = {
 		a = {fg=theme.type, bg=theme.line, gui="bold"},
 		b = {fg=theme.type, bg=theme.bg},
-		c = {fg=theme.fg},
+		c = {fg=theme.type},
 	},
 	insert = {
 		a = {fg=theme.bg, bg=theme.green, gui="bold"}
