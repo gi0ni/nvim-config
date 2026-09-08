@@ -104,6 +104,9 @@ return
 				completion = {
 					ghost_text = {
 						enabled = false
+					},
+					menu = {
+						auto_show = false
 					}
 				}
 			},
