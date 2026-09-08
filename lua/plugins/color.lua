@@ -22,7 +22,7 @@ return
 					hl.TodoFgPERF = {fg=c.green}
 
 					hl.NvimTreeNormal = {bg="#070b0b"}
-					hl.Title = {fg=c.pink}
+					hl.Title = {fg=c.cyan}
 					hl.Directory = {fg=c.green}
 					hl.NvimTreeFolderIcon = {fg=c.green}
 				end
