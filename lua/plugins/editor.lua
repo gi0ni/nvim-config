@@ -1,5 +1,36 @@
 local sopt = {silent=true}
 
+local koda = require("koda")
+local theme = koda.get_palette("moss")
+
+local lualine_theme = {
+	normal = {
+		a = {fg=theme.type, bg=theme.line, gui="bold"},
+		b = {fg=theme.type, bg=theme.bg},
+		c = {fg=theme.fg},
+	},
+	insert = {
+		a = {fg=theme.bg, bg=theme.green, gui="bold"}
+	},
+	visual = {
+		a = {fg=theme.bg, bg=theme.func, gui="bold"}
+	},
+	replace = {
+		a = {fg=theme.bg, bg=theme.red, gui="bold"}
+	},
+	command = {
+		a = {fg=theme.bg, bg=theme.cyan, gui="bold"}
+	},
+	terminal = {
+		a = {fg=theme.bg, bg=theme.pink, gui="bold"}
+	},
+	inactive = {
+		a = {fg=theme.fg, bg=theme.line},
+		b = {fg=theme.fg, bg=theme.line},
+		c = {fg=theme.fg},
+	},
+}
+
 return
 {
 	{ -- Basic text editor features (tabs, visible indent level, file tree) --
@@ -63,7 +94,7 @@ return
 			},
 			scope = {
 				show_start = false,
-				show_end   = false
+				show_end = false
 			}
 		}
 	},
@@ -71,10 +102,11 @@ return
 		"nvim-lualine/lualine.nvim",
 		opts = {},
 		config = function()
-			require("lualine").setup{
+			require("lualine").setup({
 				options = {
-					section_separators   = {left = "", right = ""},
-					component_separators = {left = "/", right = "/"},
+					theme = lualine_theme,
+					section_separators   = {left = "", right = ""},
+					component_separators = {left = "", right = ""},
 					disabled_filetypes = {
 						statusline = {
 							"NvimTree"
@@ -89,7 +121,7 @@ return
 						}
 					}
 				}
-			}
+			})
 		end
 	},
 	{ -- Essential worflow plugins (telescope, lazygit integration) --
@@ -167,7 +199,7 @@ return
 				keyword = "bg"
 			},
 			keywords = {
-				PERF = {icon = " ", alt = {"OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL"}, color = "#10b981"},
+				PERF = {icon = " ", alt = {"OPTIM", "PERFORMANCE", "OPTIMIZE", "TIL"}},
 			}
 		}
 	},
