@@ -85,6 +85,10 @@ vim.keymap.set("n", "<leader>gr", function()
 	vim.lsp.buf.rename()
 
 	vim.defer_fn(function()
+		vim.notify("")
+	end, 10)
+
+	vim.defer_fn(function()
 		if cmdId then
 			vim.api.nvim_del_autocmd(cmdId)
 		end
