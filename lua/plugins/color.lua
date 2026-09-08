@@ -1,32 +1,23 @@
 return
 {
 	{
-		"neanias/everforest-nvim",
+		"oskarnurm/koda.nvim",
+		lazy = false,
 		priority = 1000,
 		config = function()
-			require("everforest").setup({
-				background = "hard",
-				colours_override = function(palette)
-					palette.bg0 = palette.bg_dim
-					palette.bg_dim = "#101314"
-					palette.statusline2 = palette.blue -- Make lualine's insert mode blue
-				end,
-				on_highlights = function(hl, palette)
-					hl.LineNr = {fg=palette.fg}
-					hl.Visual = {fg=palette.red, bg=palette.bg_visual}
+			require("koda").setup({
+				colors = {
+					moss = {
+						const = "#cc8bc9"
+					}
+				},
+				on_highlights = function(hl, c)
+					hl.TodoBgPERF = {bg=c.green, fg=c.bg, bold=true}
+					hl.TodoFgPERF = {fg=c.green}
+					hl.NvimTreeNormal = {bg="#070b0b"}
 				end
 			})
-			vim.cmd("colorscheme everforest")
-
-			local hl = require("utils.hl")
-			hl.set("ErrorMsg", {link="Red", underline=false}) -- This prevents ugly underlines for cmdline area errors
-			hl.set("LspInlayHint", {link="Grey"})
-
-			hl.set("NormalFloat", {link="Normal"})
-			hl.set("FloatBorder", {link="Normal"})
-
-			hl.set("String", {link="Aqua"})
-			hl.set("cDefine", {link="Purple"})
+			vim.cmd("colorscheme koda-moss")
 		end
 	},
 	{
