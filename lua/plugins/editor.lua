@@ -25,9 +25,9 @@ local lualine_theme = {
 		a = {fg=theme.bg, bg=theme.pink, gui="bold"}
 	},
 	inactive = {
-		a = {fg=theme.fg, bg=theme.line},
-		b = {fg=theme.fg, bg=theme.line},
-		c = {fg=theme.fg},
+		a = {fg=theme.type, bg=theme.line},
+		b = {fg=theme.type, bg=theme.line},
+		c = {fg=theme.type},
 	},
 }
 
