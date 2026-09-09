@@ -20,6 +20,8 @@ return
 
 					hl.TodoBgPERF = {bg=c.green, fg=c.bg, bold=true}
 					hl.TodoFgPERF = {fg=c.green}
+					hl.TodoBgTODO = {bg=c.pink, fg=c.bg, bold=true}
+					hl.TodoFgTODO = {fg=c.pink}
 
 					hl.NvimTreeNormal = {bg="#070b0b"}
 					hl.Title = {fg=c.cyan}
