@@ -81,20 +81,13 @@ return
 			},
 			completion = {
 				documentation = {
-					auto_show = false,
-					window = {
-						scrollbar = false
-					},
-				},
-				menu = {
-					scrollbar = false
-				},
+					auto_show = false
+				}
 			},
 			signature = {
 				enabled = true,
 				window = {
-					show_documentation = false,
-					scrollbar = false
+					show_documentation = false
 				}
 			},
 			cmdline = {
