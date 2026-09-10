@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.23                                                              *
+# *      v0.0.24                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -211,7 +211,7 @@ class Master:
         self.slave_statuses: List[int] = []
 
         self.start_server()
-        user_config()
+        create_user_tasks()
 
         if not tasks:
             add_task(name="error")
@@ -223,6 +223,7 @@ class Master:
                 if task.is_blocking():
                     self.wait_for_event(task.blocking_on)
 
+        post_slave_creation()
         self.stop_server()
         self.wait_for_slaves()
 
@@ -391,7 +392,7 @@ class Slave:
 # *                                 CONFIG                                    *
 # *                                                                           *
 # =============================================================================
-def user_config():
+def create_user_tasks():
     # e.g.
     # add_task(
     #     name="server",
@@ -408,6 +409,10 @@ def user_config():
 
 
 
+    pass
+
+
+def post_slave_creation():
     pass
 
 
