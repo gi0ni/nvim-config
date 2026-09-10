@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.21                                                              *
+# *      v0.0.22                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -299,10 +299,9 @@ class Slave:
         self.send_event_to_master(MasterSlaveEvent.SLAVE_FINISHED_BUILD)
 
         if build_passed and task.has_launch():
-            if task.has_build():
-                print("Run binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
-                      .format(Color["CLEAR"], Color["PURPLE"],
-                              task.tokenized_launch_cmd[0], task.tokenized_launch_cmd[1:]))
+            print("Run binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
+                  .format(Color["CLEAR"], Color["PURPLE"],
+                          task.tokenized_launch_cmd[0], task.tokenized_launch_cmd[1:]))
 
             start = time.perf_counter_ns()
             return_code = task.execute_launch()
