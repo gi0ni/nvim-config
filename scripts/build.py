@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.17                                                              *
+# *      v0.0.21                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -11,6 +11,8 @@ import shlex
 import subprocess
 import time
 from typing import List
+from enum import Enum
+import socket
 
 # =============================================================================
 # *                                                                           *
@@ -55,9 +57,13 @@ Color = {
 }
 
 
+class MasterSlaveEvent(Enum):
+    SLAVE_FINISHED_BUILD = 1
+
+
 # TODO: Might be useful to be able to run more than one build&launch command in the same terminal window
 class Task:
-    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None):
+    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None, has_focus=False):
         self.name = name if name is not None else "build"
         self.predicate = predicate if callable(predicate) else None
 
@@ -66,6 +72,9 @@ class Task:
 
         self.tokenized_build_cmd = shlex.split(self.build_cmd) if self.build_cmd else None
         self.tokenized_launch_cmd = shlex.split(self.launch_cmd) if self.launch_cmd else None
+
+        self.blocking_on = blocking_on
+        self.has_focus = has_focus
 
     def execute_build(self) -> bool:
         if not self.has_build():
@@ -106,16 +115,20 @@ class Task:
     def has_launch(self):
         return self.launch_cmd is not None
 
+    def is_blocking(self):
+        return self.blocking_on is not None
+
 
 tasks: List[Task] = []
-is_master_script = True
-launch_disabled = False
+is_master_script: bool = True
+launch_disabled: bool = False
+master_port_number: int = None
 
 
-def add_task(name=None, build_cmd=None, launch_cmd=None, predicate=None):
+def add_task(name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None, has_focus=False):
     if launch_disabled:
         launch_cmd = None
-    task = Task(name, build_cmd, launch_cmd, predicate)
+    task = Task(name, build_cmd, launch_cmd, predicate, blocking_on, has_focus)
     tasks.append(task)
 
 
@@ -127,6 +140,7 @@ def add_task(name=None, build_cmd=None, launch_cmd=None, predicate=None):
 def parse_args():
     global is_master_script
     global launch_disabled
+    global master_port_number
 
     argc = len(sys.argv)
 
@@ -155,6 +169,11 @@ def parse_args():
 
             case "--launchDisabled":
                 launch_disabled = True
+
+            case "--master-port":
+                pos = find_next_dash_arg(sys.argv, i)
+                master_port_number = int(sys.argv[i + 1])
+                i = pos - 1
 
     init_tasks_from_args(build_commands, launch_commands)
 
@@ -185,8 +204,14 @@ def init_tasks_from_args(build_commands: List[str], launch_commands: List[str]):
 # =============================================================================
 class Master:
     def __init__(self):
-        self.slaves: List[subprocess.Popen] = []
+        self.listen_socket: socket.socket = None
+        self.port: int = None
 
+        self.slave_pids: List[subprocess.Popen] = []
+        self.slave_sock_files: List[socket.socket] = []
+        self.slave_statuses: List[int] = []
+
+        self.start_server()
         user_config()
 
         if not tasks:
@@ -194,15 +219,42 @@ class Master:
 
         for task in tasks:
             if task.evaluate_predicate():
-                self.dispatch_slaves(task)
+                self.dispatch_slave(task)
 
+                if task.is_blocking():
+                    self.wait_for_event(task.blocking_on)
+
+        self.stop_server()
         self.wait_for_slaves()
 
-    def dispatch_slaves(self, task):
+    def start_server(self):
+        self.listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.listen_socket.bind(("localhost", 0))
+        self.port = self.listen_socket.getsockname()[1]
+        self.listen_socket.listen(8)
+
+    def stop_server(self):
+        for sock in self.slave_sock_files:
+            sock.close()
+        self.listen_socket.close()
+
+    def connect_to_slave(self):
+        sock, addr = self.listen_socket.accept()
+        self.slave_sock_files += [sock.makefile("rb")]
+        self.slave_statuses += [0]
+
+    def wait_for_event(self, event: MasterSlaveEvent):
+        while self.slave_statuses[-1] != event.value:
+            data = self.slave_sock_files[-1].read(4)
+            self.slave_statuses[-1] = int.from_bytes(data)
+        pass
+
+    def dispatch_slave(self, task):
         spawn_cmd = [python_runtime, self_script_path, "--slave"]
 
         if platform_name == "Linux":
-            spawn_cmd = ["-n", task.name] + spawn_cmd
+            tmux_neww = "-n" if task.has_focus else "-dn"
+            spawn_cmd = [tmux_neww, task.name] + spawn_cmd
 
         if task.has_build():
             spawn_cmd += ["--build", task.build_cmd]
@@ -210,11 +262,14 @@ class Master:
         if task.has_launch():
             spawn_cmd += ["--launch", task.launch_cmd]
 
+        spawn_cmd += ["--master-port", str(self.port)]
+
         spawn_cmd = platform_commands[platform_name]["term"] + spawn_cmd
-        self.slaves += [subprocess.Popen(spawn_cmd)]
+        self.slave_pids += [subprocess.Popen(spawn_cmd)]
+        self.connect_to_slave()
 
     def wait_for_slaves(self):
-        for slave in self.slaves:
+        for slave in self.slave_pids:
             slave.wait()
 
 
@@ -225,6 +280,9 @@ class Master:
 # =============================================================================
 class Slave:
     def __init__(self):
+        self.server_socket = None
+        self.connect_to_master()
+
         task = self.get_task()
         if not task or task.is_empty():
             self.handle_no_work_given()
@@ -238,6 +296,7 @@ class Slave:
 
         runtime_nano = end - start
         self.print_build_status(task, build_passed, runtime_nano)
+        self.send_event_to_master(MasterSlaveEvent.SLAVE_FINISHED_BUILD)
 
         if build_passed and task.has_launch():
             if task.has_build():
@@ -252,8 +311,21 @@ class Slave:
             runtime_nano = end - start
             self.print_launch_status(return_code, runtime_nano)
 
+        self.disconn_from_master()
         print("Press any key to continue...", end="", flush=True)
         wait_for_keypress()
+
+    def connect_to_master(self):
+        global master_port_number
+
+        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.server_socket.connect(("localhost", master_port_number))
+
+    def disconn_from_master(self):
+        self.server_socket.close()
+
+    def send_event_to_master(self, event: MasterSlaveEvent):
+        self.server_socket.sendall(event.value.to_bytes(4))
 
     def get_task(self) -> Task:
         if not tasks or tasks[0].is_empty():
@@ -328,7 +400,9 @@ def user_config():
     #     name="server",
     #     build_cmd="ninja -C build",
     #     launch_cmd="bin/server",
-    #     predicate=lambda: subprocess.run(["bash", "-c", "ps aux | grep 'bin/server' | grep -v grep"]).returncode == 1
+    #     predicate=lambda: subprocess.run(["bash", "-c", "ps aux | grep 'bin/server' | grep -v grep"]).returncode == 1,
+    #     blocking_on=MasterSlaveEvent.SLAVE_FINISHED_BUILD,
+    #     has_focus=True
     # )
     #
     # add_task(
