@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.24                                                              *
+# *      v0.0.25                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -211,7 +211,7 @@ class Master:
         self.slave_statuses: List[int] = []
 
         self.start_server()
-        create_user_tasks()
+        push_user_tasks()
 
         if not tasks:
             add_task(name="error")
@@ -223,7 +223,7 @@ class Master:
                 if task.is_blocking():
                     self.wait_for_event(task.blocking_on)
 
-        post_slave_creation()
+        post_slaves_dispatched()
         self.stop_server()
         self.wait_for_slaves()
 
@@ -392,7 +392,7 @@ class Slave:
 # *                                 CONFIG                                    *
 # *                                                                           *
 # =============================================================================
-def create_user_tasks():
+def push_user_tasks():
     # e.g.
     # add_task(
     #     name="server",
@@ -412,10 +412,15 @@ def create_user_tasks():
     pass
 
 
-def post_slave_creation():
+def post_slaves_dispatched():
     pass
 
 
+# =============================================================================
+# *                                                                           *
+# *                                  MAIN                                     *
+# *                                                                           *
+# =============================================================================
 def exception_hook(exc_type, exc_value, tb):
     import traceback
     traceback.print_exception(exc_type, exc_value, tb)
