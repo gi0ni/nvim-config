@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.29                                                              *
+# *      v0.0.30                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -97,7 +97,7 @@ class Task:
         try:
             return_code = subprocess.run(self.tokenized_launch_cmd).returncode
         except FileNotFoundError:
-            fail_gracefully("{1}[LUNCH][✗]{0} failed to find binary {2}`{3}`{0}!"
+            fail_gracefully("{1}[BUILD][✗]{0} failed to find binary {2}`{3}`{0}!"
                             .format(Color["CLEAR"], Color["RED"], Color["PURPLE"], self.launch_cmd.strip()))
 
         return return_code
@@ -315,7 +315,7 @@ class Slave:
         self.send_event_to_master(MasterSlaveEvent.SLAVE_FINISHED_BUILD)
 
         if build_passed and task.has_launch():
-            print("Run binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
+            print("{1}[BUILD][]{0} execute binary {1}`{2}`{0} with args {1}`{3}`{0}...\n"
                   .format(Color["CLEAR"], Color["PURPLE"],
                           task.tokenized_launch_cmd[0], task.tokenized_launch_cmd[1:]))
 
