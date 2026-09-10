@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.25                                                              *
+# *      v0.0.27                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -207,7 +207,7 @@ class Master:
         self.port: int = None
 
         self.slave_pids: List[subprocess.Popen] = []
-        self.slave_sock_files: List[socket.socket] = []
+        self.slave_sockets: List[socket.socket] = []
         self.slave_statuses: List[int] = []
 
         self.start_server()
@@ -232,20 +232,39 @@ class Master:
         self.listen_socket.bind(("localhost", 0))
         self.port = self.listen_socket.getsockname()[1]
         self.listen_socket.listen(8)
+        self.listen_socket.settimeout(5)
 
     def stop_server(self):
-        for sock in self.slave_sock_files:
-            sock.close()
+        for sock in self.slave_sockets:
+            if sock is not None:
+                sock.close()
         self.listen_socket.close()
 
     def connect_to_slave(self):
-        sock, addr = self.listen_socket.accept()
-        self.slave_sock_files += [sock.makefile("rb")]
+        sock = None
+        try:
+            sock, addr = self.listen_socket.accept()
+            sock.settimeout(60)
+        except socket.timeout:
+            pass
+        self.slave_sockets += [sock]
         self.slave_statuses += [0]
 
     def wait_for_event(self, event: MasterSlaveEvent):
+        if self.slave_sockets is None:
+            return
+
         while self.slave_statuses[-1] != event.value:
-            data = self.slave_sock_files[-1].read(4)
+            data = bytearray(0)
+            while len(data) < 4:
+                try:
+                    data += self.slave_sockets[-1].recv(4 - len(data))
+                    if not data:
+                        sys.exit(1)
+                except socket.timeout:
+                    pass
+                except:
+                    sys.exit(1)
             self.slave_statuses[-1] = int.from_bytes(data)
         pass
 
