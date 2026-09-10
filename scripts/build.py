@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.27                                                              *
+# *      v0.0.28                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -245,7 +245,7 @@ class Master:
         try:
             sock, addr = self.listen_socket.accept()
             sock.settimeout(60)
-        except socket.timeout:
+        except TimeoutError:
             pass
         self.slave_sockets += [sock]
         self.slave_statuses += [0]
@@ -261,9 +261,9 @@ class Master:
                     data += self.slave_sockets[-1].recv(4 - len(data))
                     if not data:
                         sys.exit(1)
-                except socket.timeout:
+                except TimeoutError:
                     pass
-                except:
+                except OSError:
                     sys.exit(1)
             self.slave_statuses[-1] = int.from_bytes(data)
         pass
