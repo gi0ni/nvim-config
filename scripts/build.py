@@ -1,6 +1,6 @@
 # =============================================================================
 # *   CRAPPY BUILD SCRIPT                                                     *
-# *      v0.0.22                                                              *
+# *      v0.0.23                                                              *
 # *      @author gi0ni                                                        *
 # =============================================================================
 
@@ -63,7 +63,7 @@ class MasterSlaveEvent(Enum):
 
 # TODO: Might be useful to be able to run more than one build&launch command in the same terminal window
 class Task:
-    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None, has_focus=False):
+    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None):
         self.name = name if name is not None else "build"
         self.predicate = predicate if callable(predicate) else None
 
@@ -74,7 +74,6 @@ class Task:
         self.tokenized_launch_cmd = shlex.split(self.launch_cmd) if self.launch_cmd else None
 
         self.blocking_on = blocking_on
-        self.has_focus = has_focus
 
     def execute_build(self) -> bool:
         if not self.has_build():
@@ -125,10 +124,10 @@ launch_disabled: bool = False
 master_port_number: int = None
 
 
-def add_task(name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None, has_focus=False):
+def add_task(name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None):
     if launch_disabled:
         launch_cmd = None
-    task = Task(name, build_cmd, launch_cmd, predicate, blocking_on, has_focus)
+    task = Task(name, build_cmd, launch_cmd, predicate, blocking_on)
     tasks.append(task)
 
 
@@ -253,8 +252,7 @@ class Master:
         spawn_cmd = [python_runtime, self_script_path, "--slave"]
 
         if platform_name == "Linux":
-            tmux_neww = "-n" if task.has_focus else "-dn"
-            spawn_cmd = [tmux_neww, task.name] + spawn_cmd
+            spawn_cmd = ["-n", task.name] + spawn_cmd
 
         if task.has_build():
             spawn_cmd += ["--build", task.build_cmd]
@@ -400,8 +398,7 @@ def user_config():
     #     build_cmd="ninja -C build",
     #     launch_cmd="bin/server",
     #     predicate=lambda: subprocess.run(["bash", "-c", "ps aux | grep 'bin/server' | grep -v grep"]).returncode == 1,
-    #     blocking_on=MasterSlaveEvent.SLAVE_FINISHED_BUILD,
-    #     has_focus=True
+    #     blocking_on=MasterSlaveEvent.SLAVE_FINISHED_BUILD
     # )
     #
     # add_task(
