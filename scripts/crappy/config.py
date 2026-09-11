@@ -21,6 +21,7 @@ class Config:
     def __init__(self):
         self.is_master_script: bool = True
         self.launch_disabled: bool = False
+        self.sockets_enabled: bool = False
         self.master_port_number: int = None
 
         self.task_queue: List[Task] = []

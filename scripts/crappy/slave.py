@@ -51,13 +51,22 @@ class Slave:
         wait_for_keypress()
 
     def connect_to_master(self):
+        if not self.config.sockets_enabled:
+            return
+
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.server_socket.connect(("localhost", self.config.master_port_number))
 
     def send_event_to_master(self, event: MasterSlaveEvent):
+        if not self.config.sockets_enabled:
+            return
+
         self.server_socket.sendall(event.value.to_bytes(4))
 
     def disconn_from_master(self):
+        if not self.config.sockets_enabled:
+            return
+
         self.server_socket.close()
 
     def get_task(self) -> Task:

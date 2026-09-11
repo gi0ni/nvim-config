@@ -13,10 +13,13 @@ def driver(config: Config):
     parse_args(config)
 
     if config.is_master_script:
-        if config.launch_disabled:
-            for task in config.task_queue:
+        for task in config.task_queue:
+            if config.launch_disabled:
                 task.launch_cmd = None
                 task.tokenized_launch_cmd = None
+
+            if task.is_blocking():
+                config.sockets_enabled = True  # Enables sockets on Master
 
         master = Master(config)
         master.driver()

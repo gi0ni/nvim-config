@@ -41,6 +41,9 @@ class Master:
             os.system(command)
 
     def start_server(self):
+        if not self.config.sockets_enabled:
+            return
+
         self.listen_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.listen_socket.bind(("localhost", 0))
         self.port = self.listen_socket.getsockname()[1]
@@ -48,6 +51,9 @@ class Master:
         self.listen_socket.settimeout(5)
 
     def connect_to_slave(self):
+        if not self.config.sockets_enabled:
+            return
+
         sock = None
         try:
             sock, addr = self.listen_socket.accept()
@@ -56,6 +62,9 @@ class Master:
         self.slave_sockets += [sock]
 
     def wait_for_event(self, task: Task):
+        if not self.config.sockets_enabled:
+            return
+
         if not self.slave_sockets:
             return
 
@@ -75,6 +84,9 @@ class Master:
                 break
 
     def stop_server(self):
+        if not self.config.sockets_enabled:
+            return
+
         for sock in self.slave_sockets:
             if sock:
                 sock.close()
@@ -99,7 +111,8 @@ class Master:
         if task.has_launch():
             spawn_cmd += ["--launch", task.launch_cmd]
 
-        spawn_cmd += ["--master-port", str(self.port)]
+        if self.config.sockets_enabled:
+            spawn_cmd += ["--master-port", str(self.port)]
 
         spawn_cmd = Config.platform_commands[Config.platform_name]["term"] + spawn_cmd
         self.slave_pids += [subprocess.Popen(spawn_cmd)]

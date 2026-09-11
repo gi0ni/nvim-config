@@ -28,6 +28,7 @@ def parse_args(config: Config):
     temp = dash_args["--master-port"]
     if temp:
         config.master_port_number = int(temp[0])
+        config.sockets_enabled = True  # Enables sockets on Slave
 
     # Lists of shell commands (not tokenized)
     build_commands = dash_args["--build"]
