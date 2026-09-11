@@ -22,12 +22,12 @@ vim.keymap.set("n", "<leader>ba", function()
 end)
 
 -- Quick build (and run) shortcuts for a wide variety of languages (4)
-local pythonRuntime = IsWin32 and "python" or "python3"
-local globalBuildScript = vim.fn.stdpath("config") .. "/scripts/build.py"
+local python_runtime = IsWin32 and "python" or "python3"
+local global_build_script = vim.fn.stdpath("config") .. "/scripts/build.py"
 
-local curDirName
-local bufferName
-local binaryName
+local current_dirname
+local buffer_name
+local binary_name
 
 vim.keymap.set("n", "<leader>r", function()
 	Build({launch=true})
@@ -45,52 +45,52 @@ vim.keymap.set("n", "<leader>bpy", function()
 		return
 	end
 
-	local inpfile = io.open(globalBuildScript, "r")
-	local outfile = io.open("build.py", "w")
+	local input_file = io.open(global_build_script, "r")
+	local output_file = io.open("build.py", "w")
 
-	if inpfile == nil or outfile == nil then
+	if input_file == nil or output_file == nil then
 		vim.notify("Error. Failed to copy file!")
 		return
 	end
 
-	local contents = inpfile:read("*a")
-	inpfile:close()
+	local contents = input_file:read("*a")
+	input_file:close()
 
-	outfile:write(contents)
-	outfile:close()
+	output_file:write(contents)
+	output_file:close()
 	vim.notify(string.format("Copied `%s` to local directory.", vim.fn.stdpath("config") .. "/scripts/build.py"))
 end)
 
 function Build(opt)
-	local launchDisabled = (opt.launch == false)
+	local launch_disabled = (opt.launch == false)
 
 	vim.cmd("wa")
 
 	if vim.fn.filereadable("build.py") == 1 then
-		RunBuildScript(nil, nil, {
-			buildScript = "build.py",
-			launchDisabled = launchDisabled
+		Run_Build_Script(nil, nil, {
+			build_script = "build.py",
+			launch_disabled = launch_disabled
 		})
 		return
 	end
 
-	curDirName = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-	bufferName = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
-	binaryName = curDirName .. (IsWin32 and ".exe" or "")
+	current_dirname = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+	buffer_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+	binary_name = current_dirname .. (IsWin32 and ".exe" or "")
 
-	local config = ResolveBuilder()
+	local config = Resolve_Builder()
 	if config == nil then
-		vim.notify(string.format("Failed to launch `%s`. No configuration found.", bufferName))
+		vim.notify(string.format("Failed to launch `%s`. No configuration found.", buffer_name))
 		return
 	end
 
-	if config.build == nil and (config.launch == nil or launchDisabled) then
+	if config.build == nil and (config.launch == nil or launch_disabled) then
 		vim.notify("No commands were given. There is nothing to do.")
 		return
 	end
 
-	RunBuildScript(config.build, config.launch, {
-		launchDisabled = launchDisabled
+	Run_Build_Script(config.build, config.launch, {
+		launch_disabled = launch_disabled
 	})
 end
 
@@ -101,10 +101,10 @@ local builders = {
 	BASH   = 4
 }
 
-local builderConfig = {
+local builder_config = {
 	[builders.CMAKE] = {
 		build = "ninja -C build",
-		launch = "bin/{binaryName} {ArgsList}",
+		launch = "bin/{binary_name} {ArgsList}",
 		pattern = {
 			type = "file",
 			what = "CMakeLists.txt"
@@ -112,7 +112,7 @@ local builderConfig = {
 	},
 	[builders.CARGO] = {
 		build = "cargo build",
-		launch = "target/debug/{binaryName} {ArgsList}",
+		launch = "target/debug/{binary_name} {ArgsList}",
 		pattern = {
 			type = "file",
 			what = "Cargo.toml"
@@ -120,7 +120,7 @@ local builderConfig = {
 	},
 	[builders.PYTHON] = {
 		build = nil,
-		launch = "{pythonRuntime} {bufferName} {ArgsList}",
+		launch = "{python_runtime} {buffer_name} {ArgsList}",
 		pattern = {
 			type = "extension",
 			what = "py"
@@ -128,7 +128,7 @@ local builderConfig = {
 	},
 	[builders.BASH] = {
 		build = nil,
-		launch = "bash {bufferName} {ArgsList}",
+		launch = "bash {buffer_name} {ArgsList}",
 		pattern = {
 			type = "extension",
 			what = "sh"
@@ -136,74 +136,74 @@ local builderConfig = {
 	}
 }
 
-function ResolveBuilder()
-	local orderedKeys = {}
+function Resolve_Builder()
+	local ordered_keys = {}
 
 	for key in pairs(builders) do
-		table.insert(orderedKeys, key)
+		table.insert(ordered_keys, key)
 	end
 
-	table.sort(orderedKeys)
+	table.sort(ordered_keys)
 
-	local chosenKey = nil
+	local chosen_key = nil
 
-	for key = 1, #orderedKeys do
-		if MatchBuilderPattern(builderConfig[key].pattern) then
-			chosenKey = key
+	for key = 1, #ordered_keys do
+		if Match_Builder_Pattern(builder_config[key].pattern) then
+			chosen_key = key
 			break
 		end
 	end
 
-	if chosenKey == nil then
+	if chosen_key == nil then
 		return nil
 	end
 
-	return GetBuilderCommands(builderConfig[chosenKey])
+	return Get_Builder_Commands(builder_config[chosen_key])
 end
 
-function MatchBuilderPattern(pattern)
+function Match_Builder_Pattern(pattern)
 	if pattern.type == "file" then
 		return vim.fn.filereadable(pattern.what) == 1
 
 	elseif pattern.type == "extension" then
-		local ext = vim.fn.fnamemodify(bufferName, ":e")
+		local ext = vim.fn.fnamemodify(buffer_name, ":e")
 		return ext == pattern.what
 	end
 end
 
-function GetBuilderCommands(config)
-	local fmtArgs = {
-		["{binaryName}"] = binaryName,
+function Get_Builder_Commands(config)
+	local format_args = {
+		["{binary_name}"] = binary_name,
 		["{ArgsList}"] = ArgsList or "",
-		["{pythonRuntime}"] = pythonRuntime,
-		["{bufferName}"] = bufferName,
+		["{python_runtime}"] = python_runtime,
+		["{buffer_name}"] = buffer_name,
 	}
 
-	local regexPattern = "{[a-zA-Z_][0-9a-zA-Z_]*}"
+	local regex_pattern = "{[a-zA-Z_][0-9a-zA-Z_]*}"
 
 	return {
-		build = config.build and string.gsub(config.build, regexPattern, fmtArgs) or nil,
-		launch = config.launch and string.gsub(config.launch, regexPattern, fmtArgs) or nil
+		build = config.build and string.gsub(config.build, regex_pattern, format_args) or nil,
+		launch = config.launch and string.gsub(config.launch, regex_pattern, format_args) or nil
 	}
 end
 
-function RunBuildScript(buildCmd, launchCmd, opt)
-	local buildScript = opt.buildScript or globalBuildScript
-	local launchDisabled = opt.launchDisabled or false
+function Run_Build_Script(build_cmd, launch_cmd, opt)
+	local build_script = opt.build_script or global_build_script
+	local launch_disabled = opt.launch_disabled or false
 
-	local cmd = {pythonRuntime, buildScript}
+	local cmd = {python_runtime, build_script}
 
-	if buildCmd ~= nil then
+	if build_cmd ~= nil then
 		table.insert(cmd, "--build")
-		table.insert(cmd, buildCmd)
+		table.insert(cmd, build_cmd)
 	end
 
-	if launchCmd ~= nil then
+	if launch_cmd ~= nil then
 		table.insert(cmd, "--launch")
-		table.insert(cmd, launchCmd)
+		table.insert(cmd, launch_cmd)
 	end
 
-	if launchDisabled then
+	if launch_disabled then
 		table.insert(cmd, "--disable-launch")
 	end
 
