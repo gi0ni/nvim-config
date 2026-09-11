@@ -110,7 +110,6 @@ local builderConfig = {
 			what = "CMakeLists.txt"
 		}
 	},
-
 	[builders.CARGO] = {
 		build = "cargo build",
 		launch = "target/debug/{binaryName} {ArgsList}",
@@ -119,7 +118,6 @@ local builderConfig = {
 			what = "Cargo.toml"
 		}
 	},
-
 	[builders.PYTHON] = {
 		build = nil,
 		launch = "{pythonRuntime} {bufferName} {ArgsList}",
@@ -128,7 +126,6 @@ local builderConfig = {
 			what = "py"
 		}
 	},
-
 	[builders.BASH] = {
 		build = nil,
 		launch = "bash {bufferName} {ArgsList}",
@@ -207,7 +204,7 @@ function RunBuildScript(buildCmd, launchCmd, opt)
 	end
 
 	if launchDisabled then
-		table.insert(cmd, "--launchDisabled")
+		table.insert(cmd, "--disable-launch")
 	end
 
 	vim.fn.jobstart(cmd)
