@@ -6,7 +6,7 @@ from crappy.utils import fail_gracefully, Color
 
 # TODO: Might be useful to run multiple launch commmands from a slave
 class Task:
-    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None, blocking_on=None):
+    def __init__(self, name=None, build_cmd=None, launch_cmd=None, predicate=None, event_callback=None):
         self.name = name if name is not None else "build"
         self.predicate = predicate if callable(predicate) else None
 
@@ -16,7 +16,7 @@ class Task:
         self.tokenized_build_cmd = shlex.split(self.build_cmd) if self.build_cmd else None
         self.tokenized_launch_cmd = shlex.split(self.launch_cmd) if self.launch_cmd else None
 
-        self.blocking_on = blocking_on
+        self.event_callback = event_callback
 
     def execute_build(self) -> bool:
         if not self.has_build():
@@ -62,4 +62,4 @@ class Task:
         return self.launch_cmd is not None
 
     def is_blocking(self) -> bool:
-        return self.blocking_on is not None
+        return self.event_callback is not None

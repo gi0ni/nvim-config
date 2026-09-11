@@ -29,7 +29,9 @@ class Slave:
 
         runtime_nano = end - start
         self.print_build_status(task, build_passed, runtime_nano)
-        self.send_event_to_master(MasterSlaveEvent.SLAVE_FINISHED_BUILD)
+        self.send_event_to_master(
+            MasterSlaveEvent.SLAVE_BUILD_SUCCESS if build_passed else MasterSlaveEvent.SLAVE_BUILD_FAILURE
+        )
 
         if build_passed and task.has_launch():
             print(

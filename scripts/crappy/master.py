@@ -16,7 +16,6 @@ class Master:
 
         self.slave_pids: List[subprocess.Popen] = []
         self.slave_sockets: List[socket.socket] = []
-        self.slave_statuses: List[int] = []
 
         self.config: Config = config
 
@@ -31,7 +30,7 @@ class Master:
                 self.dispatch_slave(task)
 
                 if task.is_blocking():
-                    self.wait_for_event(task.blocking_on)
+                    self.wait_for_event(task)
 
         self.run_user_commands()
         self.stop_server()
@@ -55,13 +54,12 @@ class Master:
         except TimeoutError:
             pass
         self.slave_sockets += [sock]
-        self.slave_statuses += [0]
 
-    def wait_for_event(self, event: MasterSlaveEvent):
-        if self.slave_sockets is None:
+    def wait_for_event(self, task: Task):
+        if not self.slave_sockets:
             return
 
-        while self.slave_statuses[-1] != event.value:
+        while True:
             data = bytearray(0)
             while len(data) < 4:
                 try:
@@ -71,7 +69,10 @@ class Master:
                     data += result
                 except OSError:
                     sys.exit(1)
-            self.slave_statuses[-1] = int.from_bytes(data)
+
+            status = int.from_bytes(data)
+            if task.event_callback(MasterSlaveEvent(status)):
+                break
 
     def stop_server(self):
         for sock in self.slave_sockets:
@@ -94,7 +95,6 @@ class Master:
         spawn_cmd += ["--master-port", str(self.port)]
 
         spawn_cmd = Config.platform_commands[Config.platform_name]["term"] + spawn_cmd
-        print(spawn_cmd)
         self.slave_pids += [subprocess.Popen(spawn_cmd)]
         self.connect_to_slave()
 
