@@ -40,4 +40,7 @@ def init_tasks_from_args(config: Config, build_commands: List[str], launch_comma
         build_cmd = build_commands.pop(0) if build_commands else None
         launch_cmd = launch_commands.pop(0) if launch_commands else None
 
+        if config.launch_disabled:
+            launch_cmd = None
+
         config.task_queue.append(Task(build_cmd=build_cmd, launch_cmd=launch_cmd))

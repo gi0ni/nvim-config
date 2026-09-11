@@ -26,7 +26,7 @@ class Master:
             self.config.task_queue.append(Task(name="error"))
 
         for task in self.config.task_queue:
-            if task.evaluate_predicate():
+            if not task.is_empty() and task.evaluate_predicate():
                 self.dispatch_slave(task)
 
                 if task.is_blocking():
@@ -89,7 +89,7 @@ class Master:
         if task.has_build():
             spawn_cmd += ["--build", task.build_cmd]
 
-        if task.has_launch() and not self.config.launch_disabled:
+        if task.has_launch():
             spawn_cmd += ["--launch", task.launch_cmd]
 
         spawn_cmd += ["--master-port", str(self.port)]

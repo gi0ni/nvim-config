@@ -13,6 +13,11 @@ def driver(config: Config):
     parse_args(config)
 
     if config.is_master_script:
+        if config.launch_disabled:
+            for task in config.task_queue:
+                task.launch_cmd = None
+                task.tokenized_launch_cmd = None
+
         master = Master(config)
         master.driver()
         sys.exit(0)
