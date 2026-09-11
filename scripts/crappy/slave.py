@@ -122,7 +122,7 @@ class Slave:
 
     def handle_no_work_given(self):
         print(
-            "\n{1}[BUILD][] No commands were given. There is nothing to do.{0}"
+            "{1}[BUILD][] No commands were given. There is nothing to do.{0}"
             .format(Color["CLEAR"], Color["PURPLE"])
         )
         print("Press any key to continue...", end="", flush=True)

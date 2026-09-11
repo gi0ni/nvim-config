@@ -22,11 +22,11 @@ class Master:
     def driver(self):
         self.start_server()
 
-        if not self.config.task_queue:
+        if not self.has_tasks_todo():
             self.config.task_queue.append(Task(name="error"))
 
         for task in self.config.task_queue:
-            if not task.is_empty() and task.evaluate_predicate():
+            if (not task.is_empty() or task.name == "error") and task.evaluate_predicate():
                 self.dispatch_slave(task)
 
                 if task.is_blocking():
@@ -79,6 +79,13 @@ class Master:
             if sock:
                 sock.close()
         self.listen_socket.close()
+
+    def has_tasks_todo(self):
+        found = False
+        for task in self.config.task_queue:
+            if not task.is_empty():
+                found = True
+        return found
 
     def dispatch_slave(self, task):
         spawn_cmd = [Config.python_runtime, self.config.self_script_path, "--slave"]
