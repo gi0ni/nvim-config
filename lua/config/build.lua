@@ -1,98 +1,32 @@
-ArgsList = nil
-ArgsListTokenized = {}
+Args_list = nil
+Args_list_tokenized = {}
 
 vim.keymap.set("n", "<leader>ba", function()
-	ArgsList = vim.fn.input("Enter arguments: ")
+	Args_list = vim.fn.input("Enter arguments: ")
 
-	-- This is how you remove elements from a table in Lua...
-	for key in pairs(ArgsListTokenized) do
-		ArgsListTokenized[key] = nil
+	-- Remove elements from Lua table
+	for key in pairs(Args_list_tokenized) do
+		Args_list_tokenized[key] = nil
 	end
 
-	if ArgsList == nil then
+	if Args_list == nil then
 		return
 	end
 
-	-- Important! Copy temporary table by value
-	local tokens = vim.split(ArgsList, " +")
+	-- Copy by value here
+	local tokens = vim.split(Args_list, " +")
 
 	for key, val in pairs(tokens) do
-		ArgsListTokenized[key] = val
+		Args_list_tokenized[key] = val
 	end
 end)
 
--- Quick build (and run) shortcuts for a wide variety of languages (4)
-local python_runtime = IsWin32 and "python" or "python3"
+local python_runtime = Is_win32 and "python" or "python3"
 local global_build_script = vim.fn.stdpath("config") .. "/scripts/build.py"
 
 local current_dirname
 local buffer_name
 local binary_name
-
-vim.keymap.set("n", "<leader>r", function()
-	Build({launch=true})
-end)
-
-vim.keymap.set("n", "<leader>bb", function()
-	Build({launch=false})
-end)
-
-vim.keymap.set("n", "<leader>bm", ":!cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug")
-
-vim.keymap.set("n", "<leader>bpy", function()
-	if vim.fn.filereadable("build.py") == 1 then
-		vim.notify("There already is a local `build.py`. Will not overwrite.")
-		return
-	end
-
-	local input_file = io.open(global_build_script, "r")
-	local output_file = io.open("build.py", "w")
-
-	if input_file == nil or output_file == nil then
-		vim.notify("Error. Failed to copy file!")
-		return
-	end
-
-	local contents = input_file:read("*a")
-	input_file:close()
-
-	output_file:write(contents)
-	output_file:close()
-	vim.notify(string.format("Copied `%s` to local directory.", vim.fn.stdpath("config") .. "/scripts/build.py"))
-end)
-
-function Build(opt)
-	local launch_disabled = (opt.launch == false)
-
-	vim.cmd("wa")
-
-	if vim.fn.filereadable("build.py") == 1 then
-		Run_Build_Script(nil, nil, {
-			build_script = "build.py",
-			launch_disabled = launch_disabled
-		})
-		return
-	end
-
-	current_dirname = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
-	buffer_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
-	binary_name = current_dirname .. (IsWin32 and ".exe" or "")
-
-	local config = Resolve_Builder()
-	if config == nil then
-		vim.notify(string.format("Failed to launch `%s`. No configuration found.", buffer_name))
-		return
-	end
-
-	if config.build == nil and (config.launch == nil or launch_disabled) then
-		vim.notify("No commands were given. There is nothing to do.")
-		return
-	end
-
-	Run_Build_Script(config.build, config.launch, {
-		launch_disabled = launch_disabled
-	})
-end
 
 local builders = {
 	CMAKE  = 1,
@@ -136,32 +70,7 @@ local builder_config = {
 	}
 }
 
-function Resolve_Builder()
-	local ordered_keys = {}
-
-	for key in pairs(builders) do
-		table.insert(ordered_keys, key)
-	end
-
-	table.sort(ordered_keys)
-
-	local chosen_key = nil
-
-	for key = 1, #ordered_keys do
-		if Match_Builder_Pattern(builder_config[key].pattern) then
-			chosen_key = key
-			break
-		end
-	end
-
-	if chosen_key == nil then
-		return nil
-	end
-
-	return Get_Builder_Commands(builder_config[chosen_key])
-end
-
-function Match_Builder_Pattern(pattern)
+local function match_builder_pattern(pattern)
 	if pattern.type == "file" then
 		return vim.fn.filereadable(pattern.what) == 1
 
@@ -171,10 +80,10 @@ function Match_Builder_Pattern(pattern)
 	end
 end
 
-function Get_Builder_Commands(config)
+local function get_builder_commands(config)
 	local format_args = {
 		["{binary_name}"] = binary_name,
-		["{ArgsList}"] = ArgsList or "",
+		["{ArgsList}"] = Args_list or "",
 		["{python_runtime}"] = python_runtime,
 		["{buffer_name}"] = buffer_name,
 	}
@@ -187,7 +96,32 @@ function Get_Builder_Commands(config)
 	}
 end
 
-function Run_Build_Script(build_cmd, launch_cmd, opt)
+local function resolve_builder()
+	local ordered_keys = {}
+
+	for key in pairs(builders) do
+		table.insert(ordered_keys, key)
+	end
+
+	table.sort(ordered_keys)
+
+	local chosen_key = nil
+
+	for key = 1, #ordered_keys do
+		if match_builder_pattern(builder_config[key].pattern) then
+			chosen_key = key
+			break
+		end
+	end
+
+	if chosen_key == nil then
+		return nil
+	end
+
+	return get_builder_commands(builder_config[chosen_key])
+end
+
+local function run_build_script(build_cmd, launch_cmd, opt)
 	local build_script = opt.build_script or global_build_script
 	local launch_disabled = opt.launch_disabled or false
 
@@ -209,3 +143,69 @@ function Run_Build_Script(build_cmd, launch_cmd, opt)
 
 	vim.fn.jobstart(cmd)
 end
+
+local function build(opt)
+	local launch_disabled = (opt.launch == false)
+
+	vim.cmd("wa")
+
+	if vim.fn.filereadable("build.py") == 1 then
+		run_build_script(nil, nil, {
+			build_script = "build.py",
+			launch_disabled = launch_disabled
+		})
+		return
+	end
+
+	current_dirname = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+	buffer_name = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(0), ":t")
+	binary_name = current_dirname .. (Is_win32 and ".exe" or "")
+
+	local config = resolve_builder()
+	if config == nil then
+		vim.notify(string.format("Failed to launch `%s`. No configuration found.", buffer_name))
+		return
+	end
+
+	if config.build == nil and (config.launch == nil or launch_disabled) then
+		vim.notify("No commands were given. There is nothing to do.")
+		return
+	end
+
+	run_build_script(config.build, config.launch, {
+		launch_disabled = launch_disabled
+	})
+end
+
+-- Quick build (and run) shortcuts for a wide variety of languages (4)
+vim.keymap.set("n", "<leader>r", function()
+	build({launch=true})
+end)
+
+vim.keymap.set("n", "<leader>bb", function()
+	build({launch=false})
+end)
+
+vim.keymap.set("n", "<leader>bm", ":!cmake -B build -G Ninja -D CMAKE_BUILD_TYPE=Debug")
+
+vim.keymap.set("n", "<leader>bpy", function()
+	if vim.fn.filereadable("build.py") == 1 then
+		vim.notify("There already is a local `build.py`. Will not overwrite.")
+		return
+	end
+
+	local input_file = io.open(global_build_script, "r")
+	local output_file = io.open("build.py", "w")
+
+	if input_file == nil or output_file == nil then
+		vim.notify("Error. Failed to copy file!")
+		return
+	end
+
+	local contents = input_file:read("*a")
+	input_file:close()
+
+	output_file:write(contents)
+	output_file:close()
+	vim.notify(string.format("Copied `%s` to local directory.", vim.fn.stdpath("config") .. "/scripts/build.py"))
+end)

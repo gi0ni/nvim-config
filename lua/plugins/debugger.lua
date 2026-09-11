@@ -25,7 +25,7 @@ return
 			dap.defaults.cpp.exception_breakpoints = {"cpp_throw", "cpp_catch"}
 			dap.set_log_level("error")
 
-			if IsWin32 == false then
+			if Is_win32 == false then
 				dap.defaults.fallback.external_terminal = {
 					command = "tmux",
 					args = {"new-window", "-dn", "debug"}
@@ -47,7 +47,7 @@ return
 					program = function()
 						return vim.fn.input("Path to executable: ", vim.fn.getcwd() .. "/", "file")
 					end,
-					args = ArgsListTokenized,
+					args = Args_list_tokenized,
 					cwd = "${workspaceFolder}",
 					stopOnEntry = false,
 					runInTerminal = true,

@@ -109,7 +109,7 @@ vim.keymap.set("n", "<C-Down>", ":resize -2<CR>", sopt)
 
 -- Open terminal split
 vim.keymap.set("n", "<leader>t", function()
-	if IsWin32 then
+	if Is_win32 then
 		vim.cmd("vsplit | wincmd l | term pwsh -NoLogo")
 	else
 		vim.cmd("vsplit | wincmd l | term")
