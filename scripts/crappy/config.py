@@ -6,7 +6,7 @@ from crappy.task import Task
 
 class Config:
     platform_name = platform.system()
-    python_runtime = "python3" if platform_name else "python"
+    python_runtime = "python3" if platform_name == "Linux" else "python"
     platform_commands = {
         "Linux": {
             "wait": ["bash", "-c", "read -n 1"],
